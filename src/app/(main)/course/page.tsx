@@ -17,7 +17,7 @@ export default function Page() {
         </section>
 
         <section className="container mt-20">
-          <h2 className="font-bold tracking-tighttext-3xl sm:text-4xl">Modules</h2>
+          <h2 className="text-3xl sm:text-4xl">Modules</h2>
           <div className="flex gap-3 mt-4">
             <Badge variant="outline">12 lessons</Badge>
             <Badge variant="outline">9 exercises</Badge>

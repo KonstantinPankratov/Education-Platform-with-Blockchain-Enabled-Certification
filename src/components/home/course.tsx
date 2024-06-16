@@ -23,7 +23,9 @@ const Course = function() {
         </ul>
       </CardContent>
       <CardFooter className="gap-x-4">
-        <Link href="#" className="transition-colors hover:text-neutral-300 font-medium">View all modules</Link>
+        <Button asChild variant="link">
+          <Link href="#">View all modules</Link>
+        </Button>
         <Button asChild>
           <Link href="#">Enroll</Link>
         </Button>
