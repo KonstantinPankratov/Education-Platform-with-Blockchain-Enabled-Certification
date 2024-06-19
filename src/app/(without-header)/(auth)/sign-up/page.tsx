@@ -1,4 +1,5 @@
 "use client"
+import { SignInWithGithub } from "@/components/forms/SiginWithGithub"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -93,9 +94,7 @@ export default function Page() {
       </div>
 
       <div className="flex flex-col items-center">
-        <Button variant="outline" size="lg" className="w-full">
-          <Github size={20} className="mr-3"/> Github
-        </Button>
+        <SignInWithGithub/>
       </div>
 
       <div className="flex justify-center mt-10">
