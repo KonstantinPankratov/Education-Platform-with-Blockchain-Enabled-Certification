@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,10 +6,10 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { Button } from "@/components/ui/button";
-import Shortcut from "@/components/ui/shortcut";
-import Image from "next/image";
-import Link from "next/link";
+import { Button } from "@/components/ui/button"
+import Shortcut from "@/components/ui/shortcut"
+import Image from "next/image"
+import Link from "next/link"
 
 export default function Page() {
     return (
@@ -43,6 +42,6 @@ export default function Page() {
           </div>
         </div>
       </section>
-    );
+    )
   }
   

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
+import React, { useState } from "react"
+import { Button } from "@/components/ui/button"
 import {
   Avatar,
   AvatarFallback,
@@ -13,9 +13,9 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
-import Link from "next/link";
-import { Bell, LogOut, Scroll, User } from "lucide-react";
-import { cn } from "@/lib/utils";
+import Link from "next/link"
+import { Bell, LogOut, Scroll, User } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 interface HeaderProps {
   size?: string
@@ -91,4 +91,4 @@ const Header: React.FC <HeaderProps> = ({ size }) => {
   )
 }
 
-export default Header;
+export default Header

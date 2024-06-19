@@ -1,5 +1,5 @@
-import { Separator } from "@/components/ui/separator";
-import Course from "./course";
+import { Separator } from "@/components/ui/separator"
+import Course from "./course"
 
 const Courses = function () {
   return (
@@ -20,4 +20,4 @@ const Courses = function () {
   )
 }
 
-export default Courses;
+export default Courses

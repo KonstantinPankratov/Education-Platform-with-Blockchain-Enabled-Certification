@@ -1,18 +1,16 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
-import Shortcut from "@/components/ui/shortcut";
+import { Button } from "@/components/ui/button"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-import Image from "next/image";
-import Link from "next/link";
-import CodeEditor from "@/components/ui/code-editor";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
-import { Play } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import Post from "@/components/practice/post";
+import Image from "next/image"
+import Link from "next/link"
+import CodeEditor from "@/components/ui/code-editor"
+import { Badge } from "@/components/ui/badge"
+import { Play } from "lucide-react"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import Post from "@/components/practice/post"
 
 export default function Page() {
   return (
@@ -77,5 +75,5 @@ export default function Page() {
         </ResizablePanelGroup>
       </ResizablePanel>
     </ResizablePanelGroup>
-  );
+  )
 }

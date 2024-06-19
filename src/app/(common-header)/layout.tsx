@@ -1,12 +1,12 @@
-"use client";
+"use client"
 
-import Header from "@/components/ui/header";
-import Footer from "@/components/ui/footer";
+import Header from "@/components/ui/header"
+import Footer from "@/components/ui/footer"
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <>
@@ -14,5 +14,5 @@ export default function RootLayout({
       {children}
       <Footer/>
     </>
-  );
+  )
 }

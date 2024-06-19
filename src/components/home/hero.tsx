@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 const Hero = function () {
   return (
@@ -19,4 +19,4 @@ const Hero = function () {
   )
 }
 
-export default Hero;
+export default Hero

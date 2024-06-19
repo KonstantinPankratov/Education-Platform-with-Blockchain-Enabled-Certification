@@ -1,9 +1,9 @@
-import Link from "next/link";
+import Link from "next/link"
 
 export default function SignInLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <div className="relative overflow-hidden flex min-h-screen p-3 md:p-10">
@@ -22,5 +22,5 @@ export default function SignInLayout({
         </div>
       </div>
     </div>
-  );
+  )
 }

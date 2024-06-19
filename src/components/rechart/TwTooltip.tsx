@@ -1,15 +1,16 @@
-"use client";
-import React from "react";
-import { TooltipProps } from "recharts";
+"use client"
+
+import React from "react"
+import { TooltipProps } from "recharts"
 
 interface Payload {
-  value: number;
+  value: number
 }
 
 interface CustomTooltipProps extends TooltipProps<number, string> {
-  payload?: Payload[];
-  label?: string;
-  desc?: string;
+  payload?: Payload[]
+  label?: string
+  desc?: string
 }
 
 const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label, desc }) => {
@@ -19,10 +20,10 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label, d
         <p className="font-semibold text-neutral-50">{label}</p>
         <p className="text-sm">{`${desc}: ${payload[0].value}`}</p>
       </div>
-    );
+    )
   }
 
-  return null;
-};
+  return null
+}
 
-export default CustomTooltip;
+export default CustomTooltip

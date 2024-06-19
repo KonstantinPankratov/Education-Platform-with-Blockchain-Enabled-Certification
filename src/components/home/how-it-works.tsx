@@ -1,11 +1,9 @@
-import { Button } from "@/components/ui/button";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import Link from "next/link";
 
 const HowItWorks = function () {
   return (
@@ -44,4 +42,4 @@ const HowItWorks = function () {
   )
 }
 
-export default HowItWorks;
+export default HowItWorks

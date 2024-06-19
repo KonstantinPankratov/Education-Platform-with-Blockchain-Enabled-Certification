@@ -1,11 +1,11 @@
-import React from "react";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import React from "react"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import { Prism } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { Prism } from 'react-syntax-highlighter'
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
 const Post: React.FC = () => {
-  const code = `const numbers = [45, 4, 9, 16, 25];\n\nlet txt = "";\n\nnumbers.forEach(myFunction);\n\nfunction myFunction(value) {\n  // Complete this function ...\n}`;
+  const code = `const numbers = [45, 4, 9, 16, 25];\n\nlet txt = "";\n\nnumbers.forEach(myFunction);\n\nfunction myFunction(value) {\n  // Complete this function ...\n}`
 
   return (
     <article className="flex flex-col gap-y-3">
@@ -32,4 +32,4 @@ const Post: React.FC = () => {
   )
 }
 
-export default Post;
+export default Post

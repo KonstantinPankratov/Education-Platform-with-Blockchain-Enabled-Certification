@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardHeader,
@@ -6,9 +6,9 @@ import {
   CardContent,
   CardFooter
 } from "@/components/ui/card"
-import Link from "next/link";
-import { Progress } from "@/components/ui/progress";
-import { useEffect, useState } from "react";
+import Link from "next/link"
+import { Progress } from "@/components/ui/progress"
+import { useEffect, useState } from "react"
 
 const Course = function() {
   const [progress, setProgress] = useState(0)
@@ -42,4 +42,4 @@ const Course = function() {
   )
 }
 
-export default Course;
+export default Course

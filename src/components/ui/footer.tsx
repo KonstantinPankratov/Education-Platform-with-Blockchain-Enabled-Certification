@@ -1,5 +1,4 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import Link from "next/link"
 
 const Footer = function () {
   return (
@@ -23,4 +22,4 @@ const Footer = function () {
   )
 }
 
-export default Footer;
+export default Footer

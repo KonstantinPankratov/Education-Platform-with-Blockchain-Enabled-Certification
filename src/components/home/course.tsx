@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardHeader,
@@ -6,7 +6,7 @@ import {
   CardContent,
   CardFooter
 } from "@/components/ui/card"
-import Link from "next/link";
+import Link from "next/link"
 
 const Course = function() {
   return (
@@ -34,4 +34,4 @@ const Course = function() {
   )
 }
 
-export default Course;
+export default Course

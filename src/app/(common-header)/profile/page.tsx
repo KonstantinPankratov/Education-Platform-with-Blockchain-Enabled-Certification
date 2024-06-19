@@ -1,14 +1,14 @@
-'use client';
+'use client'
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { LineChart, Line, XAxis, YAxis, Tooltip } from 'recharts';
-import dynamic from 'next/dynamic';
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
-import Course from "@/components/profile/course";
-import SignIn from "@/components/ui/sign-in";
-const CustomTooltip = dynamic(() => import('@/components/rechart/TwTooltip'), { ssr: false });
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { LineChart, Line, XAxis, Tooltip } from 'recharts'
+import dynamic from 'next/dynamic'
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
+import { Badge } from "@/components/ui/badge"
+import Course from "@/components/profile/course"
+
+const CustomTooltip = dynamic(() => import('@/components/rechart/TwTooltip'), { ssr: false })
 
 export default function Page() {
   const learningData = [
@@ -19,10 +19,9 @@ export default function Page() {
     { day: '13.06', activity: 7 },
     { day: '14.06', activity: 4 },
     { day: '15.06', activity: 6 },
-  ];
+  ]
   return (
     <>
-      {/* <SignIn/> */}
       <section className="container mt-14">
         <div className="flex items-center gap-x-5 my-10">
           <h1 className="text-4xl sm:text-6xl">Profile</h1>
@@ -60,5 +59,5 @@ export default function Page() {
         </div>
       </section>
     </>
-  );
+  )
 }

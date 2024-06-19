@@ -1,11 +1,11 @@
-"use client";
+"use client"
 
-import Header from "@/components/ui/header";
+import Header from "@/components/ui/header"
 
 export default function PracticeLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <div className="h-[100vh] min-w-[1000px]">
@@ -16,5 +16,5 @@ export default function PracticeLayout({
         </div>
       </div>
     </div>
-  );
+  )
 }
