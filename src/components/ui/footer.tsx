@@ -7,12 +7,12 @@ const Footer = function () {
       <div className="container flex justify-center md:justify-between items-center py-6">
         <nav className="justify-between items-center gap-4 lg:gap-6 font-medium hidden md:flex" aria-label="Global">
           <Link
-            href="#"
+            href="/#how-it-works"
             className="transition-colors hover:text-neutral-300">
             How it works
           </Link>
           <Link
-            href="#"
+            href="/#courses"
             className="transition-colors hover:text-neutral-300">
             Courses
           </Link>

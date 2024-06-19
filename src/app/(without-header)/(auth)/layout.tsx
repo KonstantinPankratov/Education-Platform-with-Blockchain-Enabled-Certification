@@ -8,7 +8,7 @@ export default function SignInLayout({
   return (
     <div className="relative overflow-hidden flex min-h-screen p-3 md:p-10">
       <div className="border rounded-2xl overflow-y-auto grid grid-cols-1 md:grid-cols-2 flex-grow m-auto max-w-screen-2xl">
-        <div className="flex flex-col h-full text-center md:text-left border-b-2 md:bg-neutral-900 p-5 md:p-10">
+        <div className="flex flex-col h-full text-center md:text-left bg-neutral-900 p-5 md:p-10">
           <Link href='/' className="text-lg font-bold">EDUPLA</Link>
           <div className="mt-auto hidden md:block">
             <blockquote className="space-y-2">

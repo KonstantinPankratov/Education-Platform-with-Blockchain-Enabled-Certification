@@ -3,7 +3,7 @@ import Course from "./course";
 
 const Courses = function () {
   return (
-    <section className="relative py-20">
+    <section className="relative py-20" id="courses">
       <div className="container">
         <div className="mx-auto max-w-2xl text-center">
           <span className="text-base md:text-lg font-semibold text-neutral-500">Let&apos;s start learning with our</span>

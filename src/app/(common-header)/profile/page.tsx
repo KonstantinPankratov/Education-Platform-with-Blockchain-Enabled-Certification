@@ -47,7 +47,7 @@ export default function Page() {
         </div>
       </section>
 
-      <section className="container mt-14">
+      <section className="container pt-14" id="enrolled-courses">
         <h2 className="text-3xl sm:text-4xl">Enrolled courses</h2>
         <div className="flex gap-3 mt-4">
           <Badge variant="outline">1 / 1  courses</Badge>

@@ -91,7 +91,7 @@ export default function Page() {
       </div>
       <div className="flex justify-center mt-10">
         <Button variant="link" asChild>
-          <Link href="#">Don&apos;t have an account? Sign up!</Link>
+          <Link href="/sign-up">Don&apos;t have an account? Sign up!</Link>
         </Button>
       </div>
     </div>

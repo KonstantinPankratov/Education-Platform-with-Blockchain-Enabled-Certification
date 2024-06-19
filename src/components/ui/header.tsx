@@ -34,18 +34,16 @@ const Header: React.FC <HeaderProps> = ({ size }) => {
         }
       )}>
         <div className="flex lg:flex-1">
-          <a href="#" className="-m-1.5 p-1.5 font-bold text-xl">
-            EDUPLA
-          </a>
+          <Link href="/" className="-m-1.5 p-1.5 font-bold text-xl">EDUPLA</Link>
         </div>
         { !loggedIn && <nav className="flex items-center gap-6 font-medium">
           <Link
-            href="#"
+            href="/#how-it-works"
             className="hidden md:block transition-colors hover:text-neutral-300">
             How it works
           </Link>
           <Link
-            href="#"
+            href="/#courses"
             className="hidden md:block transition-colors hover:text-neutral-300">
             Courses
           </Link>
@@ -67,13 +65,17 @@ const Header: React.FC <HeaderProps> = ({ size }) => {
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-              <DropdownMenuItem>
-                  <User className="mr-2 h-4 w-4" />
-                  <span>Profile</span>
+              <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link href="/profile">
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Scroll className="mr-2 h-4 w-4" />
-                  <span>Courses</span>
+                <DropdownMenuItem asChild className="cursor-pointer">
+                  <Link href="/profile#enrolled-courses">
+                    <Scroll className="mr-2 h-4 w-4" />
+                    <span>Enrolled courses</span>
+                  </Link>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />

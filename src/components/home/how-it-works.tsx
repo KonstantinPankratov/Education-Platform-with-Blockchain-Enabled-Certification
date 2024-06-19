@@ -9,7 +9,7 @@ import Link from "next/link";
 
 const HowItWorks = function () {
   return (
-    <section className="relative py-20">
+    <section className="relative py-20" id="how-it-works">
       <div className="container">
         <div className="mx-auto max-w-2xl text-center">
           <span className="text-base md:text-lg font-semibold text-neutral-500">It&apos;s important to know</span>

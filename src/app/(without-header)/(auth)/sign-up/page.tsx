@@ -100,7 +100,7 @@ export default function Page() {
 
       <div className="flex justify-center mt-10">
         <Button variant="link" asChild>
-          <Link href="#">Already have an account? Sign in!</Link>
+          <Link href="/sign-in">Already have an account? Sign in!</Link>
         </Button>
       </div>
     </div>

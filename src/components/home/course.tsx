@@ -24,7 +24,7 @@ const Course = function() {
       </CardContent>
       <CardFooter className="gap-x-4">
         <Button asChild variant="link">
-          <Link href="#">View all modules</Link>
+          <Link href="/course">View all modules</Link>
         </Button>
         <Button asChild>
           <Link href="#">Enroll</Link>
