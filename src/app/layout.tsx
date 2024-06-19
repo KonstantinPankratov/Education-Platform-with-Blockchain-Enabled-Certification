@@ -1,17 +1,20 @@
-import { Inter } from "next/font/google";
-import { cn } from "@/lib/utils";
-import "./globals.css";
+import { Inter as FontSans } from "next/font/google"
+import { cn } from "@/lib/utils"
+import "./globals.css"
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const fontSans = FontSans({
+  subsets: ["latin"],
+  variable: "--font-sans"
+})
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en">
-      <body className={cn("dark", inter.variable)}>
+      <body className={cn("dark font-sans antialiased", fontSans.variable)}>
         {children}
       </body>
     </html>
