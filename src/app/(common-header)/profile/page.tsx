@@ -1,24 +1,19 @@
-'use client'
-
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { LineChart, Line, XAxis, Tooltip } from 'recharts'
-import dynamic from 'next/dynamic'
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import Course from "@/components/profile/course"
+import CardChart from '@/components/profile/card-chart'
 
-const CustomTooltip = dynamic(() => import('@/components/rechart/TwTooltip'), { ssr: false })
 
 export default function Page() {
   const learningData = [
-    { day: '9.06', activity: 3 },
-    { day: '10.06', activity: 8 },
-    { day: '11.06', activity: 2 },
-    { day: '12.06', activity: 5 },
-    { day: '13.06', activity: 7 },
-    { day: '14.06', activity: 4 },
-    { day: '15.06', activity: 6 },
+    { key: '9.06', value: 3 },
+    { key: '10.06', value: 8 },
+    { key: '11.06', value: 2 },
+    { key: '12.06', value: 5 },
+    { key: '13.06', value: 7 },
+    { key: '14.06', value: 4 },
+    { key: '15.06', value: 6 },
   ]
   return (
     <>
@@ -30,19 +25,7 @@ export default function Page() {
           </Button>
         </div>
         <div className="flex gap-5">
-          <Card>
-            <CardHeader>
-              <CardTitle>Learning</CardTitle>
-              <CardDescription>+ 2 modules this week</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <LineChart width={300} height={120} data={learningData}>
-                <Tooltip content={<CustomTooltip desc="Modules"/>}/>
-                <XAxis dataKey="day" hide={true}/>
-                <Line type="monotone" dataKey="activity" stroke="white" strokeWidth="3" />
-              </LineChart>
-            </CardContent>
-          </Card>
+          <CardChart data={learningData} desc="Modules"/>
         </div>
       </section>
 
