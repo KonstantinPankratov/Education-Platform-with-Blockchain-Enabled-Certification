@@ -8,16 +8,8 @@ import {
 } from "@/components/ui/card"
 import Link from "next/link"
 import { Progress } from "@/components/ui/progress"
-import { useEffect, useState } from "react"
 
 const Course = function() {
-  const [progress, setProgress] = useState(0)
- 
-  useEffect(() => {
-    const timer = setTimeout(() => setProgress(66), 500)
-    return () => clearTimeout(timer)
-  }, [])
-  
   return (
     <Card>
       <CardHeader>
@@ -26,8 +18,8 @@ const Course = function() {
       <CardContent className="pb-4">
         <p>Lorem ipsum dolor sit amet consectetur. Arcu pharetra orci sit euismod ullamcorper tempor sed cras. Facilisi lacus netus est quis cursus eros.</p>
         <div className="flex gap-x-4 items-center mt-4 w-3/4">
-          <Progress className="flex-grow" value={progress}/>
-          <span className="font-bold text-base text-neutral-50">{progress}%</span>
+          <Progress className="flex-grow" value={60}/>
+          <span className="font-bold text-base text-neutral-50">{60}%</span>
         </div>
       </CardContent>
       <CardFooter className="gap-x-4">
