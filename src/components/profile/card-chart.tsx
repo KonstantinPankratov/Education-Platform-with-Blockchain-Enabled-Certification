@@ -5,7 +5,7 @@ import { LineChart, Line, XAxis, Tooltip } from 'recharts'
 import CustomTooltip from "@/components/rechart/TwTooltip"
 
 interface CardChartProps {
-  data: object,
+  data: any[],
   desc: string
 }
 
