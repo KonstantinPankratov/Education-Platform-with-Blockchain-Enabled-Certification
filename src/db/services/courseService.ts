@@ -6,6 +6,7 @@ interface PopulateOption {
   select?: string
   match?: any
   options?: any
+  populate?: PopulateOption
 }
 
 interface GetCourseOptions {
