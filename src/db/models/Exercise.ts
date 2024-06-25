@@ -5,6 +5,7 @@ export interface IExercise extends Document {
   name: string,
   slug: string,
   content: string,
+  snippet: string,
   tests: mongoose.Types.ObjectId[],
   order: number
 }
@@ -21,6 +22,9 @@ export const ExerciseSchema: Schema = new Schema({
   content: {
     type: String,
     required: true
+  },
+  snippet: {
+    type: String
   },
   tests: [{
     type: mongoose.Types.ObjectId,
