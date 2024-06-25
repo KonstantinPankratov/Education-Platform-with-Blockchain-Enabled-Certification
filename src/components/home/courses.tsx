@@ -1,7 +1,17 @@
 import { Separator } from "@/components/ui/separator"
 import Course from "./course"
+import { getCourses } from "@/db/services/courseService"
 
-const Courses = function () {
+const Courses = async function () {
+  const courses = await getCourses({
+    populate: [
+      {
+        path: 'modules',
+        options: { sort: { order: 1 } }
+      }
+    ]
+  })
+
   return (
     <section className="relative py-20" id="courses">
       <div className="container">
@@ -11,7 +21,9 @@ const Courses = function () {
           <p className="mt-5 text-neutral-50">Lorem ipsum dolor sit amet consectetur. Arcu pharetra orci sit euismod ullamcorper tempor sed cras. Facilisi lacus netus est quis cursus eros.</p>
         </div>
         <div className="mx-auto max-w-4xl mt-14">
-          <Course/>
+          { courses.map(course =>
+            <Course key={course._id} course={course} />
+          ) }
           <Separator className="my-8"/>
           <div className="text-base md:text-lg text-neutral-50 text-center">More comming soon<span className="text-neutral-500">, probably...</span></div>
         </div>
