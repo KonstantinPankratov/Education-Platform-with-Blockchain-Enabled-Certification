@@ -1,25 +1,16 @@
 "use client"
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { authenticate } from "@/lib/actions/authenticate"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { SignInSchema } from "@/lib/zod"
 import Link from "next/link"
-
+import { signIn } from "next-auth/react"
 
 export function SignIn() {
-
   const form = useForm<z.infer<typeof SignInSchema>>({
     resolver: zodResolver(SignInSchema),
     defaultValues: {
@@ -28,8 +19,8 @@ export function SignIn() {
     },
   })
 
-  function onSubmit(values: z.infer<typeof SignInSchema>) {
-    authenticate(values)
+  const onSubmit = async (values: z.infer<typeof SignInSchema>) => {
+    await signIn('credentials', values)
   }
 
   return (

@@ -1,33 +1,47 @@
-import NextAuth from "next-auth"
+import NextAuth, { AuthError } from "next-auth"
 import GitHub from "next-auth/providers/github"
-import Credentials from "next-auth/providers/credentials"
+import Credentials  from "next-auth/providers/credentials"
+import type { Provider } from "next-auth/providers"
+import dbConnect from "./db/dbConnect"
+import User from "./db/models/User"
+import { compare as bcryptCOmpare } from 'bcrypt'
+import { SignInSchema } from "@/lib/zod"
+import { z } from "zod"
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
-  providers: [
-    Credentials({
-      credentials: {
-        email: {},
-        password: {},
-      },
-      authorize: async (credentials) => {
-        let user = null
- 
-        // logic to salt and hash password
-        const pwHash = saltAndHashPassword(credentials.password)
- 
-        // logic to verify if user exists
-        user = await getUserFromDb(credentials.email, pwHash)
- 
-        if (!user) {
-          // No user found, so this is their first attempt to login
-          // meaning this is also the place you could do registration
-          throw new Error("User not found.")
-        }
- 
-        // return user object with the their profile data
+// class InvalidCredentials extends AuthError {
+//   public readonly kind = 'signIn';
+
+//   constructor() {
+//     super('Invalid credentials');
+//     this.type = 'CredentialsSignin';
+//   }
+// }
+
+const Providers: Provider[] = [
+  GitHub,
+  Credentials({
+    credentials: {
+      email: {},
+      password: {},
+    },
+    authorize: async (credentials: z.infer<typeof SignInSchema>) => {
+      await dbConnect()
+
+      const user = await User.findOne({ email: credentials.email })
+
+      if (user && await bcryptCOmpare(credentials.password, user.password)) {
         return user
-      },
-    }),
-    GitHub
-  ],
+      }
+
+      return null
+    },
+  })
+]
+
+export const { handlers, auth } = NextAuth({
+  providers: Providers,
+  pages: {
+    signIn: '/sign-in',
+    newUser : '/sign-up',
+  }
 })
