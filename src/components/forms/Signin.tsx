@@ -9,8 +9,15 @@ import { z } from "zod"
 import { SignInSchema } from "@/lib/zod"
 import Link from "next/link"
 import { signIn } from "next-auth/react"
+import { useState } from "react"
+import { toast } from "sonner"
+import { useRouter } from "next/navigation"
+import { NextResponse } from "next/server"
 
 export function SignIn() {
+  const router = useRouter()
+  const [loading, setLoading] = useState<Boolean>(false)
+
   const form = useForm<z.infer<typeof SignInSchema>>({
     resolver: zodResolver(SignInSchema),
     defaultValues: {
@@ -20,7 +27,36 @@ export function SignIn() {
   })
 
   const onSubmit = async (values: z.infer<typeof SignInSchema>) => {
-    await signIn('credentials', values)
+    setLoading(true)
+
+    const userSignin = signIn('credentials', {
+      ...values,
+      redirect: false
+    })
+
+    toast.promise(userSignin, {
+      loading: 'Penetrating the platform...',
+      position: 'bottom-center',
+      success: (response) => {
+        if (!response?.ok || response?.status !== 200 || response?.error?.length) {
+          throw new Error(response?.error)
+        } else {
+          router.push('/profile')
+        }
+        return 'You have successfully logged into your account.'
+      },
+      error: (error) => {
+        if (error.message === 'CredentialsSignin')
+          return 'The email or password you have entered is invalid.'
+        return 'Oops, there was an error while logging in, please try again.'
+      },
+      finally: () => {
+        setLoading(false)
+      },
+      action: {
+        label: 'Got it'
+      },
+    })
   }
 
   return (
@@ -53,7 +89,7 @@ export function SignIn() {
           )}
         />
         <div className="flex justify-between">
-          <Button type="submit" className="w-full">Sign in</Button>
+          <Button type="submit" className="w-full" disabled={loading}>Sign in</Button>
           <Button variant="link" asChild>
             <Link href="#">Forgot password?</Link>
           </Button>

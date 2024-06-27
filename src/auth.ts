@@ -4,18 +4,16 @@ import Credentials  from "next-auth/providers/credentials"
 import type { Provider } from "next-auth/providers"
 import dbConnect from "./db/dbConnect"
 import User from "./db/models/User"
-import { compare as bcryptCOmpare } from 'bcrypt'
+import { compare as bcryptCompare } from 'bcrypt'
 import { SignInSchema } from "@/lib/zod"
 import { z } from "zod"
 
-// class InvalidCredentials extends AuthError {
-//   public readonly kind = 'signIn';
-
-//   constructor() {
-//     super('Invalid credentials');
-//     this.type = 'CredentialsSignin';
-//   }
-// }
+class InvalidCredentials extends AuthError {
+  constructor() {
+    super()
+    this.type = 'CredentialsSignin'
+  }
+}
 
 const Providers: Provider[] = [
   GitHub,
@@ -25,15 +23,17 @@ const Providers: Provider[] = [
       password: {},
     },
     authorize: async (credentials: z.infer<typeof SignInSchema>) => {
+      throw new InvalidCredentials()
+
       await dbConnect()
 
       const user = await User.findOne({ email: credentials.email })
 
-      if (user && await bcryptCOmpare(credentials.password, user.password)) {
+      if (user && await bcryptCompare(credentials.password, user.password)) {
         return user
+      } else {
+        throw new InvalidCredentials()
       }
-
-      return null
     },
   })
 ]
