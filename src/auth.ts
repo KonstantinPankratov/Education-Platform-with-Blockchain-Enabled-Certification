@@ -1,4 +1,6 @@
-import NextAuth, { AuthError } from "next-auth"
+import NextAuth from "next-auth"
+import { authConfig } from "./auth.config"
+import { AuthError } from "next-auth"
 import GitHub from "next-auth/providers/github"
 import Credentials  from "next-auth/providers/credentials"
 import type { Provider } from "next-auth/providers"
@@ -43,9 +45,6 @@ const Providers: Provider[] = [
 ]
 
 export const { handlers, auth } = NextAuth({
-  providers: Providers,
-  pages: {
-    signIn: '/sign-in',
-    newUser : '/sign-up',
-  }
+  ...authConfig,
+  providers: Providers
 })
