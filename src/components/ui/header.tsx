@@ -1,4 +1,6 @@
-import React, { useState } from "react"
+"use client"
+
+import React from "react"
 import { Button } from "@/components/ui/button"
 import {
   Avatar,
@@ -16,13 +18,14 @@ import {
 import Link from "next/link"
 import { Bell, LogOut, Scroll, User } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useSession } from "next-auth/react"
 
 interface HeaderProps {
   size?: string
 }
 
 const Header = ({ size }: HeaderProps) => {
-  const loggedIn = true
+  const { data: session, status } = useSession()
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -36,7 +39,7 @@ const Header = ({ size }: HeaderProps) => {
         <div className="flex lg:flex-1">
           <Link href="/" className="-m-1.5 p-1.5 font-bold text-xl">EDUPLA</Link>
         </div>
-        { !loggedIn && <nav className="flex items-center gap-6 font-medium">
+        { !session?.user && <nav className="flex items-center gap-6 font-medium">
           <Link
             href="/#how-it-works"
             className="hidden md:block transition-colors hover:text-neutral-300">
@@ -47,18 +50,20 @@ const Header = ({ size }: HeaderProps) => {
             className="hidden md:block transition-colors hover:text-neutral-300">
             Courses
           </Link>
-          <Button>Sign in</Button>
+          <Button asChild>
+            <Link href="/sign-in">Sign in</Link>
+          </Button>
         </nav> }
 
-        { loggedIn && <nav className="flex items-center gap-6 font-medium">
+        { session?.user && <nav className="flex items-center gap-6 font-medium">
           <Button variant="ghost" size="icon">
             <Bell/>
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild className="cursor-pointer hover:opacity-70 transition-opacity">
               <Avatar>
-                <AvatarImage src="https://avatars.githubusercontent.com/u/30325297?v=4" alt="@KonstantinPankratov" />
-                <AvatarFallback>KP</AvatarFallback>
+                <AvatarImage src="https://avatars.githubusercontent.com/u/30325297?v=4" alt="Avatar" />
+                <AvatarFallback>{session?.user?.initials}</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end" sideOffset={10}>
