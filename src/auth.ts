@@ -23,13 +23,17 @@ const Providers: Provider[] = [
       password: {},
     },
     authorize: async (credentials: z.infer<typeof SignInSchema>) => {
-      throw new InvalidCredentials()
-
       await dbConnect()
 
-      const user = await User.findOne({ email: credentials.email })
+      const parsedCredentials = z
+          .object({ email: z.string().email(), password: z.string().min(6) })
+          .safeParse(credentials);
 
-      if (user && await bcryptCompare(credentials.password, user.password)) {
+      const { email, password } : z.infer<typeof SignInSchema> = parsedCredentials.data
+
+      const user = await User.findOne({ email: email })
+
+      if (user && await bcryptCompare(password, user.password)) {
         return user
       } else {
         throw new InvalidCredentials()
