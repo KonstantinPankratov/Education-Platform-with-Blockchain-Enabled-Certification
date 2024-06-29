@@ -18,7 +18,7 @@ import {
 import Link from "next/link"
 import { Bell, LogOut, Scroll, User } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { useSession } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 
 interface HeaderProps {
   size?: string
@@ -84,9 +84,9 @@ const Header = ({ size }: HeaderProps) => {
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => signOut()} className="cursor-pointer">
                 <LogOut className="mr-2 h-4 w-4" />
-                <span>Log out</span>
+                <span>Sign out</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
