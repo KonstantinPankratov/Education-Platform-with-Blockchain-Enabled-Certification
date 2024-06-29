@@ -21,10 +21,7 @@ async function dbConnect() {
   }
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGODB_URI!, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }).then(mongoose => {
+    cached.promise = mongoose.connect(MONGODB_URI!).then(mongoose => {
       return mongoose
     }).catch((error) => {
       console.error("Failed to connect to DB");
