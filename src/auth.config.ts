@@ -1,5 +1,13 @@
 import type { NextAuthConfig } from 'next-auth'
 
+const createInitials = (firstName: string, lastName: string) => {
+  if (!firstName || !lastName) {
+    return ''
+  }
+
+  return firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase()
+}
+
 export const authConfig = {
   providers: [],
   pages: {
@@ -10,28 +18,21 @@ export const authConfig = {
     strategy: "jwt",
   },
   callbacks: {
-    jwt({ token, user }) {
+    async jwt({ token, user }) {
       if (user) {
-        user.initials
-
-        if (user.first_name) {
-          user.initials += user.first_name.chartAt(0)
-        }
-
-        if (user.last_name) {
-          user.initials += user.last_name.chartAt(0)
-        }
-
-        if (!user.initials)
-        {
-          user.initials = '-/-'
-        }
+        token.firstName = user.firstName
+        token.lastName = user.lastName
+        token.nameInitials = createInitials(user.firstName, user.lastName)
+        token.id = user.id
       }
       return token
     },
-    session({ session, token }) {
+    async session({ session, token }) {
+      session.user.first_name = token.firstName
+      session.user.last_name = token.lastName
+      session.user.nameInitials = token.nameInitials
       session.user.id = token.id
       return session
     },
-  },
+  }
 } satisfies NextAuthConfig

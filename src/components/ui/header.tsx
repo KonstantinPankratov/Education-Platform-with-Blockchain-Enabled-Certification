@@ -63,7 +63,7 @@ const Header = ({ size }: HeaderProps) => {
             <DropdownMenuTrigger asChild className="cursor-pointer hover:opacity-70 transition-opacity">
               <Avatar>
                 <AvatarImage src={session?.user?.image} alt="Avatar" />
-                <AvatarFallback>{session?.user?.initials}</AvatarFallback>
+                <AvatarFallback>{session?.user?.nameInitials}</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end" sideOffset={10}>

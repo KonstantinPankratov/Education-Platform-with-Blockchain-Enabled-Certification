@@ -1,9 +1,21 @@
 import mongoose, {Model} from "mongoose"
 import type {Date} from "mongoose"
 
+// Extend auth.js session.user type
+declare module 'next-auth' {
+  interface Session {
+    user: {
+      firstName: string
+      lastName: string
+      nameInitials: string
+    } & DefaultSession['user']
+  }
+}
+
 export interface IUser {
-  first_name: string
-  last_name: string
+  firstName?: string
+  lastName?: string
+  nameInitials?: string
   email: string
   emailVerified: Date
   image: string
@@ -11,11 +23,11 @@ export interface IUser {
 }
 
 const UserSchema = new mongoose.Schema<IUser>({
-  first_name: {
+  firstName: {
     type: String,
     trim: true,
   },
-  last_name: {
+  lastName: {
     type: String,
     trim: true,
   },
