@@ -6,6 +6,9 @@ export const authConfig = {
     signIn: '/sign-in',
     newUser : '/sign-up',
   },
+  session: {
+    strategy: "jwt",
+  },
   callbacks: {
     jwt({ token, user }) {
       if (user) {

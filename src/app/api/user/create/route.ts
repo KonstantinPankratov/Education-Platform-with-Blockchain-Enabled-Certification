@@ -1,5 +1,5 @@
 import dbConnect from "@/db/dbConnect"
-import User from "@/db/models/User"
+import User from "@/db/models/auth/User"
 import { genSalt, hash } from "bcrypt"
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"

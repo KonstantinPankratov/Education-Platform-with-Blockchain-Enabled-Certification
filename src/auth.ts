@@ -5,10 +5,11 @@ import GitHub from "next-auth/providers/github"
 import Credentials  from "next-auth/providers/credentials"
 import type { Provider } from "next-auth/providers"
 import dbConnect from "./db/dbConnect"
-import User from "./db/models/User"
+import User from "./db/models/auth/User"
 import { compare as bcryptCompare } from 'bcrypt'
 import { SignInSchema } from "@/lib/zod"
 import { z } from "zod"
+import MongooseAdapter from "./lib/mongooseAdapter"
 
 class InvalidCredentials extends AuthError {
   constructor() {
@@ -40,11 +41,12 @@ const Providers: Provider[] = [
       } else {
         throw new InvalidCredentials()
       }
-    },
+    }
   })
 ]
 
 export const { handlers, auth } = NextAuth({
   ...authConfig,
-  providers: Providers
+  providers: Providers,
+  adapter: MongooseAdapter(dbConnect)
 })
