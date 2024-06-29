@@ -37,7 +37,12 @@ const Providers: Provider[] = [
       const user = await User.findOne({ email: email })
 
       if (user && await bcryptCompare(password, user.password)) {
-        return user
+        return {
+          email: user.email,
+          image: user.image,
+          firstName: user.firstName,
+          lastName: user.lastName,
+        }
       } else {
         throw new InvalidCredentials()
       }
