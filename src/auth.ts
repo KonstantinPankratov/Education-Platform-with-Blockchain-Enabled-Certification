@@ -38,6 +38,7 @@ const Providers: Provider[] = [
 
       if (user && await bcryptCompare(password, user.password)) {
         return {
+          id: user._id,
           email: user.email,
           image: user.image,
           firstName: user.firstName,

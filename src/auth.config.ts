@@ -20,10 +20,10 @@ export const authConfig = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
+        token.id = user.id
         token.firstName = user.firstName
         token.lastName = user.lastName
         token.nameInitials = createInitials(user.firstName, user.lastName)
-        token.id = user.id
       }
       return token
     },
