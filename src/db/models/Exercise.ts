@@ -1,16 +1,21 @@
 import mongoose, { Document, Schema, model } from "mongoose"
-import Test from "./Test"
+import Lecture from "./Lecture"
 
 export interface IExercise extends Document {
-  name: string,
-  slug: string,
-  content: string,
-  snippet: string,
-  tests: mongoose.Types.ObjectId[],
+  lectureId: mongoose.Types.ObjectId
+  name: string
+  slug: string
+  content: string
+  snippet: string
   order: number
 }
 
 export const ExerciseSchema: Schema = new Schema({
+  lectureId: {
+    type: mongoose.Types.ObjectId,
+    ref: Lecture,
+    required: true
+  },
   name: {
     type: String,
     required: true
@@ -26,10 +31,6 @@ export const ExerciseSchema: Schema = new Schema({
   snippet: {
     type: String
   },
-  tests: [{
-    type: mongoose.Types.ObjectId,
-    ref: Test
-  }],
   order: {
     type: Number,
     default: 1

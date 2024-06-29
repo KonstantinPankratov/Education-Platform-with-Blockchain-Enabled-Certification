@@ -4,116 +4,194 @@ import { IExercise } from "../models/Exercise"
 import { ILecture } from "../models/Lecture"
 import { IModule } from "../models/Module"
 
-interface PopulateOption {
-  path: string
-  select?: string
-  match?: any
-  options?: any
-  populate?: PopulateOption
-}
+/**
+ * Returns courses
+ * @param upToLevel
+ * @returns ICourse[]
+ */
 
-interface GetCourseOptions {
-  populate?: PopulateOption[]
-  sort?: any
-}
+type courseLevels = 'modules' | 'lectures'
 
-export async function getCourses(
-  options: GetCourseOptions = {}
-): Promise<ICourse[]> {
+export async function getCourses(upToLevel?: courseLevels): Promise<ICourse[]> {
   await dbConnect()
 
-  let query = Course.find({})
-
-  if (options.sort) {
-    query = query.sort(options.sort)
+  let pipeline = []
+  let projection = {
+    _id: 1,
+    name: 1,
+    slug: 1,
+    content: 1
   }
 
-  if (options.populate) {
-    options.populate.forEach((populateOption) => {
-      query = query.populate(populateOption)
+  if (upToLevel === "modules" || upToLevel === "lectures") {
+    pipeline.push({
+      $lookup: {
+        from: "modules",
+        localField: "_id",
+        foreignField: "courseId",
+        as: "modules"
+      }
+    })
+    projection.modules = 1
+  }
+
+  if (upToLevel === "lectures") {
+    pipeline.push({
+      $unwind: {
+        path: "$modules",
+        preserveNullAndEmptyArrays: true
+      }
+    })
+    pipeline.push({
+      $lookup: {
+        from: "lectures",
+        localField: "modules._id",
+        foreignField: "moduleId",
+        as: "modules.lectures"
+      }
+    })
+    pipeline.push({
+      $group: {
+        _id: "$_id",
+        name: { $first: "$name" },
+        modules: { $push: "$modules" }
+      }
     })
   }
-  
-  return await query.exec()
+
+  pipeline.push({
+    $project: projection
+  })
+
+  return await Course.aggregate(pipeline)
 }
 
-export async function getCourseBySlug(
-  slug: string,
-  options: GetCourseOptions = {}
-): Promise<ICourse | null> {
+/**
+ * Returns course by slug
+ * @param slug 
+ * @returns ICourse | null
+ */
+
+export async function getCourseBySlug(slug: string): Promise<ICourse | null> {
   await dbConnect()
 
-  let query = Course.findOne({ slug: slug })
+  const courses = await Course.aggregate([
+    { $match: { slug: slug } },
+    {
+      $lookup: {
+        from: "modules",
+        localField: "_id",
+        foreignField: "courseId",
+        as: "modules",
+        pipeline: [
+          {
+            $lookup: {
+              from: "lectures",
+              localField: "_id",
+              foreignField: "moduleId",
+              as: "lectures",
+              pipeline: [
+                {
+                  $lookup: {
+                    from: "exercises",
+                    localField: "_id",
+                    foreignField: "lectureId",
+                    as: "exercises"
+                  }
+                },
+                { $sort: { order: 1 } },
+                {
+                  $addFields: {
+                    exerciseCount: { $size: "$exercises" }
+                  }
+                }
+              ]
+            }
+          },
+          { $sort: { order: 1 } },
+          {
+            $addFields: {
+              lectureCount: { $size: "$lectures" },
+              exerciseCount: { $sum: "$lectures.exerciseCount" }
+            }
+          }
+        ]
+      }
+    },
+    { $sort: { order: 1 } },
+    {
+      $addFields: {
+        moduleCount: { $size: "$modules" },
+        lectureCount: { $sum: "$modules.lectureCount" },
+        exerciseCount: { $sum: "$modules.exerciseCount" }
+      }
+    }
+  ])
 
-  if (options.sort) {
-    query = query.sort(options.sort)
-  }
-
-  if (options.populate) {
-    options.populate.forEach((populateOption) => {
-      query = query.populate(populateOption)
-    })
-  }
-
-  return await query.exec()
+  return courses[0] || null
 }
 
 /**
  * Returns { course, module, lecture } by course and lecture slugs
  * @param courseSlug 
  * @param lectureSlug 
- * @returns object
+ * @returns ICourseModuleLectureExercise
  */
-export async function getCourseModuleLectureBySlugs (
-  courseSlug: string,
-  lectureSlug: string
-): Promise<{
-  course: ICourse | null,
-  module: IModule | null,
+
+interface ICourseModuleLecture {
+  course: ICourse | null
+  module: IModule | null
   lecture: ILecture | null
-}> {
+}
+
+export async function getCourseModuleLectureBySlugs(courseSlug: string, lectureSlug: string): Promise<ICourseModuleLecture> {
   await dbConnect()
 
   const result = await Course.aggregate([
     { $match: { slug: courseSlug } },
     {
       $lookup: {
-        from: 'modules',
-        localField: 'modules',
-        foreignField: '_id',
-        as: 'modules'
+        from: "modules",
+        localField: "_id",
+        foreignField: "courseId",
+        as: "modules",
+        pipeline: [
+          {
+            $lookup: {
+              from: "lectures",
+              localField: "_id",
+              foreignField: "moduleId",
+              as: "lectures",
+              pipeline: [
+                { $match: { slug: lectureSlug } },
+                {
+                  $lookup: {
+                    from: "exercises",
+                    localField: "_id",
+                    foreignField: "lectureId",
+                    as: "exercises"
+                  }
+                }
+              ]
+            }
+          },
+          { $unwind: "$lectures" }
+        ]
       }
     },
-    { $unwind: '$modules' },
+    { $unwind: "$modules" },
+    { $match: { "modules.lectures.slug": lectureSlug } },
     {
-      $lookup: {
-        from: 'lectures',
-        localField: 'modules.lectures',
-        foreignField: '_id',
-        as: 'modules.lectures'
+      $project: {
+        course: {
+          name: "$name",
+          slug: "$slug"
+        },
+        module: "$modules",
+        lecture: "$modules.lectures"
       }
-    },
-    { $unwind: '$modules.lectures' },
-    { $match: { 'modules.lectures.slug': lectureSlug } },
-    {
-        $project: {
-          'course._id': '$_id',
-          'course.slug': '$slug',
-          'course.name': '$name',
-
-          'module._id': '$modules._id',
-          'module.order': '$modules.order',
-          'module.name': '$modules.name',
-          'module.slug': '$modules.slug',
-          'module.description': '$modules.description',
-
-          'lecture._id': '$modules.lectures._id',
-          'lecture.slug': '$modules.lectures.slug',
-          'lecture.name': '$modules.lectures.name',
-          'lecture.content': '$modules.lectures.content'
-        }
     }
-  ]).exec()
+  ])
 
   if (result.length === 0) {
     return { course: null, module: null, lecture: null }
@@ -122,71 +200,75 @@ export async function getCourseModuleLectureBySlugs (
   return result[0]
 }
 
-export async function getCourseModuleLectureExerciseBySlugs(
-  courseSlug: string,
-  exerciseSlug: string
-): Promise<{
-  course: ICourse | null,
-  module: IModule | null,
-  lecture: ILecture | null,
+/**
+ * Returns { course, module, lecture, exercise } by course and exercise slugs
+ * @param courseSlug 
+ * @param exerciseSlug 
+ * @returns ICourseModuleLectureExercise
+ */
+
+interface ICourseModuleLectureExercise {
+  course: ICourse | null
+  module: IModule | null
+  lecture: ILecture | null
   exercise: IExercise | null
-}> {
+}
+
+export async function getCourseModuleLectureExerciseBySlugs(courseSlug: string, exerciseSlug: string): Promise<ICourseModuleLectureExercise> {
   await dbConnect()
 
   const result = await Course.aggregate([
     { $match: { slug: courseSlug } },
     {
       $lookup: {
-        from: 'modules',
-        localField: 'modules',
-        foreignField: '_id',
-        as: 'modules'
+        from: "modules",
+        localField: "_id",
+        foreignField: "courseId",
+        as: "modules",
+        pipeline: [
+          {
+            $lookup: {
+              from: "lectures",
+              localField: "_id",
+              foreignField: "moduleId",
+              as: "lectures",
+              pipeline: [
+                {
+                  $lookup: {
+                    from: "exercises",
+                    localField: "_id",
+                    foreignField: "lectureId",
+                    as: "exercises",
+                    pipeline: [
+                      { $match: { slug: exerciseSlug } }
+                    ]
+                  }
+                },
+                { $unwind: "$exercises" }
+              ]
+            }
+          },
+          { $unwind: "$lectures" }
+        ]
       }
     },
-    { $unwind: '$modules' },
+    { $unwind: "$modules" },
+    { $match: { "modules.lectures.exercises.slug": exerciseSlug } },
     {
-      $lookup: {
-        from: 'lectures',
-        localField: 'modules.lectures',
-        foreignField: '_id',
-        as: 'modules.lectures'
+      $project: {
+        course: {
+          name: "$name",
+          slug: "$slug"
+        },
+        module: "$modules",
+        lecture: "$modules.lectures",
+        exercise: "$modules.lectures.exercises",
       }
-    },
-    { $unwind: '$modules.lectures' },
-    {
-      $lookup: {
-        from: 'exercises',
-        localField: 'modules.lectures.exercises',
-        foreignField: '_id',
-        as: 'modules.lectures.exercises'
-      }
-    },
-    { $unwind: '$modules.lectures.exercises' },
-    { $match: { 'modules.lectures.exercises.slug': exerciseSlug } },
-    {
-        $project: {
-          'course._id': '$_id',
-          'course.slug': '$slug',
-          'course.name': '$name',
-
-          'module._id': '$modules._id',
-          'module.order': '$modules.order',
-          'module.name': '$modules.name',
-          'module.slug': '$modules.slug',
-          'module.description': '$modules.description',
-
-          'lecture._id': '$modules.lectures._id',
-          'lecture.slug': '$modules.lectures.slug',
-          'lecture.name': '$modules.lectures.name',
-          'lecture.content': '$modules.lectures.content',
-
-          'exercise' : '$modules.lectures.exercises'
-        }
     }
-  ]).exec()
+  ])
 
   if (result.length === 0) {
-    return { course: null, module: null, lecture: null }
+    return { course: null, module: null, lecture: null, exercise: null }
   }
 
   return result[0]

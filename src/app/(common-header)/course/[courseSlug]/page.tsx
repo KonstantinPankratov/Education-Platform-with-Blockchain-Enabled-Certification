@@ -16,39 +16,17 @@ interface PageProps {
 }
 
 export default async function Page({ params: { courseSlug } }: PageProps) {
-  const course = await getCourseBySlug(courseSlug, {
-    populate: [
-      {
-        path: 'modules',
-        options: { sort: { order: 1 } },
-        populate: {
-          path: 'lectures',
-          options: { sort: { order: 1 } },
-          populate: {
-            path: 'exercises',
-            options: { sort: { order: 1 } }
-          }
-        }
-      }
-    ]
-  })
+  const course = await getCourseBySlug(courseSlug)
 
   if (!course)
     notFound()
 
-  let lectureNumber = 0
-  let exerciseNumber = 0
-
   let moduleNodes: React.ReactNode[] = []
 
   course.modules?.map((module: IModule, index: number) => {
-    lectureNumber += module.lectures?.length ?? 0
-
     let itemNodes: React.ReactNode[] = []
 
-    module.lectures.map((lecture: ILecture) => {
-      exerciseNumber += lecture.exercises?.length ?? 0
-
+    module.lectures?.map((lecture: ILecture) => {
       itemNodes.push(
         <tr className="" key={`lecture-${lecture._id}`}>
           <td>
@@ -110,8 +88,8 @@ export default async function Page({ params: { courseSlug } }: PageProps) {
       <section className="container mt-20">
         <h2 className="text-3xl sm:text-4xl">Modules</h2>
         <div className="flex gap-3 mt-4">
-          <Badge variant="outline">{lectureNumber} lectures</Badge>
-          <Badge variant="outline">{exerciseNumber} exercises</Badge>
+          <Badge variant="outline">{ course.lectureCount } lectures</Badge>
+          <Badge variant="outline">{ course.exerciseCount } exercises</Badge>
         </div>
         { course.modules?.length ?
           <Accordion type="single" className="w-full mt-10">

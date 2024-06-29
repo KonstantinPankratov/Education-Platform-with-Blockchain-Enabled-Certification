@@ -25,9 +25,9 @@ const Course = function({ course }: CourseProps) {
       </CardHeader>
       <CardContent className=" pb-4">
         <p>{ course.content }</p>
-        { course.modules.length && <div className="flex gap-3 mt-3 overflow-auto">
-          { course.modules.slice(0, 7).map((module: IModule) => {
-            return <Badge key={ module._id } className="whitespace-nowrap" variant="outline">{ module.order }. { module.name }</Badge>
+        { course.modules?.length && <div className="flex gap-3 mt-3 overflow-auto">
+          { course.modules?.slice(0, 7).map((module: IModule) => {
+            return <Badge key={ module._id!.toString() } className="whitespace-nowrap" variant="outline">{ module.order }. { module.name }</Badge>
           }) }
         </div> }
       </CardContent>

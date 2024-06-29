@@ -3,14 +3,7 @@ import Course from "./course"
 import { getCourses } from "@/db/services/courseService"
 
 const Courses = async function () {
-  const courses = await getCourses({
-    populate: [
-      {
-        path: 'modules',
-        options: { sort: { order: 1 } }
-      }
-    ]
-  })
+  const courses = await getCourses("modules")
 
   return (
     <section className="relative py-20" id="courses">
@@ -22,7 +15,7 @@ const Courses = async function () {
         </div>
         <div className="mx-auto max-w-4xl mt-14">
           { courses.map(course =>
-            <Course key={course._id} course={course} />
+            <Course key={course._id!.toString()} course={course} />
           ) }
           <Separator className="my-8"/>
           <div className="text-base md:text-lg text-neutral-50 text-center">More comming soon<span className="text-neutral-500">, probably...</span></div>

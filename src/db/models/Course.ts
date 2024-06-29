@@ -1,12 +1,13 @@
 import mongoose, { Document, Schema, model } from "mongoose"
-import dbConnect from "@/db/dbConnect"
-import Module from "./Module"
+import { IModule } from "./Module"
 
 export interface ICourse extends Document {
-  name: string,
-  content: string,
-  slug: string,
-  modules: mongoose.Types.ObjectId[]
+  name: string
+  slug: string
+  content?: string
+  modules?: IModule[]
+  lectureCount?: number
+  exerciseCount?: number
 }
 
 const CourseSchema: Schema = new Schema({
@@ -21,11 +22,7 @@ const CourseSchema: Schema = new Schema({
   slug: {
     type: String,
     required: true
-  },
-  modules: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: Module
-  }]
+  }
 })
 
 export default mongoose.models.Course || model<ICourse>('Course', CourseSchema)

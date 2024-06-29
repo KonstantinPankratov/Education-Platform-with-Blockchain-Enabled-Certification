@@ -1,15 +1,22 @@
 import mongoose, { Document, Schema, model } from "mongoose"
-import Lecture from "./Lecture"
+import Course from "./Course"
+import { ILecture } from "./Lecture"
 
 export interface IModule extends Document {
-  name: string,
-  slug: string,
-  content: string,
-  lectures: mongoose.Types.ObjectId[],
+  courseId: mongoose.Types.ObjectId
+  name: string
+  slug: string
+  content: string
   order: number
+  lectures?: ILecture[]
 }
 
 export const ModuleSchema: Schema = new Schema({
+  courseId: {
+    type: mongoose.Types.ObjectId,
+    ref: Course,
+    required: true
+  },
   name: {
     type: String,
     required: true
@@ -22,10 +29,6 @@ export const ModuleSchema: Schema = new Schema({
     type: String,
     required: true
   },
-  lectures: [{
-    type: mongoose.Types.ObjectId,
-    ref: Lecture
-  }],
   order: {
     type: Number,
     default: 1

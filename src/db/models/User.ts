@@ -1,19 +1,11 @@
 import mongoose, { Document, Schema, model } from "mongoose"
-import Course from "./Course"
-import Lecture from "./Lecture"
-import Exercise from "./Exercise"
-import { string } from "zod"
 
 export interface IUser extends Document {
   first_name: string,
   last_name: string,
   email: string,
-  password: string,
-  enrolled_courses: [{
-    course_id: mongoose.Types.ObjectId,
-    completed_lectures: mongoose.Types.ObjectId[],
-    completed_exercises: mongoose.Types.ObjectId[],
-  }]
+  image: string,
+  password: string
 }
 
 export const UserSchema: Schema = new Schema({
@@ -28,22 +20,11 @@ export const UserSchema: Schema = new Schema({
     required: true,
     unique: true
   },
-  password: {
+  image: {
     type: String
   },
-  completed_courses: {
-    course_id: {
-      type: Schema.Types.ObjectId,
-      ref: Course
-    },
-    completed_lectures: [{
-      type: Schema.Types.ObjectId,
-      ref: Lecture,
-    }],
-    completed_exercises: [{
-      type: Schema.Types.ObjectId,
-      ref: Exercise,
-    }]
+  password: {
+    type: String
   }
 })
 
