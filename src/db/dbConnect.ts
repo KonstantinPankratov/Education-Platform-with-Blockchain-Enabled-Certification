@@ -24,8 +24,9 @@ async function dbConnect() {
     cached.promise = mongoose.connect(MONGODB_URI!).then(mongoose => {
       return mongoose
     }).catch((error) => {
-      console.error("Failed to connect to DB");
-      throw error;
+      console.error("Failed to connect to DB")
+      cached.promise = null
+      throw error
     })
   }
 
