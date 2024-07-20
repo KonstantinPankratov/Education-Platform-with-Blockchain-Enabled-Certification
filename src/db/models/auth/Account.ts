@@ -1,5 +1,5 @@
-import mongoose, {Model} from "mongoose"
-import type {Account} from "next-auth"
+import mongoose, { Model } from "mongoose"
+import type { Account } from "next-auth"
 
 // @Schema
 const AccountSchema = new mongoose.Schema<Account>({
@@ -59,5 +59,4 @@ const AccountSchema = new mongoose.Schema<Account>({
 
 // @Model
 const registeredModel: Model<Account> = mongoose.models.Account
-export default registeredModel ||
-  mongoose.model<Account>("Account", AccountSchema)
+export default registeredModel || mongoose.model<Account>("Account", AccountSchema)

@@ -1,9 +1,9 @@
-import mongoose, { Document, Schema, model } from "mongoose"
+import mongoose, { Document, Schema, Types, model } from "mongoose"
 import { IExercise } from "./Exercise"
-import Module from "./Module"
 
 export interface ILecture extends Document {
-  moduleId: mongoose.Types.ObjectId
+  _id: Types.ObjectId
+  moduleId: Types.ObjectId
   name: string
   slug: string
   content: string
@@ -11,10 +11,10 @@ export interface ILecture extends Document {
   exercises?: IExercise[]
 }
 
-export const LectureSchema: Schema = new Schema({
+export const LectureSchema: Schema = new Schema<ILecture>({
   moduleId: {
-    type: mongoose.Types.ObjectId,
-    ref: Module,
+    type: Schema.Types.ObjectId,
+    ref: "Module",
     required: true
   },
   name: {

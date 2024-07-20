@@ -1,8 +1,8 @@
-import mongoose, { Document, Schema, model } from "mongoose"
-import Lecture from "./Lecture"
+import mongoose, { Document, Schema, Types, model } from "mongoose"
 
 export interface IExercise extends Document {
-  lectureId: mongoose.Types.ObjectId
+  _id: Types.ObjectId
+  lectureId: Types.ObjectId
   name: string
   slug: string
   content: string
@@ -10,10 +10,10 @@ export interface IExercise extends Document {
   order: number
 }
 
-export const ExerciseSchema: Schema = new Schema({
+export const ExerciseSchema: Schema = new Schema<IExercise>({
   lectureId: {
-    type: mongoose.Types.ObjectId,
-    ref: Lecture,
+    type: Schema.Types.ObjectId,
+    ref: "Lecture",
     required: true
   },
   name: {

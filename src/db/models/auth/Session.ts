@@ -1,5 +1,5 @@
-import {Model, Schema, model, models} from "mongoose"
-import type {AdapterSession} from "next-auth/adapters"
+import { Model, Schema, model, models } from "mongoose"
+import type { AdapterSession } from "next-auth/adapters"
 
 // @Schema
 const SessionSchema = new Schema<AdapterSession>({
@@ -19,5 +19,4 @@ const SessionSchema = new Schema<AdapterSession>({
 
 // @Model
 const registeredModel: Model<AdapterSession> = models.Session
-export default registeredModel ||
-  model<AdapterSession>("Session", SessionSchema)
+export default registeredModel || model<AdapterSession>("Session", SessionSchema)

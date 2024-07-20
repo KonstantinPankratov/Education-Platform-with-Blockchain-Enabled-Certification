@@ -1,5 +1,4 @@
 import mongoose, { Document, Schema, model } from "mongoose"
-import Exercise from "./Exercise"
 
 export interface ITest extends Document {
   exerciseId: mongoose.Types.ObjectId,
@@ -7,10 +6,10 @@ export interface ITest extends Document {
   output: string
 }
 
-export const TestSchema: Schema = new Schema({
+export const TestSchema: Schema = new Schema<ITest>({
   exerciseId: {
-    type: mongoose.Types.ObjectId,
-    ref: Exercise,
+    type: Schema.Types.ObjectId,
+    ref: "Exercise",
     required: true
   },
   input: {

@@ -1,5 +1,6 @@
-import mongoose, {Model} from "mongoose"
-import type {Date} from "mongoose"
+import mongoose, { Model, Types } from "mongoose"
+import type { Date } from "mongoose"
+import { DefaultSession } from "next-auth"
 
 // Extend auth.js session.user type
 declare module 'next-auth' {
@@ -13,6 +14,7 @@ declare module 'next-auth' {
 }
 
 export interface IUser {
+  _id: Types.ObjectId
   firstName?: string
   lastName?: string
   nameInitials?: string
@@ -50,5 +52,4 @@ const UserSchema = new mongoose.Schema<IUser>({
 })
 
 const registeredModel: Model<IUser> = mongoose.models.User
-export default registeredModel ||
-  mongoose.model<IUser>("User", UserSchema)
+export default registeredModel || mongoose.model<IUser>("User", UserSchema)
