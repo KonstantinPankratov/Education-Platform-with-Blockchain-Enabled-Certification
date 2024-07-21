@@ -1,6 +1,4 @@
 import mongoose, { Document, Schema, Types, model } from "mongoose"
-import User from "./auth/User"
-import Course from "./Course"
 
 export interface IUserCourse extends Document {
   userId: Types.ObjectId
@@ -10,12 +8,12 @@ export interface IUserCourse extends Document {
 const UserCourseSchema: Schema = new Schema<IUserCourse>({
   userId: {
     type: Schema.Types.ObjectId,
-    ref: User,
+    ref: "User",
     required: true
   },
   courseId: {
     type: Schema.Types.ObjectId,
-    ref: Course,
+    ref: "Course",
     required: true
   }
 })

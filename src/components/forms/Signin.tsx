@@ -12,11 +12,10 @@ import { signIn } from "next-auth/react"
 import { useState } from "react"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
-import { NextResponse } from "next/server"
 
 export function SignIn() {
   const router = useRouter()
-  const [loading, setLoading] = useState<Boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   const form = useForm<z.infer<typeof SignInSchema>>({
     resolver: zodResolver(SignInSchema),
@@ -54,7 +53,8 @@ export function SignIn() {
         setLoading(false)
       },
       action: {
-        label: 'Got it'
+        label: 'Got it',
+        onClick: () => {}
       },
     })
   }

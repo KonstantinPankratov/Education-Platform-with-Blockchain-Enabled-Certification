@@ -12,7 +12,7 @@ import { useState } from "react"
 
 
 export function SignUp() {
-  const [loading, setLoading] = useState<Boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   const form = useForm<z.infer<typeof SignUpSchema>>({
     resolver: zodResolver(SignUpSchema),
@@ -52,7 +52,8 @@ export function SignUp() {
         return error.message
       },
       action: {
-        label: 'Got it'
+        label: 'Got it',
+        onClick: () => {}
       },
     })
   }
