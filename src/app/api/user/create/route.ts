@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-function userFriendlyErrorMessage(err) {
+function userFriendlyErrorMessage(err: any) {
   let message = 'An error occured, please try again later.'
 
   if (err.name !== 'MongoServerError')

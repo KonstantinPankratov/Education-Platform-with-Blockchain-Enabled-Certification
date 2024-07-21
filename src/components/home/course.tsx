@@ -10,12 +10,19 @@ import { ICourse } from "@/db/models/Course"
 import { IModule } from "@/db/models/Module"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
+import CourseEnrollment from "../forms/CourseEnrollment"
+import { auth } from "@/auth"
+import { isUserEnrolled } from "@/db/services/userService"
 
 interface CourseProps {
   course: ICourse
 }
 
-const Course = function({ course }: CourseProps) {
+const Course = async function({ course }: CourseProps) {
+  const session = await auth()
+  
+  const isEnrolled: boolean = session?.user ? await isUserEnrolled(session?.user._id, course._id) : false
+
   return (
     <Card>
       <CardHeader>
@@ -32,9 +39,7 @@ const Course = function({ course }: CourseProps) {
         </div> }
       </CardContent>
       <CardFooter className="gap-x-4">
-      <Button asChild>
-          <Link href="#">Enroll</Link>
-        </Button>
+        <CourseEnrollment course={course} isUserEnrolled={isEnrolled} />
         <Button asChild variant="link">
           <Link href={`/course/${course.slug}`}>View modules</Link>
         </Button>

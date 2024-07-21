@@ -1,13 +1,14 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { getCourseBySlug } from "@/db/services/courseService"
 import { IModule } from "@/db/models/Module"
-import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ILecture } from "@/db/models/Lecture"
 import { IExercise } from "@/db/models/Exercise"
 import { Book, Pickaxe } from "lucide-react"
+import CourseEnrollment from "@/components/forms/CourseEnrollment"
+import { auth } from "@/auth"
+import { isUserEnrolled } from "@/db/services/userService"
 
 interface PageProps {
   params: {
@@ -20,6 +21,9 @@ export default async function Page({ params: { courseSlug } }: PageProps) {
 
   if (!course)
     notFound()
+
+  const session = await auth()
+  const isEnrolled: boolean = session?.user ? await isUserEnrolled(session?.user._id, course._id) : false
 
   let moduleNodes: React.ReactNode[] = []
 
@@ -71,17 +75,13 @@ export default async function Page({ params: { courseSlug } }: PageProps) {
     </AccordionItem>)
   })
 
-  const isEnrollable = course && !!course.modules?.length
-
   return (
     <>
       <section className="relative isolate pt-14">
         <div className="container">
           <h1 className="text-4xl sm:text-6xl">{course.name}</h1>
           <p className="mt-6 w-3/5">{ course.content }</p>
-          { isEnrollable && <Button asChild className="mt-8" size="lg">
-            <Link href="#">Enroll</Link>
-          </Button> }
+          <CourseEnrollment course={course} isUserEnrolled={isEnrolled} className="mt-8" />
         </div>
       </section>
 
@@ -99,9 +99,7 @@ export default async function Page({ params: { courseSlug } }: PageProps) {
         }
 
         <div className="flex justify-center">
-          { isEnrollable && <Button asChild className="mt-8" size="lg">
-            <Link href="#">Enroll</Link>
-          </Button> }
+          <CourseEnrollment course={course} isUserEnrolled={isEnrolled} className="mt-8" />
         </div>
       </section>
     </>
