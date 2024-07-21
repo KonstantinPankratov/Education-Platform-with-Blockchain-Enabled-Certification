@@ -8,12 +8,12 @@ export interface IUserCourse extends Document {
 const UserCourseSchema: Schema = new Schema<IUserCourse>({
   userId: {
     type: Schema.Types.ObjectId,
-    ref: "User",
+    ref: 'User',
     required: true
   },
   courseId: {
     type: Schema.Types.ObjectId,
-    ref: "Course",
+    ref: 'Course',
     required: true
   }
 })
