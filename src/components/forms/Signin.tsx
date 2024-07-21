@@ -40,7 +40,7 @@ export function SignIn() {
         if (!response?.ok || response?.status !== 200 || response?.error?.length) {
           throw new Error(response?.error)
         } else {
-          router.push('/profile')
+          router.replace('/profile')
         }
         return 'You have successfully logged into your account.'
       },
