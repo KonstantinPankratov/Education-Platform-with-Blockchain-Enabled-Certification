@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import Shortcut from "@/components/ui/shortcut"
-import { getCourseModuleLectureBySlugs, getLectureBySlug } from "@/db/services/courseService"
+import { getCourseModuleLectureBySlugs } from "@/db/services/courseService"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import sanitizeHtml from 'sanitize-html'
