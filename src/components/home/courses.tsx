@@ -3,7 +3,7 @@ import Course from "./course"
 import { getCourses } from "@/db/services/courseService"
 
 const Courses = async function () {
-  const courses = await getCourses("modules")
+  const courses = await getCourses()
 
   return (
     <section className="relative py-20" id="courses">

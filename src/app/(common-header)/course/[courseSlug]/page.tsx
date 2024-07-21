@@ -28,7 +28,7 @@ export default async function Page({ params: { courseSlug } }: PageProps) {
 
     module.lectures?.map((lecture: ILecture) => {
       itemNodes.push(
-        <tr className="" key={`lecture-${lecture._id}`}>
+        <tr key={`lecture-${lecture._id}`}>
           <td>
             <Book size={20} className="mr-2"/>
           </td>
@@ -43,7 +43,7 @@ export default async function Page({ params: { courseSlug } }: PageProps) {
 
       lecture.exercises?.map((exercise: IExercise) => {
         itemNodes.push(
-          <tr className="" key={`exercise-${exercise._id}`}>
+          <tr key={`exercise-${exercise._id}`}>
             <td>
               <Pickaxe size={20} className="mr-2"/>
             </td>
@@ -58,8 +58,8 @@ export default async function Page({ params: { courseSlug } }: PageProps) {
       })
     })
 
-    moduleNodes.push(<AccordionItem key={module._id} value={`module-${index}`} >
-      <AccordionTrigger className="text-base md:text-lg">{module.order}. {module.name}</AccordionTrigger>
+    moduleNodes.push(<AccordionItem key={`module-${module._id}`} value={`module-${index}`} >
+      <AccordionTrigger className="text-base md:text-lg">{`${module.order}. ${module.name}`}</AccordionTrigger>
       <AccordionContent className="text-neutral-400 text-base md:text-lg">
         { module.content }
         { module.lectures?.length && <table className="m-5">
@@ -88,8 +88,8 @@ export default async function Page({ params: { courseSlug } }: PageProps) {
       <section className="container mt-20">
         <h2 className="text-3xl sm:text-4xl">Modules</h2>
         <div className="flex gap-3 mt-4">
-          <Badge variant="outline">{ course.lectureCount } lectures</Badge>
-          <Badge variant="outline">{ course.exerciseCount } exercises</Badge>
+          <Badge variant="outline">{ `${course.lectureCount} lectures` }</Badge>
+          <Badge variant="outline">{ `${course.exerciseCount} exercises` }</Badge>
         </div>
         { course.modules?.length ?
           <Accordion type="single" className="w-full mt-10">

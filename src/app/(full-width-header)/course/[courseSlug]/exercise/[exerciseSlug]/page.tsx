@@ -10,14 +10,14 @@ import Post from "@/components/practice/post"
 
 import Link from "next/link"
 import { Play } from "lucide-react"
-import { getCourseModuleLectureExerciseBySlugs, getExerciseBySlug } from "@/db/services/courseService"
+import { getCourseModuleLectureExerciseBySlugs } from "@/db/services/courseService"
 import { notFound } from "next/navigation"
 import { parseContent, sanitizeContent } from "@/lib/helpers"
 
 interface PageProps {
   params: {
     courseSlug: string,
-    lectureSlug: string
+    exerciseSlug: string
   }
 }
 

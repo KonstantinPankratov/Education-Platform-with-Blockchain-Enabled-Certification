@@ -7,128 +7,43 @@ import { IModule } from "../models/Module"
 /**
  * Returns courses
  * @param upToLevel
- * @returns ICourse[]
+ * @returns Promise<ICourse[]>
  */
 
-type courseLevels = 'modules' | 'lectures'
-
-export async function getCourses(upToLevel?: courseLevels): Promise<ICourse[]> {
-  await dbConnect()
-
-  let pipeline = []
-  let projection = {
-    _id: 1,
-    name: 1,
-    slug: 1,
-    content: 1
-  }
-
-  if (upToLevel === "modules" || upToLevel === "lectures") {
-    pipeline.push({
-      $lookup: {
-        from: "modules",
-        localField: "_id",
-        foreignField: "courseId",
-        as: "modules"
-      }
-    })
-    projection.modules = 1
-  }
-
-  if (upToLevel === "lectures") {
-    pipeline.push({
-      $unwind: {
-        path: "$modules",
-        preserveNullAndEmptyArrays: true
-      }
-    })
-    pipeline.push({
-      $lookup: {
-        from: "lectures",
-        localField: "modules._id",
-        foreignField: "moduleId",
-        as: "modules.lectures"
-      }
-    })
-    pipeline.push({
-      $group: {
-        _id: "$_id",
-        name: { $first: "$name" },
-        modules: { $push: "$modules" }
-      }
-    })
-  }
-
-  pipeline.push({
-    $project: projection
+export async function getCourses(): Promise<ICourse[]> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/course`, {
+    method: 'GET',
+    next: {
+      revalidate: 3600
+    }
   })
 
-  return await Course.aggregate(pipeline)
+  if (!res.ok) {
+    throw new Error('Failed to fetch courses')
+  }
+
+  return res.json()
 }
 
 /**
  * Returns course by slug
- * @param slug 
- * @returns ICourse | null
+ * @param slug
+ * @returns Promise<ICourse | null>
  */
 
 export async function getCourseBySlug(slug: string): Promise<ICourse | null> {
-  await dbConnect()
-
-  const courses = await Course.aggregate([
-    { $match: { slug: slug } },
-    {
-      $lookup: {
-        from: "modules",
-        localField: "_id",
-        foreignField: "courseId",
-        as: "modules",
-        pipeline: [
-          {
-            $lookup: {
-              from: "lectures",
-              localField: "_id",
-              foreignField: "moduleId",
-              as: "lectures",
-              pipeline: [
-                {
-                  $lookup: {
-                    from: "exercises",
-                    localField: "_id",
-                    foreignField: "lectureId",
-                    as: "exercises"
-                  }
-                },
-                { $sort: { order: 1 } },
-                {
-                  $addFields: {
-                    exerciseCount: { $size: "$exercises" }
-                  }
-                }
-              ]
-            }
-          },
-          { $sort: { order: 1 } },
-          {
-            $addFields: {
-              lectureCount: { $size: "$lectures" },
-              exerciseCount: { $sum: "$lectures.exerciseCount" }
-            }
-          }
-        ]
-      }
-    },
-    { $sort: { order: 1 } },
-    {
-      $addFields: {
-        moduleCount: { $size: "$modules" },
-        lectureCount: { $sum: "$modules.lectureCount" },
-        exerciseCount: { $sum: "$modules.exerciseCount" }
-      }
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/course/${slug}`, {
+    method: 'GET',
+    next: {
+      revalidate: 3600
     }
-  ])
+  })
 
-  return courses[0] || null
+  if (!res.ok) {
+    throw new Error('Failed to fetch course')
+  }
+
+  return res.json()
 }
 
 /**
@@ -145,59 +60,18 @@ interface ICourseModuleLecture {
 }
 
 export async function getCourseModuleLectureBySlugs(courseSlug: string, lectureSlug: string): Promise<ICourseModuleLecture> {
-  await dbConnect()
-
-  const result = await Course.aggregate([
-    { $match: { slug: courseSlug } },
-    {
-      $lookup: {
-        from: "modules",
-        localField: "_id",
-        foreignField: "courseId",
-        as: "modules",
-        pipeline: [
-          {
-            $lookup: {
-              from: "lectures",
-              localField: "_id",
-              foreignField: "moduleId",
-              as: "lectures",
-              pipeline: [
-                { $match: { slug: lectureSlug } },
-                {
-                  $lookup: {
-                    from: "exercises",
-                    localField: "_id",
-                    foreignField: "lectureId",
-                    as: "exercises"
-                  }
-                }
-              ]
-            }
-          },
-          { $unwind: "$lectures" }
-        ]
-      }
-    },
-    { $unwind: "$modules" },
-    { $match: { "modules.lectures.slug": lectureSlug } },
-    {
-      $project: {
-        course: {
-          name: "$name",
-          slug: "$slug"
-        },
-        module: "$modules",
-        lecture: "$modules.lectures"
-      }
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/course/${courseSlug}/lecture/${lectureSlug}`, {
+    method: 'GET',
+    next: {
+      revalidate: 3600
     }
-  ])
+  })
 
-  if (result.length === 0) {
-    return { course: null, module: null, lecture: null }
+  if (!res.ok) {
+    throw new Error('Failed to fetch course, module, lecture')
   }
 
-  return result[0]
+  return res.json()
 }
 
 /**
@@ -215,62 +89,17 @@ interface ICourseModuleLectureExercise {
 }
 
 export async function getCourseModuleLectureExerciseBySlugs(courseSlug: string, exerciseSlug: string): Promise<ICourseModuleLectureExercise> {
-  await dbConnect()
-
-  const result = await Course.aggregate([
-    { $match: { slug: courseSlug } },
-    {
-      $lookup: {
-        from: "modules",
-        localField: "_id",
-        foreignField: "courseId",
-        as: "modules",
-        pipeline: [
-          {
-            $lookup: {
-              from: "lectures",
-              localField: "_id",
-              foreignField: "moduleId",
-              as: "lectures",
-              pipeline: [
-                {
-                  $lookup: {
-                    from: "exercises",
-                    localField: "_id",
-                    foreignField: "lectureId",
-                    as: "exercises",
-                    pipeline: [
-                      { $match: { slug: exerciseSlug } }
-                    ]
-                  }
-                },
-                { $unwind: "$exercises" }
-              ]
-            }
-          },
-          { $unwind: "$lectures" }
-        ]
-      }
-    },
-    { $unwind: "$modules" },
-    { $match: { "modules.lectures.exercises.slug": exerciseSlug } },
-    {
-      $project: {
-        course: {
-          name: "$name",
-          slug: "$slug"
-        },
-        module: "$modules",
-        lecture: "$modules.lectures",
-        exercise: "$modules.lectures.exercises",
-      }
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/course/${courseSlug}/lecture/any/exercise/${exerciseSlug}`, {
+    method: 'GET',
+    next: {
+      revalidate: 3600
     }
-  ])
+  })
 
-  if (result.length === 0) {
-    return { course: null, module: null, lecture: null, exercise: null }
+  if (!res.ok) {
+    throw new Error('Failed to fetch course, module, lecture, exercise')
   }
 
-  return result[0]
+  return res.json()
 }
 
