@@ -1,15 +1,28 @@
 import mongoose, { Model, Types } from "mongoose"
 import type { Date } from "mongoose"
-import { DefaultSession } from "next-auth"
+import { ICourse } from "../Course"
+import { DefaultSession, User } from "next-auth"
+import { JWT } from "next-auth/jwt"
 
-// Extend auth.js session.user type
+// Extend auth.js interfaces
 declare module 'next-auth' {
+  interface User {
+    _id: Types.ObjectId
+    firstName?: string
+    lastName?: string
+    nameInitials?: string
+  }
+
   interface Session {
-    user: {
-      firstName: string
-      lastName: string
-      nameInitials: string
-    } & DefaultSession['user']
+    user: User & DefaultSession["user"] & {
+      _id: Types.ObjectId
+    }
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT extends User {
+    _id: Types.ObjectId
   }
 }
 

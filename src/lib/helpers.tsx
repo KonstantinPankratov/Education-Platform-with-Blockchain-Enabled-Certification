@@ -17,7 +17,7 @@ export const sanitizeContent = (html: string) => {
   })
 }
 
-export const parseContent = (html) => {
+export const parseContent = (html: string) => {
   return parse(html, {
     replace: (domNode: any) => {
       if (domNode.name === "code") {

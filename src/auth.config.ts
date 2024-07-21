@@ -1,6 +1,6 @@
 import type { NextAuthConfig } from 'next-auth'
 
-const createInitials = (firstName: string, lastName: string) => {
+const createInitials = (firstName: string | undefined, lastName: string | undefined) => {
   if (!firstName || !lastName) {
     return ''
   }
@@ -20,7 +20,7 @@ export const authConfig = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id
+        token._id = user._id
         token.firstName = user.firstName
         token.lastName = user.lastName
         token.nameInitials = createInitials(user.firstName, user.lastName)
@@ -28,10 +28,10 @@ export const authConfig = {
       return token
     },
     async session({ session, token }) {
-      session.user.first_name = token.firstName
-      session.user.last_name = token.lastName
+      session.user.firstName = token.firstName
+      session.user.lastName = token.lastName
       session.user.nameInitials = token.nameInitials
-      session.user.id = token.id
+      session.user._id = token._id
       return session
     },
   }

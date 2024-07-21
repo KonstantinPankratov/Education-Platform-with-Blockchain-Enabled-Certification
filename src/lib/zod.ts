@@ -5,6 +5,8 @@ export const SignInSchema = z.object({
     password: z.string()
 })
 
+export type SignInSchema = z.infer<typeof SignInSchema>
+
 export const SignUpSchema = z.object({
   email: z.string().email(),
   password: z.string().min(7),
@@ -14,3 +16,5 @@ export const SignUpSchema = z.object({
   path: ["confirm_password"],
 })
 // TODO pwd complexity
+
+export type SignUpSchema = z.infer<typeof SignUpSchema>

@@ -1,11 +1,11 @@
-import NextAuth from "next-auth"
+import NextAuth, { User as TUser } from "next-auth"
 import { authConfig } from "./auth.config"
 import { AuthError } from "next-auth"
 import GitHub from "next-auth/providers/github"
 import Credentials  from "next-auth/providers/credentials"
 import type { Provider } from "next-auth/providers"
 import dbConnect from "./db/dbConnect"
-import User from "./db/models/auth/User"
+import User, { IUser } from "./db/models/auth/User"
 import { compare as bcryptCompare } from 'bcrypt'
 import { SignInSchema } from "@/lib/zod"
 import { z } from "zod"
@@ -25,24 +25,20 @@ const Providers: Provider[] = [
       email: {},
       password: {},
     },
-    authorize: async (credentials: z.infer<typeof SignInSchema>) => {
+    authorize: async (credentials) => {
       await dbConnect()
 
-      const parsedCredentials = z
-          .object({ email: z.string().email(), password: z.string().min(6) })
-          .safeParse(credentials);
-
-      const { email, password } : z.infer<typeof SignInSchema> = parsedCredentials.data
-
+      const { email, password } = await SignInSchema.parseAsync(credentials)
+      
       const user = await User.findOne({ email: email })
 
       if (user && await bcryptCompare(password, user.password)) {
         return {
-          id: user._id,
+          _id: user._id,
           email: user.email,
           image: user.image,
           firstName: user.firstName,
-          lastName: user.lastName,
+          lastName: user.lastName
         }
       } else {
         throw new InvalidCredentials()
@@ -54,5 +50,5 @@ const Providers: Provider[] = [
 export const { handlers, auth } = NextAuth({
   ...authConfig,
   providers: Providers,
-  adapter: MongooseAdapter(dbConnect)
+  adapter: MongooseAdapter(dbConnect())
 })

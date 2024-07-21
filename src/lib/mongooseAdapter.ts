@@ -81,7 +81,7 @@ const MongooseAdapter = (
       if (!account) return null
 
       // Find User
-      const user = await adaptorMethods.getUser(account.userId)
+      const user = await adaptorMethods.getUser!(account.userId!)
       return user
     },
     async updateUser(data) {
@@ -137,7 +137,7 @@ const MongooseAdapter = (
       if (!session) return null
 
       // Find User
-      const user = await adaptorMethods.getUser(session.userId)
+      const user = await adaptorMethods.getUser!(session.userId)
       if (!user) return null
 
       return {user, session}
