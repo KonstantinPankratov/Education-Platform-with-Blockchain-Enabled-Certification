@@ -1,12 +1,10 @@
-import { Button } from "@/components/ui/button"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import Post from "@/components/exercise/post"
 import Link from "next/link"
-import { Play } from "lucide-react"
-import { getCourseModuleLectureExerciseBySlugs } from "@/db/services/courseService"
+import { getCourseModuleLectureExerciseBySlugs, getNextCoursePartLink } from "@/db/services/courseService"
 import { notFound } from "next/navigation"
 import { parseContent, sanitizeContent } from "@/lib/helpers"
 import CodeEditorPanel from "@/components/exercise/code-editor-panel"
@@ -25,6 +23,7 @@ export default async function Page({ params: { courseSlug, exerciseSlug } }: Pag
     notFound()
 
   const parsedExerciseContent = parseContent(sanitizeContent(exercise?.content))
+  const nextLink = await getNextCoursePartLink({ courseId: course._id, moduleId: module._id, lectureId: lecture._id, exerciseId: exercise._id })
 
   return (
     <ResizablePanelGroup

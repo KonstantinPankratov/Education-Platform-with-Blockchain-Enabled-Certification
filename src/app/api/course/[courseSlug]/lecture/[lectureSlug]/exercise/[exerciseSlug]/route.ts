@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 dbConnect();
 
-export async function GET(req: NextRequest, { params }: { params: { courseSlug: string, exerciseSlug: string }}) {
+export async function GET(req: NextRequest, { params }: { params: { courseSlug: string, exerciseSlug: string } }) {
   try {
     const { courseSlug, exerciseSlug } = params
 
@@ -31,7 +31,18 @@ export async function GET(req: NextRequest, { params }: { params: { courseSlug: 
                       foreignField: "lectureId",
                       as: "exercises",
                       pipeline: [
-                        { $match: { slug: exerciseSlug } }
+                        { $match: { slug: exerciseSlug } },
+                        {
+                          $lookup: {
+                            from: "tests",
+                            localField: "_id",
+                            foreignField: "exerciseId",
+                            as: "tests",
+                            pipeline: [
+                              { $sort: { order: 1 } }
+                            ]
+                          }
+                        }
                       ]
                     }
                   },
@@ -48,6 +59,7 @@ export async function GET(req: NextRequest, { params }: { params: { courseSlug: 
       {
         $project: {
           course: {
+            _id: "$_id",
             name: "$name",
             slug: "$slug"
           },
@@ -57,11 +69,11 @@ export async function GET(req: NextRequest, { params }: { params: { courseSlug: 
         }
       }
     ])
-  
+
     if (result.length === 0) {
       return NextResponse.json({ course: null, module: null, lecture: null, exercise: null })
     }
-  
+
     return NextResponse.json(result[0])
   } catch (error: any) {
     return NextResponse.json({

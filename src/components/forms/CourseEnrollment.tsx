@@ -15,7 +15,7 @@ const CourseEnrollment = ({
   course,
   isUserEnrolled,
   className
-} : {
+}: {
   course: ICourse,
   isUserEnrolled: boolean,
   className?: string
@@ -41,6 +41,10 @@ const CourseEnrollment = ({
       return
     }
 
+    if (enrolled) {
+      return router.push('/course/javascript-for-beginners/lecture/what-is-javascript') // TODO
+    }
+
     setLoading(true)
 
     const enrollPromise = enrollUser(session?.user?._id!, course._id)
@@ -53,7 +57,7 @@ const CourseEnrollment = ({
       }).then(async data => {
         setEnrolled(true)
         setTimeout(() => {
-          router.push('/course/javascript-for-beginners/lecture/what-is-javascript')
+          router.push('/course/javascript-for-beginners/lecture/what-is-javascript') // TODO
         }, 10000)
         return data
       }).finally(() => {
@@ -71,16 +75,16 @@ const CourseEnrollment = ({
       },
       action: {
         label: "Got it",
-        onClick: () => {}
+        onClick: () => { }
       }
     })
   }
 
   return (
     <>
-    { enrolled ?
-       <Button onClick={enroll} disabled={enrolled} className={ cn(className) }><Check className="mr-2 h-4 w-4"/> Continue learning</Button> : 
-       <Button onClick={enroll} disabled={loading} className={ cn(className) }>Enroll</Button> }
+      {enrolled ?
+        <Button onClick={enroll} disabled={loading} className={cn(className)}>Continue learning</Button> :
+        <Button onClick={enroll} disabled={loading} className={cn(className)}>Enroll</Button>}
     </>
   )
 }

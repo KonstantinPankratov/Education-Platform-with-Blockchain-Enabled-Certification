@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 dbConnect();
 
-export async function GET(req: NextRequest, { params }: { params: { courseSlug: string, lectureSlug: string }}) {
+export async function GET(req: NextRequest, { params }: { params: { courseSlug: string, lectureSlug: string } }) {
   try {
     const { courseSlug, lectureSlug } = params
 
@@ -45,6 +45,7 @@ export async function GET(req: NextRequest, { params }: { params: { courseSlug: 
       {
         $project: {
           course: {
+            _id: "$_id",
             name: "$name",
             slug: "$slug"
           },
@@ -53,11 +54,11 @@ export async function GET(req: NextRequest, { params }: { params: { courseSlug: 
         }
       }
     ])
-  
+
     if (result.length === 0) {
       return NextResponse.json({ course: null, module: null, lecture: null })
     }
-  
+
     return NextResponse.json(result[0])
   } catch (error: any) {
     return NextResponse.json({
