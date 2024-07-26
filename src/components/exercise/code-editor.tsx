@@ -1,18 +1,17 @@
 "use client"
 
-import React from "react"
+import React, { Dispatch, SetStateAction } from "react"
 import Editor, { OnChange } from '@monaco-editor/react'
-import { unescapeLineBreaks } from "@/lib/helpers"
 
-const CodeEditor = ({
-  snippet
-}: {
-  snippet: string
-}) => {
-  const [code, setCode] = React.useState<string>(unescapeLineBreaks(snippet))
+interface ComponentProps {
+  solution: string,
+  setSolution: Dispatch<SetStateAction<string>>,
+  solutionCallback: () => void
+}
 
+const CodeEditor = ({ solution, setSolution, solutionCallback }: ComponentProps) => {
   const handleEditorChange: OnChange = (value) => {
-    setCode(value || '')
+    setSolution(value || '')
   }
 
   return (
@@ -20,9 +19,12 @@ const CodeEditor = ({
       <Editor
         className="h-full w-full"
         language="javascript"
+        options={{
+          minimap: { enabled: false }
+        }}
         theme="vs-dark"
-        value={code}
-        onChange={handleEditorChange}/>
+        value={solution}
+        onChange={handleEditorChange} />
     </div>
   )
 }

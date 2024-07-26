@@ -3,16 +3,13 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/componen
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import CodeEditor from "@/components/exercise/code-editor"
-import { Badge } from "@/components/ui/badge"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import Post from "@/components/exercise/post"
-
 import Link from "next/link"
 import { Play } from "lucide-react"
 import { getCourseModuleLectureExerciseBySlugs } from "@/db/services/courseService"
 import { notFound } from "next/navigation"
 import { parseContent, sanitizeContent } from "@/lib/helpers"
+import CodeEditorPanel from "@/components/exercise/code-editor-panel"
 
 interface PageProps {
   params: {
@@ -79,33 +76,7 @@ export default async function Page({ params: { courseSlug, exerciseSlug } }: Pag
       </ResizablePanel>
       <ResizableHandle withHandle />
       <ResizablePanel defaultSize={55} minSize={20} className="p-6 pt-3"> {/* right */}
-        <ResizablePanelGroup
-          direction="vertical"
-          className="right">
-          <ResizablePanel defaultSize={75} minSize={30} className="flex flex-col"> {/* editor */}
-            <div className="flex justify-between items-center gap-x-5 mb-3">
-              <Badge variant="outline">Code</Badge>
-              <TooltipProvider>
-                <Tooltip defaultOpen={true}>
-                  <Button asChild>
-                    <TooltipTrigger>Test <Play className="w-3.5 ml-2" strokeWidth="3" /></TooltipTrigger>
-                  </Button>
-                  <TooltipContent className="font-semibold text-[11px]" sideOffset={10} side="left">
-                    CTRL + ENTER {/* TODO */}
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-            <CodeEditor snippet={exercise.snippet}></CodeEditor>
-          </ResizablePanel>
-          <ResizableHandle withHandle />
-          <ResizablePanel defaultSize={25} minSize={10} className="pt-3 flex flex-col"> {/* output */}
-            <div>
-              <Badge variant="outline">Tests</Badge>
-            </div>
-            <div className="rounded-md w-full flex-grow mt-3 bg-[#1e1e1e]"></div>
-          </ResizablePanel>
-        </ResizablePanelGroup>
+        <CodeEditorPanel exercise={exercise} nextLink={nextLink} />
       </ResizablePanel>
     </ResizablePanelGroup>
   )

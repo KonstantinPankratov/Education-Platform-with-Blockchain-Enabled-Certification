@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema, Types, model } from "mongoose"
+import { ITest } from "./Test"
 
 export interface IExercise extends Document {
   _id: Types.ObjectId
@@ -8,6 +9,7 @@ export interface IExercise extends Document {
   content: string
   snippet: string
   order: number
+  tests: ITest[]
 }
 
 export const ExerciseSchema: Schema = new Schema<IExercise>({

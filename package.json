@@ -28,6 +28,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "html-react-parser": "^5.1.10",
+    "isolated-vm": "^5.0.1",
     "lucide-react": "^0.394.0",
     "mongoose": "^8.4.3",
     "next": "14.2.4",
