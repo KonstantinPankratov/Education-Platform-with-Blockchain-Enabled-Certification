@@ -1,9 +1,9 @@
-import mongoose, { Document, Schema, Types, model } from "mongoose"
+import mongoose from "mongoose"
 import { ITest } from "./Test"
 
-export interface IExercise extends Document {
-  _id: Types.ObjectId
-  lectureId: Types.ObjectId
+export interface IExercise extends mongoose.Document {
+  _id: mongoose.Types.ObjectId
+  lectureId: mongoose.Types.ObjectId
   name: string
   slug: string
   content: string
@@ -12,9 +12,9 @@ export interface IExercise extends Document {
   tests: ITest[]
 }
 
-export const ExerciseSchema: Schema = new Schema<IExercise>({
+export const ExerciseSchema: mongoose.Schema = new mongoose.Schema<IExercise>({
   lectureId: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "Lecture",
     required: true
   },
@@ -39,4 +39,5 @@ export const ExerciseSchema: Schema = new Schema<IExercise>({
   }
 })
 
-export default mongoose.models.Exercise || model<IExercise>('Exercise', ExerciseSchema)
+const ExerciseModel: mongoose.Model<IExercise> = mongoose.models.Exercise
+export default ExerciseModel || mongoose.model<IExercise>("Exercise", ExerciseSchema)

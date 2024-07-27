@@ -1,8 +1,8 @@
-import mongoose, { Document, Schema, model, Types } from "mongoose"
+import mongoose from "mongoose"
 import { IModule } from "./Module"
 
-export interface ICourse extends Document {
-  _id: Types.ObjectId
+export interface ICourse extends mongoose.Document {
+  _id: mongoose.Types.ObjectId
   name: string
   slug: string
   content?: string
@@ -11,7 +11,7 @@ export interface ICourse extends Document {
   exerciseCount?: number
 }
 
-const CourseSchema: Schema = new Schema<ICourse>({
+const CourseSchema: mongoose.Schema = new mongoose.Schema<ICourse>({
   name: {
     type: String,
     required: true
@@ -26,4 +26,5 @@ const CourseSchema: Schema = new Schema<ICourse>({
   }
 })
 
-export default mongoose.models.Course || model<ICourse>('Course', CourseSchema)
+const CourseModel: mongoose.Model<ICourse> = mongoose.models.Course
+export default CourseModel || mongoose.model<ICourse>("Course", CourseSchema)

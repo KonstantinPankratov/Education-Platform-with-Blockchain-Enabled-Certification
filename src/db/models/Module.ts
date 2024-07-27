@@ -1,9 +1,9 @@
-import mongoose, { Document, Schema, Types, model } from "mongoose"
+import mongoose from "mongoose"
 import { ILecture } from "./Lecture"
 
-export interface IModule extends Document {
-  _id: Types.ObjectId
-  courseId: Types.ObjectId
+export interface IModule extends mongoose.Document {
+  _id: mongoose.Types.ObjectId
+  courseId: mongoose.Types.ObjectId
   name: string
   slug: string
   content: string
@@ -11,9 +11,9 @@ export interface IModule extends Document {
   lectures?: ILecture[]
 }
 
-export const ModuleSchema: Schema = new Schema<IModule>({
+export const ModuleSchema: mongoose.Schema = new mongoose.Schema<IModule>({
   courseId: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     required: true
   },
   name: {
@@ -34,4 +34,5 @@ export const ModuleSchema: Schema = new Schema<IModule>({
   }
 })
 
-export default mongoose.models.Module || model<IModule>('Module', ModuleSchema)
+const ModuleModel: mongoose.Model<IModule> = mongoose.models.Module
+export default ModuleModel || mongoose.model<IModule>("Module", ModuleSchema)

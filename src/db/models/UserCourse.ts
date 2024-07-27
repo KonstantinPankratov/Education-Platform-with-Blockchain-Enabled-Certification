@@ -1,21 +1,22 @@
-import mongoose, { Document, Schema, Types, model } from "mongoose"
+import mongoose from "mongoose"
 
-export interface IUserCourse extends Document {
-  userId: Types.ObjectId
-  courseId: Types.ObjectId
+export interface IUserCourse extends mongoose.Document {
+  userId: mongoose.Types.ObjectId
+  courseId: mongoose.Types.ObjectId
 }
 
-const UserCourseSchema: Schema = new Schema<IUserCourse>({
+const UserCourseSchema: mongoose.Schema = new mongoose.Schema<IUserCourse>({
   userId: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
   },
   courseId: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Course',
     required: true
   }
 })
 
-export default mongoose.models.UserCourse || model<IUserCourse>('UserCourse', UserCourseSchema)
+const UserCourseModel: mongoose.Model<IUserCourse> = mongoose.models.UserCourse
+export default UserCourseModel || mongoose.model<IUserCourse>("UserCourse", UserCourseSchema)
