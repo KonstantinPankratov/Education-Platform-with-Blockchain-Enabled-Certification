@@ -1,4 +1,3 @@
-import dbConnect from "../dbConnect"
 import Course, { ICourse } from "../models/Course"
 import Exercise, { IExercise } from "../models/Exercise"
 import Lecture, { ILecture } from "../models/Lecture"

@@ -1,7 +1,6 @@
 import { Types } from "mongoose";
 import { ITest } from "../models/Test";
 import { IUserSolution } from "../models/UserSolution";
-import { TExecutionResult } from "@/types/executionResult";
 
 export const getLastExerciseSolution = async (exerciseId: Types.ObjectId): Promise<IUserSolution | null> => { // TODO userId
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/solution/${exerciseId}`, {
