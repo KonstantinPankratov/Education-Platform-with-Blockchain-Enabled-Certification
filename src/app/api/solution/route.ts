@@ -15,7 +15,7 @@ interface RequestBody {
 
 export async function POST(req: NextRequest) {
   const { exerciseId, solution, tests }: RequestBody = await req.json()
-  let failedTestId: Types.ObjectId | null = null
+  let failedTestIds: Types.ObjectId[] = []
   let passedTestIds: Types.ObjectId[] = []
   let userId = null
 
@@ -36,14 +36,16 @@ export async function POST(req: NextRequest) {
 
     const context = isolate.createContextSync()
 
+    // TODO 1) Collect console.log/debug/error using listener
+    // TODO 2) Parse console.log 
+
     context.evalSync(solution)
 
     for (const test of tests) {
       const result = context.evalSync(test.input)
 
       if (result !== test.output) {
-        failedTestId = test._id
-        throw new Error(test.errorMsg)
+        failedTestIds.push(test._id)
       }
 
       passedTestIds.push(test._id)
@@ -57,10 +59,10 @@ export async function POST(req: NextRequest) {
       userId: userId,
       exerciseId: exerciseId,
       content: solution,
-      failedTestId: failedTestId
+      failedTestIds: failedTestIds
     })
 
-    await userSolution.populate('failedTestId')
+    await userSolution.populate('failedTestIds')
 
     return NextResponse.json(userSolution)
   }

@@ -1,6 +1,5 @@
 "use client"
 
-import { Play } from "lucide-react"
 import { Badge } from "../ui/badge"
 import { Button } from "../ui/button"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "../ui/resizable"
@@ -36,7 +35,7 @@ const CodeEditorPanel = ({ exercise, nextLink }: ComponentProps) => {
       if (res) {
         setUserSolution(res)
         setSolution(res.content)
-        setContinuable(!res.failedTestId)
+        setContinuable(!res.failedTestIds.length)
       }
     })
   }, [exercise._id])
@@ -48,7 +47,7 @@ const CodeEditorPanel = ({ exercise, nextLink }: ComponentProps) => {
     executeSolution(exercise._id, solution, exercise.tests).then((res) => {
       if (res) {
         setUserSolution(res)
-        setContinuable(!res.failedTestId)
+        setContinuable(!res.failedTestIds.length)
       }
       setLoading(false)
     })
@@ -87,11 +86,10 @@ const CodeEditorPanel = ({ exercise, nextLink }: ComponentProps) => {
         <div className="rounded-md w-full flex-grow mt-3 bg-[#1e1e1e] p-4 flex flex-col gap-4">
           {isLoading ? <LoadingResult /> :
             userSolution ? (
-              userSolution.failedTestId !== null && typeof userSolution.failedTestId === 'object' ?
-                <ErrorResult test={userSolution.failedTestId as ITest} /> :
+              userSolution.failedTestIds !== null && typeof userSolution.failedTestIds === 'object' ?
+                <ErrorResult tests={userSolution.failedTestIds as ITest[]} /> :
                 <SuccessResult />
-            ) : <EmptyResult />
-          }
+            ) : <EmptyResult />}
         </div>
       </ResizablePanel>
     </ResizablePanelGroup >

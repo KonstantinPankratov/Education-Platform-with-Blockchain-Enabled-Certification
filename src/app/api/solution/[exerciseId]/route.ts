@@ -1,6 +1,8 @@
 import { auth } from "@/auth"
 import dbConnect from "@/db/dbConnect"
+import Test from "@/db/models/Test"
 import UserSolution from "@/db/models/UserSolution"
+import mongoose from "mongoose"
 import { NextRequest, NextResponse } from "next/server"
 
 dbConnect()
@@ -20,7 +22,7 @@ export async function GET(req: NextRequest, { params }: ParamsProps) {
     }
 
     const solution = await UserSolution.findOne({ userId: session.user._id, exerciseId: exerciseId })
-      .populate('failedTestId')
+      .populate('failedTestIds')
       .sort({ createdAt: -1 })
 
     return NextResponse.json(solution)
