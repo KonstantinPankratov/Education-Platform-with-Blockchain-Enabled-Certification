@@ -15,6 +15,10 @@ if (!cached) {
   cached = (global as { [key: string]: any }).mongoose = { conn: null, promise: null }
 }
 
+function registerImplicitModels() { // TODO simplify and just import all models from directory
+  require('@/db/models/Test')
+}
+
 async function dbConnect() {
   if (cached.conn) {
     return cached.conn
@@ -28,6 +32,8 @@ async function dbConnect() {
       cached.promise = null
       throw error
     })
+
+    registerImplicitModels()
   }
 
   cached.conn = await cached.promise
