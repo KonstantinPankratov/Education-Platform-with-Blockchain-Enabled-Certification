@@ -6,45 +6,13 @@ dbConnect();
 
 export async function GET() {
   try {
-    // const pipeline = [
-    //   {
-    //     $lookup: {
-    //       from: "modules",
-    //       localField: "_id",
-    //       foreignField: "courseId",
-    //       as: "modules"
-    //     }
-    //   }, {
-    //     $unwind: {
-    //       path: "$modules",
-    //       preserveNullAndEmptyArrays: true
-    //     }
-    //   }, {
-    //     $lookup: {
-    //         from: "lectures",
-    //         localField: "modules._id",
-    //         foreignField: "moduleId",
-    //         as: "modules.lectures"
-    //     }
-    //   }, {
-    //     $group: {
-    //       _id: "$_id",
-    //       name: { $first: "$name" },
-    //       content: { $first: "$content" },
-    //       slug: { $first: "$slug" },
-    //       modules: { $push: "$modules" }
-    //     }
-    //   }
-    // ]
-
-    const pipeline = [
+    const courses = await Course.aggregate([
       {
         $lookup: {
           from: "modules",
           localField: "_id",
           foreignField: "courseId",
           as: "modules",
-
           pipeline: [
             {
               $lookup: {
@@ -52,29 +20,25 @@ export async function GET() {
                 localField: "_id",
                 foreignField: "moduleId",
                 as: "lectures",
-
                 pipeline: [
                   {
                     $lookup: {
                       from: "exercises",
                       localField: "_id",
                       foreignField: "lectureId",
-                      as: "exercises",
-                      
+                      as: "exercises"
                     }
                   },
-                  
+                  { $sort: { order: 1 } }
                 ]
-
               }
-            }
+            },
+            { $sort: { order: 1 } }
           ]
-
         }
-      }
-    ]
-
-    const courses = await Course.aggregate(pipeline)
+      },
+      { $sort: { order: 1 } },
+    ])
 
     return NextResponse.json(courses)
   } catch (error: any) {
