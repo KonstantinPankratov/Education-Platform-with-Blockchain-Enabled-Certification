@@ -1,8 +1,6 @@
 import { auth } from "@/auth"
 import dbConnect from "@/db/dbConnect"
-import Test from "@/db/models/Test"
 import UserSolution from "@/db/models/UserSolution"
-import mongoose from "mongoose"
 import { NextRequest, NextResponse } from "next/server"
 
 dbConnect()
