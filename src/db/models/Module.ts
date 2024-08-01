@@ -9,6 +9,7 @@ export interface IModule extends mongoose.Document {
   content: string
   order: number
   lectures?: ILecture[]
+  isCompleted?: boolean
 }
 
 export const ModuleSchema: mongoose.Schema = new mongoose.Schema<IModule>({

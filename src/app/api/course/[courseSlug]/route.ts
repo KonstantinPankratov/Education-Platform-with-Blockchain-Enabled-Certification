@@ -1,12 +1,23 @@
-import dbConnect from "@/db/dbConnect";
-import Course from "@/db/models/Course";
-import { NextRequest, NextResponse } from "next/server";
+import dbConnect from "@/db/dbConnect"
+import Course from "@/db/models/Course"
+import { Types } from "mongoose"
+import { NextRequest, NextResponse } from "next/server"
 
-dbConnect();
+dbConnect()
 
-export async function GET(req: NextRequest, { params }: { params: { courseSlug: string }}) {
+interface ParamsProps {
+  params: { courseSlug: string }
+}
+interface RequestBody {
+  userId: string
+}
+
+export async function POST(req: NextRequest, { params }: ParamsProps) {
   try {
     const { courseSlug } = params
+
+    const body: RequestBody = await req.json()
+    const userId = body.userId ? new Types.ObjectId(body.userId) : null
 
     const courses = await Course.aggregate([
       { $match: { slug: courseSlug } },
@@ -29,14 +40,36 @@ export async function GET(req: NextRequest, { params }: { params: { courseSlug: 
                       from: "exercises",
                       localField: "_id",
                       foreignField: "lectureId",
-                      as: "exercises"
+                      as: "exercises",
+                      pipeline: [
+                        {
+                          $lookup: {
+                            from: 'usersolutions',
+                            localField: '_id',
+                            foreignField: 'exerciseId',
+                            as: 'usersolutions',
+                            pipeline: [
+                              {
+                                $match: {
+                                  userId: userId,
+                                  failedTestIds: { $size: 0 },
+                                },
+                              },
+                            ],
+                          }
+                        }, {
+                          $addFields: {
+                            isCompleted: { $gt: [{ $size: '$usersolutions' }, 0] },
+                          }
+                        }
+                      ]
                     }
                   },
                   { $sort: { order: 1 } },
                   {
                     $addFields: {
-                      exerciseCount: { $size: "$exercises" }
-                    }
+                      isCompleted: { $allElementsTrue: ['$exercises.isCompleted'] },
+                    },
                   }
                 ]
               }
@@ -44,9 +77,8 @@ export async function GET(req: NextRequest, { params }: { params: { courseSlug: 
             { $sort: { order: 1 } },
             {
               $addFields: {
-                lectureCount: { $size: "$lectures" },
-                exerciseCount: { $sum: "$lectures.exerciseCount" }
-              }
+                isCompleted: { $allElementsTrue: ['$lectures.isCompleted'] },
+              },
             }
           ]
         }
@@ -54,10 +86,86 @@ export async function GET(req: NextRequest, { params }: { params: { courseSlug: 
       { $sort: { order: 1 } },
       {
         $addFields: {
-          moduleCount: { $size: "$modules" },
-          lectureCount: { $sum: "$modules.lectureCount" },
-          exerciseCount: { $sum: "$modules.exerciseCount" }
-        }
+          isCompleted: { $allElementsTrue: ['$modules.isCompleted'] },
+        },
+      },
+      {
+        $addFields: {
+          moduleCount: { $sum: { $size: '$modules' } },
+          lectureCount: {
+            $sum: {
+              $map: {
+                input: '$modules',
+                as: 'module',
+                in: {
+                  $sum: { $size: '$$module.lectures' }
+                },
+              },
+            }
+          },
+          exerciseCount: {
+            $sum: {
+              $map: {
+                input: '$modules',
+                as: 'module',
+                in: {
+                  $sum: {
+                    $map: {
+                      input: '$$module.lectures',
+                      as: 'lecture',
+                      in: {
+                        $sum: { $size: '$$lecture.exercises' },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          completedExerciseCount: {
+            $sum: {
+              $map: {
+                input: '$modules',
+                as: 'module',
+                in: {
+                  $sum: {
+                    $map: {
+                      input: '$$module.lectures',
+                      as: 'lecture',
+                      in: {
+                        $sum: {
+                          $map: {
+                            input: '$$lecture.exercises',
+                            as: 'exercise',
+                            in: { $cond: ['$isCompleted', 1, 0] },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      {
+        $addFields: {
+          progress: {
+            $ceil: {
+              $multiply: [
+                {
+                  $cond: {
+                    if: { $eq: ['$exerciseCount', 0] },
+                    then: 0,
+                    else: { $divide: ['$completedExerciseCount', '$exerciseCount'] }
+                  }
+                },
+                100
+              ]
+            }
+          },
+        },
       }
     ])
 

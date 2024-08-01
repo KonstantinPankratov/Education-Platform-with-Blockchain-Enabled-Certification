@@ -9,6 +9,8 @@ export interface ICourse extends mongoose.Document {
   modules?: IModule[]
   lectureCount?: number
   exerciseCount?: number
+  progress?: number
+  isCompleted?: boolean
 }
 
 const CourseSchema: mongoose.Schema = new mongoose.Schema<ICourse>({

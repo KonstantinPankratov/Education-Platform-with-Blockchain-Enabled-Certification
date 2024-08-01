@@ -10,6 +10,7 @@ export interface IExercise extends mongoose.Document {
   snippet: string
   order: number
   tests: ITest[]
+  isCompleted?: boolean
 }
 
 export const ExerciseSchema: mongoose.Schema = new mongoose.Schema<IExercise>({

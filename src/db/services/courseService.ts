@@ -4,6 +4,7 @@ import Lecture, { ILecture } from "../models/Lecture"
 import Module, { IModule } from "../models/Module"
 import { Types } from "mongoose"
 import UserSolution, { IUserSolution } from "../models/UserSolution"
+import { auth } from "@/auth"
 
 /**
  * Returns courses
@@ -12,11 +13,14 @@ import UserSolution, { IUserSolution } from "../models/UserSolution"
  */
 
 export async function getCourses(): Promise<ICourse[]> {
+  const session = await auth()
+
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/course`, {
-    method: 'GET',
+    method: 'POST',
     next: {
-      revalidate: 3600
-    }
+      revalidate: 0
+    },
+    body: JSON.stringify({ userId: session?.user._id }),
   })
 
   if (!res.ok) {
@@ -33,11 +37,14 @@ export async function getCourses(): Promise<ICourse[]> {
  */
 
 export async function getCourseBySlug(slug: string): Promise<ICourse | null> {
+  const session = await auth()
+
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/course/${slug}`, {
-    method: 'GET',
+    method: 'POST',
     next: {
-      revalidate: 3600
-    }
+      revalidate: 0
+    },
+    body: JSON.stringify({ userId: session?.user._id }),
   })
 
   if (!res.ok) {
