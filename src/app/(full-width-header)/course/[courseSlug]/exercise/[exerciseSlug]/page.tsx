@@ -8,6 +8,8 @@ import { getCourseModuleLectureExerciseBySlugs, getNextCoursePartLink } from "@/
 import { notFound } from "next/navigation"
 import { parseContent, sanitizeContent } from "@/lib/helpers"
 import CodeEditorPanel from "@/components/exercise/code-editor-panel"
+import { auth } from "@/auth"
+import { isUserEnrolled } from "@/db/services/userService"
 
 interface PageProps {
   params: {
@@ -17,10 +19,15 @@ interface PageProps {
 }
 
 export default async function Page({ params: { courseSlug, exerciseSlug } }: PageProps) {
+  const session = await auth()
+
   const { course, module, lecture, exercise } = await getCourseModuleLectureExerciseBySlugs(courseSlug, exerciseSlug)
 
   if (!course || !module || !lecture || !exercise)
     notFound()
+
+  if (!isUserEnrolled(session?.user._id!, course._id))
+    throw new Error('You are not enrolled in this course')
 
   const parsedExerciseContent = parseContent(sanitizeContent(exercise?.content))
   const nextLink = await getNextCoursePartLink({ courseId: course._id, moduleId: module._id, lectureId: lecture._id, exerciseId: exercise._id })

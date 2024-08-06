@@ -1,3 +1,4 @@
+import { auth } from "@/auth"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button"
 import Shortcut from "@/components/ui/shortcut"
 import { getCourseModuleLectureBySlugs, getNextCoursePartLink } from "@/db/services/courseService"
+import { isUserEnrolled } from "@/db/services/userService"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import sanitizeHtml from 'sanitize-html'
@@ -22,10 +24,15 @@ interface PageProps {
 }
 
 export default async function Page({ params: { courseSlug, lectureSlug } }: PageProps) {
+  const session = await auth()
+
   const { course, module, lecture } = await getCourseModuleLectureBySlugs(courseSlug, lectureSlug)
 
   if (!course || !module || !lecture)
     notFound()
+
+  if (!isUserEnrolled(session?.user._id!, course._id))
+    throw new Error('You are not enrolled in this course')
 
   const lectureContent = sanitizeHtml(lecture?.content, {
     allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h2', 'h3', 'p']),
