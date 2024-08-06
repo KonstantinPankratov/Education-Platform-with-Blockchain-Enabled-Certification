@@ -16,6 +16,8 @@ const UserCourseSchema: mongoose.Schema = new mongoose.Schema<IUserCourse>({
     ref: 'Course',
     required: true
   }
+}, {
+  timestamps: true
 })
 
 const UserCourseModel: mongoose.Model<IUserCourse> = mongoose.models.UserCourse
