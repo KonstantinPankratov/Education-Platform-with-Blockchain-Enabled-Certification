@@ -1,6 +1,6 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Badge } from "@/components/ui/badge"
-import { getCourseBySlug } from "@/db/services/courseService"
+import { getAuthCourseBySlug, getCourseBySlug } from "@/db/services/courseService"
 import { IModule } from "@/db/models/Module"
 import { notFound } from "next/navigation"
 import { ILecture } from "@/db/models/Lecture"
@@ -17,7 +17,10 @@ interface PageProps {
 }
 
 export default async function Page({ params: { courseSlug } }: PageProps) {
-  const course = await getCourseBySlug(courseSlug)
+
+  const session = await auth()
+
+  const course = session ? await getAuthCourseBySlug(session.user._id, courseSlug) : await getCourseBySlug(courseSlug)
 
   if (!course)
     notFound()

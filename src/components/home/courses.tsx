@@ -1,9 +1,12 @@
 import { Separator } from "@/components/ui/separator"
 import Course from "./course"
-import { getCourses } from "@/db/services/courseService"
+import { getAuthCourses, getCourses } from "@/db/services/courseService"
+import { auth } from "@/auth"
 
 const Courses = async function () {
-  const courses = await getCourses()
+  const session = await auth()
+
+  const courses = session ? await getAuthCourses(session.user._id) : await getCourses()
 
   return (
     <section className="relative py-20" id="courses">
