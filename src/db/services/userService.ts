@@ -227,7 +227,8 @@ export async function getUserSolutionStatistics(userId: string): Promise<Solutio
   const currentWeekSolutions = await UserSolution.aggregate([
     {
       $match: {
-        createdAt: { $gte: currWeekStart }
+        createdAt: { $gte: currWeekStart },
+        userId: new Types.ObjectId(userId)
       }
     },
     {
@@ -266,11 +267,16 @@ export async function getUserSolutionStatistics(userId: string): Promise<Solutio
     }
   });
 
-  const difference: {
+  const totalForTwoWeeks: {
     previousWeek: number
     currentWeek: number,
     relative: number
   }[] = await UserSolution.aggregate([
+    {
+      $match: {
+        userId: new Types.ObjectId(userId)
+      }
+    },
     {
       "$group": {
         "_id": null,
@@ -310,7 +316,7 @@ export async function getUserSolutionStatistics(userId: string): Promise<Solutio
   ])
 
   return {
-    difference: difference.length ? difference[0].relative : 0,
+    difference: totalForTwoWeeks.length ? totalForTwoWeeks[0].relative : 0,
     daily: data
   }
 }
