@@ -7,7 +7,7 @@ import { JWT } from "next-auth/jwt"
 // Extend auth.js interfaces
 declare module 'next-auth' {
   interface User {
-    _id: Types.ObjectId
+    _id: string
     firstName?: string
     lastName?: string
     nameInitials?: string
@@ -15,19 +15,19 @@ declare module 'next-auth' {
 
   interface Session {
     user: User & DefaultSession["user"] & {
-      _id: Types.ObjectId
+      _id: string
     }
   }
 }
 
 declare module "next-auth/jwt" {
   interface JWT extends User {
-    _id: Types.ObjectId
+    _id: string
   }
 }
 
 export interface IUser {
-  _id: Types.ObjectId
+  _id: string
   firstName?: string
   lastName?: string
   nameInitials?: string

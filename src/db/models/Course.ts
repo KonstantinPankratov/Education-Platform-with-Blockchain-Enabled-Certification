@@ -2,7 +2,7 @@ import mongoose from "mongoose"
 import { IModule } from "./Module"
 
 export interface ICourse extends mongoose.Document {
-  _id: mongoose.Types.ObjectId
+  _id: string
   name: string
   slug: string
   content?: string

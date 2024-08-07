@@ -2,7 +2,7 @@ import mongoose from "mongoose"
 import { ITest } from "./Test"
 
 export interface IExercise extends mongoose.Document {
-  _id: mongoose.Types.ObjectId
+  _id: string
   lectureId: mongoose.Types.ObjectId
   name: string
   slug: string
