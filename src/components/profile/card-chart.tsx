@@ -6,33 +6,39 @@ import { ChartConfig, ChartContainer } from "@/components/ui/chart"
 import { ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 
 const chartConfig = {
-  quantity: {
-    label: "Completed exercises",
+  count: {
+    label: "Completed",
     color: "#ffffff",
   }
 } satisfies ChartConfig
 
 interface CardChartProps {
-  data: any[],
-  desc: string
+  data: {
+    difference: number,
+    daily: {
+      date: string,
+      count: number
+    }[]
+  }
 }
 
-const CardChart = ({ data, desc }: CardChartProps) => {
+const CardChart = ({ data }: CardChartProps) => {
+  const difference = data.difference >= 0 ? `+ ${data.difference}` : `- ${data.difference}`;
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Learning</CardTitle>
-        <CardDescription>+ 2 modules this week</CardDescription>
+        <CardTitle>Exercises</CardTitle>
+        <CardDescription>{`${difference} this week`}</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="w-[300px] h-[120px]">
-          <LineChart data={data}>
+          <LineChart data={data.daily}>
             <XAxis
               dataKey="date"
               hide={true}
             />
             <ChartTooltip content={<ChartTooltipContent />} />
-            <Line dataKey="quantity" stroke="var(--color-quantity)" type="monotone" strokeWidth="3" radius={4} />
+            <Line dataKey="count" stroke="var(--color-count)" type="monotone" strokeWidth="3" radius={4} />
           </LineChart>
         </ChartContainer>
       </CardContent>

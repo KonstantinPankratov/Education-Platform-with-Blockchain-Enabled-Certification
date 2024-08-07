@@ -198,6 +198,123 @@ export async function getUserEnrollments(userId: string): Promise<IUserEnrollmen
   return JSON.parse(JSON.stringify(courses))
 }
 
+interface DailySolution {
+  date: string,
+  count: number
+}
+
+interface SolutionStatistics {
+  difference: number,
+  daily: DailySolution[]
+}
+
+export async function getUserSolutionStatistics(userId: string): Promise<SolutionStatistics> {
+  await dbConnect()
+
+  var moment = require('moment')
+
+  const currWeekStart = moment().startOf('week').toDate()
+  const prevWeekStart = moment().startOf('week').subtract(1, 'weeks').toDate()
+
+  const data: DailySolution[] = [];
+  for (let i = 0; i < 7; i++) {
+    data.push({
+      date: moment().startOf('week').add(i, 'days').format('MMM DD, YYYY'),
+      count: 0
+    });
+  }
+
+  const currentWeekSolutions = await UserSolution.aggregate([
+    {
+      $match: {
+        createdAt: { $gte: currWeekStart }
+      }
+    },
+    {
+      $project: {
+        date: {
+          $dateToString: {
+            format: '%b %d, %Y',
+            date: '$createdAt',
+          },
+        }
+      }
+    },
+    {
+      $group: {
+        _id: {
+          date: '$date'
+        },
+        count: {
+          $sum: 1
+        }
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        date: '$_id.date',
+        count: 1,
+      }
+    },
+  ])
+
+  currentWeekSolutions.forEach(solution => {
+    const index = data.findIndex(day => day.date === solution.date);
+    if (index !== -1) {
+      data[index].count = solution.count;
+    }
+  });
+
+  const difference: {
+    previousWeek: number
+    currentWeek: number,
+    relative: number
+  }[] = await UserSolution.aggregate([
+    {
+      "$group": {
+        "_id": null,
+        "previousWeek": {
+          "$sum": {
+            "$cond": [
+              {
+                "$and": [
+                  { "$gte": ["$createdAt", prevWeekStart] },
+                  { "$lt": ["$createdAt", currWeekStart] }
+                ]
+              },
+              1,
+              0
+            ]
+          }
+        },
+        "currentWeek": {
+          "$sum": {
+            "$cond": [
+              { "$gte": ["$createdAt", currWeekStart] },
+              1,
+              0
+            ]
+          }
+        }
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        previousWeek: 1,
+        currentWeek: 1,
+        relative: { $subtract: ["$currentWeek", "$previousWeek"] }
+      }
+    }
+  ])
+
+  return {
+    difference: difference.length ? difference[0].relative : 0,
+    daily: data
+  }
+}
+
 export async function getUserLastSolution(userId: string): Promise<ICourse[]> {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/${userId}/enrollment`, {
     next: {

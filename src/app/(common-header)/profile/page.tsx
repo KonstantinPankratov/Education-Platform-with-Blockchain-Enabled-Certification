@@ -3,9 +3,9 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import CardChart from '@/components/profile/card-chart'
-import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, } from "@/components/ui/table"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, } from "@/components/ui/tooltip"
-import { getUserEnrollments } from "@/db/services/userService"
+import { getUserEnrollments, getUserSolutionStatistics } from "@/db/services/userService"
 import { Progress } from "@/components/ui/progress"
 import { File } from "lucide-react"
 
@@ -17,15 +17,7 @@ export default async function Page() {
   const enrolledCourseCount = enrolledCourses.length
   const completedExerciseCount = enrolledCourses.reduce((sum, { completedExerciseCount }) => sum + completedExerciseCount, 0)
 
-  const learningData = [
-    { key: '9.06', value: 3 },
-    { key: '10.06', value: 8 },
-    { key: '11.06', value: 2 },
-    { key: '12.06', value: 5 },
-    { key: '13.06', value: 7 },
-    { key: '14.06', value: 4 },
-    { key: '15.06', value: 6 },
-  ]
+  const completedExerciseData = await getUserSolutionStatistics(session?.user._id!)
 
   return (
     <>
@@ -37,7 +29,7 @@ export default async function Page() {
           </Button>
         </div>
         <div className="flex gap-5">
-          <CardChart data={learningData} desc="Modules" />
+          <CardChart data={completedExerciseData} />
         </div>
       </section>
 
