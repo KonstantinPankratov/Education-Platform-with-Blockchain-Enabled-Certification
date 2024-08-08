@@ -1,6 +1,5 @@
-import mongoose, { Model, Types } from "mongoose"
+import mongoose, { Model } from "mongoose"
 import type { Date } from "mongoose"
-import { ICourse } from "../Course"
 import { DefaultSession, User } from "next-auth"
 import { JWT } from "next-auth/jwt"
 
@@ -8,14 +7,13 @@ import { JWT } from "next-auth/jwt"
 declare module 'next-auth' {
   interface User {
     _id: string
-    firstName?: string
-    lastName?: string
     nameInitials?: string
   }
 
   interface Session {
     user: User & DefaultSession["user"] & {
       _id: string
+      nameInitials: string
     }
   }
 }
@@ -23,14 +21,14 @@ declare module 'next-auth' {
 declare module "next-auth/jwt" {
   interface JWT extends User {
     _id: string
+    nameInitials: string
   }
 }
 
 export interface IUser {
   _id: string
-  firstName?: string
-  lastName?: string
-  nameInitials?: string
+  name: string
+  dateOfBirth: string
   email: string
   emailVerified: Date
   image: string
@@ -38,11 +36,11 @@ export interface IUser {
 }
 
 const UserSchema = new mongoose.Schema<IUser>({
-  firstName: {
+  name: {
     type: String,
     trim: true,
   },
-  lastName: {
+  dateOfBirth: {
     type: String,
     trim: true,
   },

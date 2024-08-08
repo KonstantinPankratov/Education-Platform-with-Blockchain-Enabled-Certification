@@ -5,7 +5,7 @@ export const authConfig = {
   providers: [],
   pages: {
     signIn: '/sign-in',
-    newUser : '/sign-up',
+    newUser: '/sign-up',
   },
   session: {
     strategy: "jwt",
@@ -14,17 +14,13 @@ export const authConfig = {
     async jwt({ token, user }) {
       if (user) {
         token._id = user._id
-        token.firstName = user.firstName
-        token.lastName = user.lastName
-        token.nameInitials = createInitials(user.firstName, user.lastName)
+        token.nameInitials = user.name ? createInitials(user.name) : ''
       }
       return token
     },
     async session({ session, token }) {
-      session.user.firstName = token.firstName
-      session.user.lastName = token.lastName
-      session.user.nameInitials = token.nameInitials
       session.user._id = token._id
+      session.user.nameInitials = token.nameInitials
       return session
     },
   }
