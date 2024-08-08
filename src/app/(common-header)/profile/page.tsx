@@ -8,6 +8,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, } from "@/com
 import { getUserEnrollments, getUserSolutionStatistics } from "@/db/services/userService"
 import { Progress } from "@/components/ui/progress"
 import { File } from "lucide-react"
+import ProfileEditDialog from "@/components/profile/profile-edit-dialog"
+import fetchProfile from "@/actions/profile/fetch-profile"
 
 
 export default async function Page() {
@@ -19,14 +21,14 @@ export default async function Page() {
 
   const completedExerciseData = await getUserSolutionStatistics(session?.user._id!)
 
+  const profile = await fetchProfile()
+
   return (
     <>
       <section className="container mt-14">
         <div className="flex items-center gap-x-5 my-10">
           <h1 className="text-4xl sm:text-6xl">Profile</h1>
-          <Button asChild variant={"link"}>
-            <Link href="#">Edit</Link>
-          </Button>
+          <ProfileEditDialog profile={profile} />
         </div>
         <div className="flex gap-5">
           <CardChart data={completedExerciseData} />
