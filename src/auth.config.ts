@@ -1,12 +1,5 @@
 import type { NextAuthConfig } from 'next-auth'
-
-const createInitials = (firstName: string | undefined, lastName: string | undefined) => {
-  if (!firstName || !lastName) {
-    return ''
-  }
-
-  return firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase()
-}
+import { createInitials } from './lib/helpers'
 
 export const authConfig = {
   providers: [],

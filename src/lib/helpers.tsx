@@ -2,6 +2,12 @@ import CodeSnippet from "@/components/ui/code-snippet"
 import parse from "html-react-parser"
 import sanitizeHtml from "sanitize-html"
 
+export const createInitials = (name: string) => {
+  const words = name.split(' ')
+  const initials = words.map(word => word[0].toUpperCase())
+  return initials.join('')
+}
+
 export const unescapeLineBreaks = (str: string) => {
   return str.replace(/\\n/g, '\n').replace(/\\r\\n/g, '\r\n')
 }
