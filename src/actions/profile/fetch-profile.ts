@@ -1,19 +1,16 @@
-import { auth } from "@/auth"
 import dbConnect from "@/db/dbConnect"
 import User, { IUser } from "@/db/models/auth/User"
+import { Types } from "mongoose"
 
 export type IUserProfile = Pick<IUser, "email" | "name" | "image" | "dateOfBirth"> | null // TODO move to @/types
 
-const fetchProfile = async (): Promise<IUserProfile> => {
+const fetchProfile = async (userId: string): Promise<IUserProfile> => {
   try {
-    const session = await auth()
-
-    if (!session)
-      throw new Error('No session found')
+    const userObjectId = new Types.ObjectId(userId)
 
     await dbConnect()
 
-    const user = await User.findById(session.user._id, 'email name image dateOfBirth')
+    const user = await User.findById(userObjectId, 'email name image dateOfBirth')
     return JSON.parse(JSON.stringify(user))
   } catch (error) {
     throw error

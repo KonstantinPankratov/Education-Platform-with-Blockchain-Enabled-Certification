@@ -10,6 +10,7 @@ export interface ILecture extends mongoose.Document {
   order: number
   exercises?: IExercise[]
   isCompleted?: boolean
+  isAccessible?: boolean
 }
 
 export const LectureSchema: mongoose.Schema = new mongoose.Schema<ILecture>({

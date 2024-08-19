@@ -8,7 +8,8 @@ import { NOT_AUTH_ROUTE } from "@/lib/routes"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { ICourse } from "@/db/models/Course"
-import { enrollUser } from "@/db/services/userService"
+import doEnrollment from "@/actions/user/enrollment/do-enrollment"
+import { fetchFirstCourseLectureLink } from "@/actions/course/fetch-last-course-part"
 
 const CourseEnrollment = ({
   course,
@@ -41,22 +42,16 @@ const CourseEnrollment = ({
     }
 
     if (enrolled) {
-      return router.push('/course/javascript-for-beginners/lecture/what-is-javascript') // TODO
+      return // TODO router.push( %CONTINUE URL% )
     }
 
     setLoading(true)
 
-    const enrollPromise = enrollUser(session?.user?._id!, course._id)
-      .then(async response => {
-        if (!response.ok) {
-          const errorData = await response.json()
-          throw new Error(errorData.error)
-        }
-        return response.json()
-      }).then(async data => {
+    const enrollPromise = doEnrollment(session?.user?._id!, course._id)
+      .then(async data => {
         setEnrolled(true)
         setTimeout(() => {
-          router.push('/course/javascript-for-beginners/lecture/what-is-javascript') // TODO
+          router.push(fetchFirstCourseLectureLink(course))
         }, 10000)
         return data
       }).finally(() => {
@@ -82,7 +77,7 @@ const CourseEnrollment = ({
   return (
     <>
       {enrolled ?
-        <Button onClick={enroll} disabled={loading} className={cn(className)}>Continue learning</Button> :
+        <Button onClick={enroll} disabled={enrolled} className={cn(className)}>You&apos;re enrolled</Button> :
         <Button onClick={enroll} disabled={loading} className={cn(className)}>Enroll</Button>}
     </>
   )

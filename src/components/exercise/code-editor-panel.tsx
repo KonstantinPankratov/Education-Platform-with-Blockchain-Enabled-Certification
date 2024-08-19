@@ -12,18 +12,21 @@ import LoadingResult from "./result/loading"
 import ErrorResult from "./result/error"
 import SuccessResult from "./result/success"
 import EmptyResult from "./result/empty"
-import { executeSolution, getLastExerciseSolution } from "@/db/services/exerciseService"
 import { IUserSolution } from "@/db/models/UserSolution"
 import { ITest } from "@/db/models/Test"
-import { Url } from "next/dist/shared/lib/router/router"
-import Link from "next/link"
+import executeSolution from "@/actions/user/solution/do-execute"
+import fetchUserLastSolution from "@/actions/user/solution/fetch-last"
+import NavigationButton from "../shared/course/navigation-button"
+import { ICourse } from "@/db/models/Course"
 
 interface ComponentProps {
+  userId: string,
+  course: ICourse,
   exercise: IExercise,
-  nextLink: Url | null
+  nextPartUrl: string | null
 }
 
-const CodeEditorPanel = ({ exercise, nextLink }: ComponentProps) => {
+const CodeEditorPanel = ({ userId, course, exercise, nextPartUrl }: ComponentProps) => {
   const [isLoading, setLoading] = useState<boolean>(false)
   const [isContinuable, setContinuable] = useState<boolean>(false)
 
@@ -31,24 +34,25 @@ const CodeEditorPanel = ({ exercise, nextLink }: ComponentProps) => {
   const [userSolution, setUserSolution] = useState<IUserSolution | null>()
 
   useEffect(() => {
-    getLastExerciseSolution(exercise._id).then((res) => {
+    fetchUserLastSolution(userId, exercise._id).then((res) => {
       if (res) {
         setUserSolution(res)
         setSolution(res.content)
         setContinuable(!res.failedTestIds.length)
       }
     })
-  }, [exercise._id])
+  }, [userId, exercise._id])
 
   const testSolution = async () => {
     if (isLoading)
       return
     setLoading(true)
-    executeSolution(exercise._id, solution, exercise.tests).then((res) => {
+    executeSolution(userId, exercise._id, solution, exercise.tests).then((res) => {
       if (res) {
         setUserSolution(res)
         setContinuable(!res.failedTestIds.length)
       }
+    }).finally(() => {
       setLoading(false)
     })
   }
@@ -71,9 +75,7 @@ const CodeEditorPanel = ({ exercise, nextLink }: ComponentProps) => {
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-            {isContinuable && <Button variant={isContinuable ? 'default' : 'secondary'} asChild>
-              <Link href={nextLink ?? ''}>Continue</Link>
-            </Button>}
+            {isContinuable && <NavigationButton url={nextPartUrl} course={course} />}
           </div>
         </div>
         <CodeEditor solution={solution} setSolution={setSolution} solutionCallback={testSolution}></CodeEditor>

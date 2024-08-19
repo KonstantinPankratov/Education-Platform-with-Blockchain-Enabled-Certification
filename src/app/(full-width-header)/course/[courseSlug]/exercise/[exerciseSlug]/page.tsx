@@ -4,12 +4,12 @@ import { Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, Breadcr
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import Post from "@/components/exercise/post"
 import Link from "next/link"
-import { getCourseModuleLectureExerciseBySlugs, getNextCoursePartLink } from "@/db/services/courseService"
 import { notFound } from "next/navigation"
 import { parseContent, sanitizeContent } from "@/lib/helpers"
 import CodeEditorPanel from "@/components/exercise/code-editor-panel"
 import { auth } from "@/auth"
-import { isUserEnrolled } from "@/db/services/userService"
+import fetchCourseModuleLectureExerciseBySlugs from "@/actions/course/fetch-by-course-exercise-slugs"
+import isUserEnrolled from "@/actions/user/enrollment/is-enrolled"
 
 interface PageProps {
   params: {
@@ -20,17 +20,17 @@ interface PageProps {
 
 export default async function Page({ params: { courseSlug, exerciseSlug } }: PageProps) {
   const session = await auth()
+  const userId = session?.user._id!
 
-  const { course, module, lecture, exercise } = await getCourseModuleLectureExerciseBySlugs(courseSlug, exerciseSlug)
+  const { course, module, lecture, exercise, nextPartUrl } = await fetchCourseModuleLectureExerciseBySlugs(courseSlug, exerciseSlug)
 
   if (!course || !module || !lecture || !exercise)
     notFound()
 
-  if (!isUserEnrolled(session?.user._id!, course._id))
+  if (!isUserEnrolled(userId, course._id))
     throw new Error('You are not enrolled in this course')
 
   const parsedExerciseContent = parseContent(sanitizeContent(exercise?.content))
-  const nextLink = await getNextCoursePartLink({ courseId: course._id, moduleId: module._id, lectureId: lecture._id, exerciseId: exercise._id })
 
   return (
     <ResizablePanelGroup
@@ -82,7 +82,7 @@ export default async function Page({ params: { courseSlug, exerciseSlug } }: Pag
       </ResizablePanel>
       <ResizableHandle withHandle />
       <ResizablePanel defaultSize={55} minSize={20} className="p-6 pt-3"> {/* right */}
-        <CodeEditorPanel exercise={exercise} nextLink={nextLink} />
+        <CodeEditorPanel userId={userId} course={course} exercise={exercise} nextPartUrl={nextPartUrl} />
       </ResizablePanel>
     </ResizablePanelGroup>
   )

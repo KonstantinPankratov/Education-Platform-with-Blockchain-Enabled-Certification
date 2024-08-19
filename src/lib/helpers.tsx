@@ -2,6 +2,18 @@ import CodeSnippet from "@/components/ui/code-snippet"
 import parse from "html-react-parser"
 import sanitizeHtml from "sanitize-html"
 
+export function getCoursePartLink({ courseSlug, lectureSlug, exerciseSlug }: { courseSlug: string, lectureSlug?: string, exerciseSlug?: string }): string {
+  if (lectureSlug) {
+    return `/course/${courseSlug}/lecture/${lectureSlug}`
+  }
+
+  if (exerciseSlug) {
+    return `/course/${courseSlug}/exercise/${exerciseSlug}`
+  }
+
+  return `/course/${courseSlug}`
+}
+
 export const createInitials = (name: string) => {
   const words = name.split(' ')
   const initials = words.map(word => word[0].toUpperCase())

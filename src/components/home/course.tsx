@@ -12,7 +12,7 @@ import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import CourseEnrollment from "../forms/CourseEnrollment"
 import { auth } from "@/auth"
-import { isUserEnrolled } from "@/db/services/userService"
+import isUserEnrolled from "@/actions/user/enrollment/is-enrolled"
 
 interface CourseProps {
   course: ICourse

@@ -5,23 +5,24 @@ import { Badge } from "@/components/ui/badge"
 import CardChart from '@/components/profile/card-chart'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, } from "@/components/ui/tooltip"
-import { getUserEnrollments, getUserSolutionStatistics } from "@/db/services/userService"
 import { Progress } from "@/components/ui/progress"
 import { File } from "lucide-react"
 import ProfileEditDialog from "@/components/profile/profile-edit-dialog"
 import fetchProfile from "@/actions/profile/fetch-profile"
+import fetchUserSolutionStatistics from "@/actions/profile/fetch-solution-statistics"
+import fetchUserEnrollments from "@/actions/user/enrollment/fetch-enrollments"
 
 
 export default async function Page() {
   const session = await auth()
+  const userId = session?.user._id!
 
-  const enrolledCourses = await getUserEnrollments(session?.user._id!)
+  const profile = await fetchProfile(userId)
+
+  const enrolledCourses = await fetchUserEnrollments(userId)
   const enrolledCourseCount = enrolledCourses.length
   const completedExerciseCount = enrolledCourses.reduce((sum, { completedExerciseCount }) => sum + completedExerciseCount, 0)
-
-  const completedExerciseData = await getUserSolutionStatistics(session?.user._id!)
-
-  const profile = await fetchProfile()
+  const completedExerciseData = await fetchUserSolutionStatistics(userId)
 
   return (
     <>
@@ -57,7 +58,7 @@ export default async function Page() {
                   <Link className="underline-offset-4 hover:underline" href={`/course/${course.slug}`}>{course.name}</Link>
                 </TableCell>
                 <TableCell>
-                  <TooltipProvider>
+                  <TooltipProvider delayDuration={300}>
                     <Tooltip>
                       <TooltipTrigger className="py-2"><Progress value={course.progress} className="w-[100px] h-1" /></TooltipTrigger>
                       <TooltipContent>

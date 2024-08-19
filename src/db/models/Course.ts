@@ -7,10 +7,12 @@ export interface ICourse extends mongoose.Document {
   slug: string
   content?: string
   modules?: IModule[]
-  lectureCount?: number
-  exerciseCount?: number
-  progress?: number
-  isCompleted?: boolean
+}
+
+export interface IAuthCourse extends ICourse {
+  progress: number
+  lectureCount: number
+  exerciseCount: number
 }
 
 const CourseSchema: mongoose.Schema = new mongoose.Schema<ICourse>({

@@ -1,32 +1,24 @@
-import { auth } from "@/auth"
-import dbConnect from "@/db/dbConnect"
-import { ITest } from "@/db/models/Test"
-import UserSolution from "@/db/models/UserSolution"
-import { Types } from "mongoose"
-import { NextRequest, NextResponse } from "next/server"
+"use server"
 
-dbConnect()
+import dbConnect from "@/db/dbConnect";
+import User from "@/db/models/auth/User";
+import { ITest } from "@/db/models/Test";
+import UserSolution, { IUserSolution } from "@/db/models/UserSolution";
+import { Types } from "mongoose";
 
-interface RequestBody {
-  exerciseId: Types.ObjectId,
-  solution: string,
-  tests: ITest[]
-}
-
-export async function POST(req: NextRequest) {
-  const { exerciseId, solution, tests }: RequestBody = await req.json()
-  let failedTestIds: Types.ObjectId[] = []
-  let passedTestIds: Types.ObjectId[] = []
-  let userId = null
+const executeSolution = async (userId: string, exerciseId: string, solution: string, tests: ITest[]): Promise<IUserSolution | null> => {
+  const failedTestIds: Types.ObjectId[] = []
+  const passedTestIds: Types.ObjectId[] = []
 
   try {
-    const session = await auth()
+    await dbConnect()
 
-    if (!session?.user) {
-      return NextResponse.json({ error: "User session is missing" }, { status: 401 })
-    }
+    const userObjectId = new Types.ObjectId(userId)
 
-    userId = session.user._id
+    const user = await User.exists({ _id: userObjectId })
+
+    if (!user)
+      throw new Error("Oops, an error occured, please try again later")
 
     const ivm = eval("require")("isolated-vm") // import ivm from 'isolated-vm' doesn't work
 
@@ -64,6 +56,8 @@ export async function POST(req: NextRequest) {
 
     await userSolution.populate('failedTestIds')
 
-    return NextResponse.json(userSolution)
+    return JSON.parse(JSON.stringify(userSolution)) // TODO create helper func convertObjectIdsToStrings
   }
 }
+
+export default executeSolution

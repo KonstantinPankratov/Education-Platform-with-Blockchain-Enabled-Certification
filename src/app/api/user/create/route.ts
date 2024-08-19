@@ -6,6 +6,7 @@ import type { NextRequest } from "next/server"
 
 export async function POST(req: NextRequest) {
   const data = await req.json()
+
   await dbConnect()
 
   try {
@@ -13,7 +14,7 @@ export async function POST(req: NextRequest) {
     const password = data.password
     const salt = await genSalt(saltRounds)
     const hashedPassword = await hash(password, salt)
-    
+
     const user = new User({
       ...data,
       password: hashedPassword

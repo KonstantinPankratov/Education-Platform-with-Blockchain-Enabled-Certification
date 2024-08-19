@@ -1,4 +1,7 @@
+import fetchLectureData from "@/actions/course/fetch-by-course-lecture-slugs"
+import isUserEnrolled from "@/actions/user/enrollment/is-enrolled"
 import { auth } from "@/auth"
+import NavigationButton from "@/components/shared/course/navigation-button"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,14 +10,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { Button } from "@/components/ui/button"
-import Shortcut from "@/components/ui/shortcut"
-import { getCourseModuleLectureBySlugs, getNextCoursePartLink } from "@/db/services/courseService"
-import { isUserEnrolled } from "@/db/services/userService"
-import Link from "next/link"
 import { notFound } from "next/navigation"
 import sanitizeHtml from 'sanitize-html'
-
 
 interface PageProps {
   params: {
@@ -26,7 +23,7 @@ interface PageProps {
 export default async function Page({ params: { courseSlug, lectureSlug } }: PageProps) {
   const session = await auth()
 
-  const { course, module, lecture } = await getCourseModuleLectureBySlugs(courseSlug, lectureSlug)
+  const { course, module, lecture, nextPartUrl } = await fetchLectureData(courseSlug, lectureSlug)
 
   if (!course || !module || !lecture)
     notFound()
@@ -42,8 +39,6 @@ export default async function Page({ params: { courseSlug, lectureSlug } }: Page
       'img': ['src'],
     }
   })
-
-  const nextLink = await getNextCoursePartLink({ courseId: course._id, moduleId: module._id, lectureId: lecture._id })
 
   return (
     <section className="relative isolate pt-14">
@@ -66,9 +61,7 @@ export default async function Page({ params: { courseSlug, lectureSlug } }: Page
         <h1 className="text-4xl sm:text-6xl mt-10 mb-5">{lecture?.name}</h1>
         <div className="flex flex-col gap-y-5" dangerouslySetInnerHTML={{ __html: lectureContent }}></div>
         <div className="flex justify-center mt-10">
-          <Button asChild>
-            <Link href={nextLink ?? ''}>Continue <Shortcut>Ctrl + Enter</Shortcut></Link>
-          </Button>
+          <NavigationButton url={nextPartUrl} course={course} />
         </div>
       </div>
     </section>
