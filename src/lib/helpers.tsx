@@ -26,11 +26,11 @@ export const unescapeLineBreaks = (str: string) => {
 
 export const sanitizeContent = (html: string) => {
   return sanitizeHtml(html, {
-    allowedTags: sanitizeHtml.defaults.allowedTags.concat([ "img", "h2", "h3", "p", "code" ]),
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img", "h2", "h3", "p", "code"]),
     allowedAttributes: {
-        "*": ["style", "class"],
-        "a": [ "href", "name", "target" ],
-        "img": [ "src" ],
+      "*": ["style", "class"],
+      "a": ["href", "name", "target"],
+      "img": ["src"],
     }
   })
 }
@@ -40,7 +40,7 @@ export const parseContent = (html: string) => {
     replace: (domNode: any) => {
       if (domNode.name === "code") {
         const codeText = domNode.children.map((child: any) => unescapeLineBreaks(child.data)).join('')
-        return <CodeSnippet>{ codeText }</CodeSnippet>
+        return <CodeSnippet>{codeText}</CodeSnippet>
       }
     },
   })

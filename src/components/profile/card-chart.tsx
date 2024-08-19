@@ -23,7 +23,7 @@ interface CardChartProps {
 }
 
 const CardChart = ({ data }: CardChartProps) => {
-  const difference = data.difference >= 0 ? `+ ${data.difference}` : `- ${data.difference}`;
+  const difference = data.difference >= 0 ? `+ ${Math.abs(data.difference)}` : `- ${Math.abs(data.difference)}`;
   return (
     <Card>
       <CardHeader>
