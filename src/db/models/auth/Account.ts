@@ -3,6 +3,7 @@ import type { Account } from "next-auth"
 
 // @Schema
 const AccountSchema = new mongoose.Schema<Account>({
+  // @ts-ignore
   userId: {
     type: String,
     trim: true,

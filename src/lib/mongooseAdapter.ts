@@ -103,6 +103,7 @@ const MongooseAdapter = (
       const user = await User.findByIdAndDelete(userId)
       return user
     },
+    // @ts-ignore
     async linkAccount(data) {
       console.log("linkAccount: ", data)
 
@@ -110,6 +111,7 @@ const MongooseAdapter = (
       const account = await Account.create(data)
       return account
     },
+    // @ts-ignore
     async unlinkAccount(data) {
       console.log("unlinkAccount: ", data)
       const {providerAccountId, provider} = data
@@ -144,6 +146,7 @@ const MongooseAdapter = (
     },
     async updateSession(data) {
       console.log("updateSession: ", data)
+      // @ts-ignore
       const {id, ...restData} = data
       await dbConnect
       const session = await Session.findByIdAndUpdate(id, restData, {
