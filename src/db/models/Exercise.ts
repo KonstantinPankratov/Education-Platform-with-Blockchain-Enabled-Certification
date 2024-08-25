@@ -11,6 +11,7 @@ export interface IExercise extends mongoose.Document {
   order: number
   tests: ITest[]
   isCompleted?: boolean
+  isAccessible?: boolean
 }
 
 export const ExerciseSchema: mongoose.Schema = new mongoose.Schema<IExercise>({
