@@ -179,10 +179,18 @@ export async function GET(req: NextRequest, { params }: ParamsProps) {
         if (m.lectures) {
           for (const l of m.lectures) {
             l.isAccessible = true
-
             if (!l.isCompleted) {
               isLastAccessible = true
               break
+            }
+            if (l.exercises) {
+              for (const e of l.exercises) {
+                e.isAccessible = true
+                if (!e.isCompleted) {
+                  isLastAccessible = true
+                  break
+                }
+              }
             }
           }
         }
