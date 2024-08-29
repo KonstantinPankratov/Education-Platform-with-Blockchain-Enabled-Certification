@@ -10,6 +10,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
+import { sanitizeContent } from "@/lib/helpers"
 import { notFound } from "next/navigation"
 import sanitizeHtml from 'sanitize-html'
 
@@ -31,14 +32,7 @@ export default async function Page({ params: { courseSlug, lectureSlug } }: Page
   if (!isUserEnrolled(session?.user._id!, course._id))
     throw new Error('You are not enrolled in this course')
 
-  const lectureContent = sanitizeHtml(lecture?.content, {
-    allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h2', 'h3', 'p']),
-    allowedAttributes: {
-      '*': ['style', 'class'],
-      'a': ['href', 'name', 'target'],
-      'img': ['src'],
-    }
-  })
+  const lectureContent = sanitizeContent(lecture?.content)
 
   return (
     <section className="relative isolate pt-14">
