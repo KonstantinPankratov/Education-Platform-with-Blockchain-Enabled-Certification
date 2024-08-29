@@ -136,7 +136,7 @@ export async function GET(req: NextRequest, { params }: ParamsProps) {
                           $map: {
                             input: '$$lecture.exercises',
                             as: 'exercise',
-                            in: { $cond: ['$isCompleted', 1, 0] },
+                            in: { $cond: ['$$exercise.isCompleted', 1, 0] },
                           },
                         },
                       },
