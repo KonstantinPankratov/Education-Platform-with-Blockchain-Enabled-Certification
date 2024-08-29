@@ -3,7 +3,6 @@ import { ICourse } from "@/db/models/Course"
 interface IExtCourse extends ICourse {
   lectureCount: number
   exerciseCount: number
-  progress: undefined
 }
 
 const fetchCourseBySlug = async (slug: string): Promise<IExtCourse | null> => {

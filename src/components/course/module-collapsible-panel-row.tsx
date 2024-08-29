@@ -14,16 +14,16 @@ interface ComponentProps {
   course: ICourse,
   coursePart: ILecture | IExercise,
   type: "lecture" | "exercise",
-  isLoggedIn: boolean
+  isEnrolled: boolean
 }
 
 const ModuleCollapsiblePanelRow = ({
   course,
   coursePart,
   type,
-  isLoggedIn
+  isEnrolled
 }: ComponentProps) => {
-  if (!isLoggedIn) {
+  if (!isEnrolled) {
     return (
       <TableRow className="text-neutral-50">
         <TableCell>
@@ -49,7 +49,7 @@ const ModuleCollapsiblePanelRow = ({
       return (
         <TooltipProvider delayDuration={300}>
           <Tooltip>
-            <TooltipTrigger className="mt-8 flex items-center gap-2 w-full">
+            <TooltipTrigger className="flex items-center">
               <Check size={20} />
             </TooltipTrigger>
             <TooltipContent side="right">

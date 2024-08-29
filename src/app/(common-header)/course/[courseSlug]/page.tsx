@@ -38,12 +38,12 @@ export default async function Page({ params: { courseSlug } }: PageProps) {
 
     module.lectures?.map((lecture: ILecture) => {
       itemNodes.push(
-        <ModuleCollapsiblePanelRow key={`lecture-${lecture._id}`} course={course} coursePart={lecture} type="lecture" isLoggedIn={!!session} />
+        <ModuleCollapsiblePanelRow key={`lecture-${lecture._id}`} course={course} coursePart={lecture} type="lecture" isEnrolled={isEnrolled} />
       )
 
       lecture.exercises?.map((exercise: IExercise) => {
         itemNodes.push(
-          <ModuleCollapsiblePanelRow key={`lecture-${exercise._id}`} course={course} coursePart={exercise} type="exercise" isLoggedIn={!!session} />
+          <ModuleCollapsiblePanelRow key={`lecture-${exercise._id}`} course={course} coursePart={exercise} type="exercise" isEnrolled={isEnrolled} />
         )
       })
     })
@@ -63,8 +63,8 @@ export default async function Page({ params: { courseSlug } }: PageProps) {
             <CourseEnrollment course={course} isUserEnrolled={isEnrolled} className="mt-8" />
 
             {
-              course.progress !== undefined &&
-              <div className="flex flex-col gap-2 text-xs text-neutral-400 mt-6">
+              isEnrolled && 'progress' in course &&
+              <div className="flex flex-col gap-2 text-xs text-neutral-400">
                 {`${course.progress}% completed`}
                 <Progress value={course.progress} className="w-[200px] h-2 rounded-md" />
               </div>
