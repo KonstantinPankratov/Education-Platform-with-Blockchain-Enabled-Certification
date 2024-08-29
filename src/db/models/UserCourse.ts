@@ -1,8 +1,9 @@
 import mongoose from "mongoose"
 
 export interface IUserCourse extends mongoose.Document {
-  userId: mongoose.Types.ObjectId
-  courseId: mongoose.Types.ObjectId
+  userId: string
+  courseId: string
+  completedAt: Date
 }
 
 const UserCourseSchema: mongoose.Schema = new mongoose.Schema<IUserCourse>({
@@ -15,6 +16,9 @@ const UserCourseSchema: mongoose.Schema = new mongoose.Schema<IUserCourse>({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Course',
     required: true
+  },
+  completedAt: {
+    type: mongoose.Schema.Types.Date
   }
 }, {
   timestamps: true
