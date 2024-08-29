@@ -1,6 +1,12 @@
 import { ICourse } from "@/db/models/Course"
 
-const fetchCourseBySlug = async (slug: string): Promise<ICourse | null> => {
+interface IExtCourse extends ICourse {
+  lectureCount: number
+  exerciseCount: number
+  progress: undefined
+}
+
+const fetchCourseBySlug = async (slug: string): Promise<IExtCourse | null> => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/course/${slug}`, {
     method: 'GET',
     next: {

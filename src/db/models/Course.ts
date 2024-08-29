@@ -9,12 +9,6 @@ export interface ICourse extends mongoose.Document {
   modules?: IModule[]
 }
 
-export interface IAuthCourse extends ICourse {
-  progress: number
-  lectureCount: number
-  exerciseCount: number
-}
-
 const CourseSchema: mongoose.Schema = new mongoose.Schema<ICourse>({
   name: {
     type: String,
