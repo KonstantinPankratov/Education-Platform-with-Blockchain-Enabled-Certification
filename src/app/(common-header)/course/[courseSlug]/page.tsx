@@ -10,7 +10,6 @@ import fetchAuthCourseBySlug from "@/actions/course/auth/fetch-course-by-slug"
 import fetchCourseBySlug from "@/actions/course/fetch-course-by-slug"
 import isUserEnrolled from "@/actions/user/enrollment/is-enrolled"
 import ModuleCollapsiblePanelRow from "@/components/course/module-collapsible-panel-row"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Progress } from "@/components/ui/progress"
 import ModuleCollapsiblePanel from "@/components/course/module-collapsible-panel"
 
@@ -59,8 +58,8 @@ export default async function Page({ params: { courseSlug } }: PageProps) {
         <div className="container">
           <h1 className="text-4xl sm:text-6xl">{course.name}</h1>
           <p className="mt-6 w-3/5">{course.content}</p>
-          <div className="flex items-center gap-4">
-            <CourseEnrollment course={course} isUserEnrolled={isEnrolled} className="mt-8" />
+          <div className="flex items-center gap-4 mt-8">
+            <CourseEnrollment course={course} isUserEnrolled={isEnrolled} />
 
             {
               isEnrolled && 'progress' in course &&
