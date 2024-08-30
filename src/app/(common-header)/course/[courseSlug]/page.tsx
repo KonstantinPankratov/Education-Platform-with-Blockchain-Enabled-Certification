@@ -12,6 +12,7 @@ import isUserEnrolled from "@/actions/user/enrollment/is-enrolled"
 import ModuleCollapsiblePanelRow from "@/components/course/module-collapsible-panel-row"
 import { Progress } from "@/components/ui/progress"
 import ModuleCollapsiblePanel from "@/components/course/module-collapsible-panel"
+import CourseGenerateCertificate from "@/components/forms/CourseGenerateCertificate"
 
 interface PageProps {
   params: {
@@ -31,6 +32,7 @@ export default async function Page({ params: { courseSlug } }: PageProps) {
   const isEnrolled: boolean = session ? await isUserEnrolled(session?.user._id, course._id) : false
 
   let moduleNodes: React.ReactNode[] = []
+  let activeAccordionValue: string | undefined = undefined
 
   course.modules?.map((module: IModule, index: number) => {
     let itemNodes: React.ReactNode[] = []
@@ -47,8 +49,12 @@ export default async function Page({ params: { courseSlug } }: PageProps) {
       })
     })
 
+    if (!activeAccordionValue && !module.isCompleted) {
+      activeAccordionValue = `module-${module._id}`;
+    }
+
     moduleNodes.push(
-      <ModuleCollapsiblePanel key={`lecture-${module._id}`} module={module} lecturesAndExercises={itemNodes} />
+      <ModuleCollapsiblePanel key={`module-${module._id}`} module={module} lecturesAndExercises={itemNodes} />
     )
   })
 
@@ -80,7 +86,7 @@ export default async function Page({ params: { courseSlug } }: PageProps) {
         </div>
         {
           course.modules?.length ?
-            <Accordion type="single" className="w-full mt-10">
+            <Accordion type="single" className="w-full mt-10" defaultValue={activeAccordionValue}>
               {moduleNodes}
             </Accordion>
             :
