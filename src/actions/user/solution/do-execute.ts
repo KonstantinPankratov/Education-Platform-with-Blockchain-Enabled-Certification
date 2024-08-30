@@ -5,6 +5,7 @@ import User from "@/db/models/auth/User";
 import { ITest } from "@/db/models/Test";
 import UserSolution, { IUserSolution } from "@/db/models/UserSolution";
 import { Types } from "mongoose";
+import { revalidateTag } from "next/cache";
 
 const executeSolution = async (userId: string, exerciseId: string, solution: string, tests: ITest[]): Promise<IUserSolution | null> => {
   const failedTestIds: Types.ObjectId[] = []
@@ -55,6 +56,8 @@ const executeSolution = async (userId: string, exerciseId: string, solution: str
     })
 
     await userSolution.populate('failedTestIds')
+
+    revalidateTag('auth-course')
 
     return JSON.parse(JSON.stringify(userSolution)) // TODO create helper func convertObjectIdsToStrings
   }

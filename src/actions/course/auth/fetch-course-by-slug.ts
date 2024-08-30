@@ -1,16 +1,18 @@
 import { ICourse } from "@/db/models/Course"
 
-interface IExtCourse extends ICourse {
+interface IAuthExtCourse extends ICourse {
+  isCompleted: boolean
   lectureCount: number
   exerciseCount: number
   progress: undefined
 }
 
-const fetchAuthCourseBySlug = async (userId: string, slug: string): Promise<IExtCourse | null> => {
+const fetchAuthCourseBySlug = async (userId: string, slug: string): Promise<IAuthExtCourse | null> => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/course/${slug}/user/${userId}`, {
     method: 'GET',
     next: {
-      revalidate: 0
+      revalidate: 3600,
+      tags: ['auth-course']
     }
   })
 
