@@ -1,5 +1,7 @@
 "use server"
 
+import fetchCourseByExerciseId from "@/actions/course/auth/fetch-course-by-exercise-id";
+import isCourseCompleted from "@/actions/course/auth/is-course-completed";
 import dbConnect from "@/db/dbConnect";
 import User from "@/db/models/auth/User";
 import { ITest } from "@/db/models/Test";
@@ -57,7 +59,10 @@ const executeSolution = async (userId: string, exerciseId: string, solution: str
 
     await userSolution.populate('failedTestIds')
 
-    revalidateTag('auth-course')
+    if (failedTestIds.length === 0) { // solution is correct, exercise is completed
+      revalidateTag('auth-course')
+      isCourseCompleted(userId, await fetchCourseByExerciseId(exerciseId))
+    }
 
     return JSON.parse(JSON.stringify(userSolution)) // TODO create helper func convertObjectIdsToStrings
   }

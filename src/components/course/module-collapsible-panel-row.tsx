@@ -92,7 +92,8 @@ const ModuleCollapsiblePanelRow = ({
   return (
     <TableRow className={
       cn("text-neutral-600", {
-        "text-neutral-50": coursePart.isAccessible
+        "text-neutral-50": coursePart.isAccessible,
+        "text-neutral-400": coursePart.isCompleted
       })
     }>
       <TableCell>

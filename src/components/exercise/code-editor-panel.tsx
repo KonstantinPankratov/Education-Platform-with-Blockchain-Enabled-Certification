@@ -75,7 +75,7 @@ const CodeEditorPanel = ({ userId, course, exercise, nextPartUrl }: ComponentPro
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-            {isContinuable && <NavigationButton url={nextPartUrl} course={course} />}
+            {isContinuable && <NavigationButton url={nextPartUrl} course={course} userId={userId} />}
           </div>
         </div>
         <CodeEditor solution={solution} setSolution={setSolution} solutionCallback={testSolution}></CodeEditor>
