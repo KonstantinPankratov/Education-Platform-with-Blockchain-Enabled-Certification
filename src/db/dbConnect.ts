@@ -1,5 +1,10 @@
 
 import mongoose from 'mongoose'
+import Exercise from './models/Exercise'
+import Lecture from './models/Lecture'
+import Course from './models/Course'
+import Module from './models/Module'
+import Test from './models/Test'
 
 const MONGODB_URI = process.env.MONGODB_URI
 
@@ -13,10 +18,6 @@ let cached = (global as { [key: string]: any }).mongoose
 
 if (!cached) {
   cached = (global as { [key: string]: any }).mongoose = { conn: null, promise: null }
-}
-
-function registerImplicitModels() { // TODO simplify and just import all models from directory
-  require('@/db/models/Test')
 }
 
 async function dbConnect() {
@@ -33,7 +34,11 @@ async function dbConnect() {
       throw error
     })
 
-    registerImplicitModels()
+    mongoose.model('Test', Test.schema)
+    mongoose.model('Exercise', Exercise.schema)
+    mongoose.model('Lecture', Lecture.schema)
+    mongoose.model('Module', Module.schema)
+    mongoose.model('Course', Course.schema)
   }
 
   cached.conn = await cached.promise
