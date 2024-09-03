@@ -1,19 +1,19 @@
 import mongoose from "mongoose"
 
 export interface IUserCourse extends mongoose.Document {
-  userId: string
-  courseId: string
+  userId: mongoose.Types.ObjectId
+  courseId: mongoose.Types.ObjectId
   completedAt: Date
 }
 
 const UserCourseSchema: mongoose.Schema = new mongoose.Schema<IUserCourse>({
   userId: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
   },
   courseId: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Course',
     required: true
   },

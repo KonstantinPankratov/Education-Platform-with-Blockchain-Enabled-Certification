@@ -3,7 +3,7 @@ import { IExercise } from "./Exercise"
 
 export interface ILecture extends mongoose.Document {
   _id: string
-  moduleId: string
+  moduleId: mongoose.Types.ObjectId
   name: string
   slug: string
   content: string
@@ -15,7 +15,7 @@ export interface ILecture extends mongoose.Document {
 
 export const LectureSchema: mongoose.Schema = new mongoose.Schema<ILecture>({
   moduleId: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "Module",
     required: true
   },
