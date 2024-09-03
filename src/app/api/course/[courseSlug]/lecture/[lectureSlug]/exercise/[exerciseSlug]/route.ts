@@ -6,87 +6,81 @@ import { NextRequest, NextResponse } from "next/server";
 
 
 export async function GET(req: NextRequest, { params }: { params: { courseSlug: string, exerciseSlug: string } }) {
-  try {
-    await dbConnect()
+  await dbConnect()
 
-    const { courseSlug, exerciseSlug } = params
+  const { courseSlug, exerciseSlug } = params
 
-    const result = await Course.aggregate([
-      { $match: { slug: courseSlug } },
-      {
-        $lookup: {
-          from: "modules",
-          localField: "_id",
-          foreignField: "courseId",
-          as: "modules",
-          pipeline: [
-            {
-              $lookup: {
-                from: "lectures",
-                localField: "_id",
-                foreignField: "moduleId",
-                as: "lectures",
-                pipeline: [
-                  {
-                    $lookup: {
-                      from: "exercises",
-                      localField: "_id",
-                      foreignField: "lectureId",
-                      as: "exercises",
-                      pipeline: [
-                        { $match: { slug: exerciseSlug } },
-                        {
-                          $lookup: {
-                            from: "tests",
-                            localField: "_id",
-                            foreignField: "exerciseId",
-                            as: "tests",
-                            pipeline: [
-                              { $sort: { order: 1 } }
-                            ]
-                          }
+  const result = await Course.aggregate([
+    { $match: { slug: courseSlug } },
+    {
+      $lookup: {
+        from: "modules",
+        localField: "_id",
+        foreignField: "courseId",
+        as: "modules",
+        pipeline: [
+          {
+            $lookup: {
+              from: "lectures",
+              localField: "_id",
+              foreignField: "moduleId",
+              as: "lectures",
+              pipeline: [
+                {
+                  $lookup: {
+                    from: "exercises",
+                    localField: "_id",
+                    foreignField: "lectureId",
+                    as: "exercises",
+                    pipeline: [
+                      { $match: { slug: exerciseSlug } },
+                      {
+                        $lookup: {
+                          from: "tests",
+                          localField: "_id",
+                          foreignField: "exerciseId",
+                          as: "tests",
+                          pipeline: [
+                            { $sort: { order: 1 } }
+                          ]
                         }
-                      ]
-                    }
-                  },
-                  { $unwind: "$exercises" }
-                ]
-              }
-            },
-            { $unwind: "$lectures" }
-          ]
-        }
-      },
-      { $unwind: "$modules" },
-      { $match: { "modules.lectures.exercises.slug": exerciseSlug } },
-      {
-        $project: {
-          course: {
-            _id: "$_id",
-            name: "$name",
-            slug: "$slug"
+                      }
+                    ]
+                  }
+                },
+                { $unwind: "$exercises" }
+              ]
+            }
           },
-          module: "$modules",
-          lecture: "$modules.lectures",
-          exercise: "$modules.lectures.exercises",
-        }
+          { $unwind: "$lectures" }
+        ]
       }
-    ])
-
-    if (result.length === 0) {
-      return NextResponse.json({ course: null, module: null, lecture: null, exercise: null })
+    },
+    { $unwind: "$modules" },
+    { $match: { "modules.lectures.exercises.slug": exerciseSlug } },
+    {
+      $project: {
+        course: {
+          _id: "$_id",
+          name: "$name",
+          slug: "$slug"
+        },
+        module: "$modules",
+        lecture: "$modules.lectures",
+        exercise: "$modules.lectures.exercises",
+      }
     }
+  ])
 
-    return NextResponse.json({
-      course: result[0].course,
-      module: result[0].module,
-      lecture: result[0].lecture,
-      exercise: result[0].exercise,
-      nextPartUrl: await fetchNextModulePartLink({ courseSlug: result[0].course.slug, lectureId: result[0].lecture._id, exerciseId: result[0].exercise._id })
-    })
-  } catch (error: any) {
-    return NextResponse.json({
-      error: error.message
-    })
+  if (result.length === 0) {
+    return NextResponse.json({ course: null, module: null, lecture: null, exercise: null })
   }
+
+  return NextResponse.json({
+    course: result[0].course,
+    module: result[0].module,
+    lecture: result[0].lecture,
+    exercise: result[0].exercise,
+    nextPartUrl: await fetchNextModulePartLink({ courseSlug: result[0].course.slug, lectureId: result[0].lecture._id, exerciseId: result[0].exercise._id })
+  })
 }

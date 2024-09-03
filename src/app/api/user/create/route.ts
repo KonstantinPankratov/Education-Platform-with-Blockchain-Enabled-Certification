@@ -5,9 +5,9 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
 export async function POST(req: NextRequest) {
-  const data = await req.json()
-
   await dbConnect()
+
+  const data = await req.json()
 
   try {
     const saltRounds = 10

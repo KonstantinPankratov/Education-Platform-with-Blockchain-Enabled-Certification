@@ -7,71 +7,69 @@ interface ParamsProps {
 }
 
 export async function GET(req: NextRequest, { params }: ParamsProps) {
-  try {
-    await dbConnect()
+  await dbConnect()
 
-    const { courseSlug } = params
+  const { courseSlug } = params
 
-    const courses = await Course.aggregate([
-      { $match: { slug: courseSlug } },
-      {
-        $lookup: {
-          from: "modules",
-          localField: "_id",
-          foreignField: "courseId",
-          as: "modules",
-          pipeline: [
-            {
-              $lookup: {
-                from: "lectures",
-                localField: "_id",
-                foreignField: "moduleId",
-                as: "lectures",
-                pipeline: [
-                  {
-                    $lookup: {
-                      from: "exercises",
-                      localField: "_id",
-                      foreignField: "lectureId",
-                      as: "exercises",
-                    }
-                  },
-                  { $sort: { order: 1 } },
-                ]
-              }
-            },
-            { $sort: { order: 1 } },
-          ]
-        }
-      },
-      { $sort: { order: 1 } },
-      {
-        $addFields: {
-          moduleCount: { $sum: { $size: '$modules' } },
-          lectureCount: {
-            $sum: {
-              $map: {
-                input: '$modules',
-                as: 'module',
-                in: {
-                  $sum: { $size: '$$module.lectures' }
+  const courses = await Course.aggregate([
+    { $match: { slug: courseSlug } },
+    {
+      $lookup: {
+        from: "modules",
+        localField: "_id",
+        foreignField: "courseId",
+        as: "modules",
+        pipeline: [
+          {
+            $lookup: {
+              from: "lectures",
+              localField: "_id",
+              foreignField: "moduleId",
+              as: "lectures",
+              pipeline: [
+                {
+                  $lookup: {
+                    from: "exercises",
+                    localField: "_id",
+                    foreignField: "lectureId",
+                    as: "exercises",
+                  }
                 },
-              },
+                { $sort: { order: 1 } },
+              ]
             }
           },
-          exerciseCount: {
-            $sum: {
-              $map: {
-                input: '$modules',
-                as: 'module',
-                in: {
-                  $sum: {
-                    $map: {
-                      input: '$$module.lectures',
-                      as: 'lecture',
-                      in: {
-                        $sum: { $size: '$$lecture.exercises' },
-                      },
+          { $sort: { order: 1 } },
+        ]
+      }
+    },
+    { $sort: { order: 1 } },
+    {
+      $addFields: {
+        moduleCount: { $sum: { $size: '$modules' } },
+        lectureCount: {
+          $sum: {
+            $map: {
+              input: '$modules',
+              as: 'module',
+              in: {
+                $sum: { $size: '$$module.lectures' }
+              },
+            },
+          }
+        },
+        exerciseCount: {
+          $sum: {
+            $map: {
+              input: '$modules',
+              as: 'module',
+              in: {
+                $sum: {
+                  $map: {
+                    input: '$$module.lectures',
+                    as: 'lecture',
+                    in: {
+                      $sum: { $size: '$$lecture.exercises' },
                     },
                   },
                 },
@@ -79,13 +77,9 @@ export async function GET(req: NextRequest, { params }: ParamsProps) {
             },
           },
         },
-      }
-    ])
+      },
+    }
+  ])
 
-    return NextResponse.json(courses[0] || null)
-  } catch (error: any) {
-    return NextResponse.json({
-      error: error.message
-    })
-  }
+  return NextResponse.json(courses[0] || null)
 }
