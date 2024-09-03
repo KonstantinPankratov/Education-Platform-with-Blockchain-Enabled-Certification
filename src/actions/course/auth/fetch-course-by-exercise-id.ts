@@ -6,7 +6,7 @@ import { ILecture } from "@/db/models/Lecture";
 import { IModule } from "@/db/models/Module";
 import { Types } from "mongoose";
 
-const fetchCourseByExerciseId = async (exerciseId: string): Promise<string | undefined> => {
+const fetchCourseIdByExerciseId = async (exerciseId: string): Promise<string | undefined> => {
   try {
     await dbConnect()
 
@@ -35,4 +35,4 @@ const fetchCourseByExerciseId = async (exerciseId: string): Promise<string | und
   }
 }
 
-export default fetchCourseByExerciseId
+export default fetchCourseIdByExerciseId
