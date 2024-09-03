@@ -1,4 +1,3 @@
-import isCoursчeCompleted from "@/actions/course/auth/is-course-completed"
 import fetchLectureData from "@/actions/course/fetch-by-course-lecture-slugs"
 import isUserEnrolled from "@/actions/user/enrollment/is-enrolled"
 import { auth } from "@/auth"

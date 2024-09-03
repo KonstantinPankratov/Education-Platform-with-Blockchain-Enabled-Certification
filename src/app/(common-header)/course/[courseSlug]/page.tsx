@@ -12,7 +12,6 @@ import isUserEnrolled from "@/actions/user/enrollment/is-enrolled"
 import ModuleCollapsiblePanelRow from "@/components/course/module-collapsible-panel-row"
 import { Progress } from "@/components/ui/progress"
 import ModuleCollapsiblePanel from "@/components/course/module-collapsible-panel"
-import CourseGenerateCertificate from "@/components/forms/CourseGenerateCertificate"
 
 interface PageProps {
   params: {
