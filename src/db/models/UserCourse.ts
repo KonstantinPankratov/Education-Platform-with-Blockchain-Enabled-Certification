@@ -8,12 +8,12 @@ export interface IUserCourse extends mongoose.Document {
 
 const UserCourseSchema: mongoose.Schema = new mongoose.Schema<IUserCourse>({
   userId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'User',
     required: true
   },
   courseId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'Course',
     required: true
   },

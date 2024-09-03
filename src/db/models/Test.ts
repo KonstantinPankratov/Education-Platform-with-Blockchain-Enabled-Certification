@@ -1,8 +1,8 @@
 import mongoose from "mongoose"
 
 export interface ITest extends Document {
-  _id: mongoose.Types.ObjectId
-  exerciseId: mongoose.Types.ObjectId
+  _id: string
+  exerciseId: string
   input: string
   output: string
   errorMsg: string
@@ -10,7 +10,7 @@ export interface ITest extends Document {
 
 const TestSchema: mongoose.Schema = new mongoose.Schema<ITest>({
   exerciseId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: "Exercise",
     required: true
   },

@@ -2,25 +2,25 @@ import mongoose from "mongoose"
 import { ITest } from "./Test"
 
 export interface IUserSolution extends mongoose.Document {
-  userId: mongoose.Types.ObjectId
-  exerciseId: mongoose.Types.ObjectId
-  failedTestIds: mongoose.Types.ObjectId[] | ITest[]
+  userId: string
+  exerciseId: string
+  failedTestIds: string[] | ITest[]
   content: string
 }
 
 const UserSolutionSchema: mongoose.Schema = new mongoose.Schema<IUserSolution>({
   userId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'User',
     required: true
   },
   exerciseId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'Exercise',
     required: true
   },
   failedTestIds: [{
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'Test',
     default: null
   }],

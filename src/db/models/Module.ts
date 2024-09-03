@@ -3,7 +3,7 @@ import { ILecture } from "./Lecture"
 
 export interface IModule extends mongoose.Document {
   _id: string
-  courseId: mongoose.Types.ObjectId
+  courseId: string
   name: string
   slug: string
   content: string
@@ -14,7 +14,8 @@ export interface IModule extends mongoose.Document {
 
 export const ModuleSchema: mongoose.Schema = new mongoose.Schema<IModule>({
   courseId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
+    ref: "Course",
     required: true
   },
   name: {
