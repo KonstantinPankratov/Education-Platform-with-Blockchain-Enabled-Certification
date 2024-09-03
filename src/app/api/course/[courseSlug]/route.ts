@@ -1,12 +1,13 @@
 import dbConnect from "@/db/dbConnect"
 import Course from "@/db/models/Course"
+import IExtCourse from "@/types/IExtCourse"
 import { NextRequest, NextResponse } from "next/server"
 
 interface ParamsProps {
   params: { courseSlug: string }
 }
 
-export async function GET(req: NextRequest, { params }: ParamsProps) {
+export async function GET(req: NextRequest, { params }: ParamsProps): Promise<NextResponse<IExtCourse | null>> {
   await dbConnect()
 
   const { courseSlug } = params
@@ -81,5 +82,8 @@ export async function GET(req: NextRequest, { params }: ParamsProps) {
     }
   ])
 
-  return NextResponse.json(courses[0] || null)
+  if (courses.length === 0)
+    return NextResponse.json(null)
+
+  return NextResponse.json(courses[0])
 }

@@ -1,15 +1,4 @@
-import { ICourse } from "@/db/models/Course"
-import { IExercise } from "@/db/models/Exercise"
-import { ILecture } from "@/db/models/Lecture"
-import { IModule } from "@/db/models/Module"
-
-interface ICourseModuleLectureExercise {
-  course: ICourse | null
-  module: IModule | null
-  lecture: ILecture | null
-  exercise: IExercise | null
-  nextPartUrl: string | null
-}
+import ICourseModuleLectureExercise from "@/types/ICourseModuleLectureExercise"
 
 const fetchCourseModuleLectureExerciseBySlugs = async (courseSlug: string, exerciseSlug: string): Promise<ICourseModuleLectureExercise> => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/course/${courseSlug}/lecture/any/exercise/${exerciseSlug}`, {

@@ -1,13 +1,4 @@
-import { ICourse } from "@/db/models/Course"
-import { ILecture } from "@/db/models/Lecture"
-import { IModule } from "@/db/models/Module"
-
-interface ICourseModuleLecture {
-  course: ICourse | null
-  module: IModule | null
-  lecture: ILecture | null
-  nextPartUrl: string | null
-}
+import ICourseModuleLecture from "@/types/ICourseModuleLecture"
 
 const fetchLectureData = async (courseSlug: string, lectureSlug: string): Promise<ICourseModuleLecture> => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/course/${courseSlug}/lecture/${lectureSlug}`, {

@@ -1,9 +1,10 @@
 import fetchNextModulePartLink from "@/actions/course/fetch-next-module-part";
 import dbConnect from "@/db/dbConnect";
 import Course from "@/db/models/Course";
+import ICourseModuleLecture from "@/types/ICourseModuleLecture";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest, { params }: { params: { courseSlug: string, lectureSlug: string } }) {
+export async function GET(req: NextRequest, { params }: { params: { courseSlug: string, lectureSlug: string } }): Promise<NextResponse<ICourseModuleLecture | null>> {
   await dbConnect()
 
   const { courseSlug, lectureSlug } = params

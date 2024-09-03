@@ -1,5 +1,6 @@
 import dbConnect from "@/db/dbConnect";
-import Course, { ICourse } from "@/db/models/Course";
+import Course from "@/db/models/Course";
+import IAuthExtCourse from "@/types/IAuthExtCourse";
 import { Types } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -10,14 +11,14 @@ interface ParamsProps {
   }
 }
 
-export async function GET(req: NextRequest, { params }: ParamsProps) {
+export async function GET(req: NextRequest, { params }: ParamsProps): Promise<NextResponse<IAuthExtCourse | null>> {
   await dbConnect()
 
   const { courseSlug, userId } = params
 
   const userObjectid = new Types.ObjectId(userId)
 
-  const courses: ICourse[] = await Course.aggregate([
+  const courses: IAuthExtCourse[] = await Course.aggregate([
     { $match: { slug: courseSlug } },
     {
       $lookup: {
@@ -168,7 +169,7 @@ export async function GET(req: NextRequest, { params }: ParamsProps) {
   ])
 
   if (!courses.length)
-    return null
+    return NextResponse.json(null)
 
   const course = courses[0]
 

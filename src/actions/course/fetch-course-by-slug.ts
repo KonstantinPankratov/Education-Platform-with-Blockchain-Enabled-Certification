@@ -1,9 +1,4 @@
-import { ICourse } from "@/db/models/Course"
-
-interface IExtCourse extends ICourse {
-  lectureCount: number
-  exerciseCount: number
-}
+import IExtCourse from "@/types/IExtCourse"
 
 const fetchCourseBySlug = async (slug: string): Promise<IExtCourse | null> => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/course/${slug}`, {

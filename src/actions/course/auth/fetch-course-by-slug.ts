@@ -1,11 +1,4 @@
-import { ICourse } from "@/db/models/Course"
-
-interface IAuthExtCourse extends ICourse {
-  isCompleted: boolean
-  lectureCount: number
-  exerciseCount: number
-  progress: undefined
-}
+import IAuthExtCourse from "@/types/IAuthExtCourse"
 
 const fetchAuthCourseBySlug = async (userId: string, slug: string): Promise<IAuthExtCourse | null> => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/course/${slug}/user/${userId}`, {
