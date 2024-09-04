@@ -20,6 +20,7 @@ const CodeEditor = ({ solution, setSolution, solutionCallback }: ComponentProps)
         className="h-full w-full"
         language="javascript"
         options={{
+          fontSize: 16,
           minimap: { enabled: false }
         }}
         theme="vs-dark"
