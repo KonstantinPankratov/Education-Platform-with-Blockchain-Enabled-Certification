@@ -1,10 +1,13 @@
 import { ITest } from '@/db/models/Test'
-import styles from './result.module.css'
-import { cn } from "@/lib/utils"
 import { SquareX } from 'lucide-react'
+import ResultStdout from './stdout'
 
+interface ComponentProps {
+  tests: ITest[],
+  stdout: string[] | undefined
+}
 
-const ErrorResult = ({ tests }: { tests: ITest[] }) => {
+const ErrorResult = ({ tests, stdout }: ComponentProps) => {
   return (
     <div className="flex flex-col gap-4 font-medium">
       {tests.map(test => (
@@ -13,9 +16,8 @@ const ErrorResult = ({ tests }: { tests: ITest[] }) => {
           <div>{test.errorMsg}</div>
         </div>
       ))}
-      <ul className={cn('pl-4 flex flex-col gap-2', styles.stdout)}>  {/* TODO */}
-        <li className='pl-2 text-sm'>stdout</li>
-      </ul>
+
+      <ResultStdout stdout={stdout} />
     </div>
   )
 }

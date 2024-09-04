@@ -12,12 +12,12 @@ import LoadingResult from "./result/loading"
 import ErrorResult from "./result/error"
 import SuccessResult from "./result/success"
 import EmptyResult from "./result/empty"
-import { IUserSolution } from "@/db/models/UserSolution"
 import { ITest } from "@/db/models/Test"
 import executeSolution from "@/actions/user/solution/do-execute"
 import fetchUserLastSolution from "@/actions/user/solution/fetch-last"
 import NavigationButton from "../shared/course/navigation-button"
 import { ICourse } from "@/db/models/Course"
+import IExtUserSolution from "@/types/IExtUserSolution"
 
 interface ComponentProps {
   userId: string,
@@ -31,7 +31,7 @@ const CodeEditorPanel = ({ userId, course, exercise, nextPartUrl }: ComponentPro
   const [isContinuable, setContinuable] = useState<boolean>(false)
 
   const [solution, setSolution] = useState<string>(unescapeLineBreaks(exercise.snippet))
-  const [userSolution, setUserSolution] = useState<IUserSolution | null>()
+  const [userSolution, setUserSolution] = useState<IExtUserSolution | null>()
 
   useEffect(() => {
     fetchUserLastSolution(userId, exercise._id).then((res) => {
@@ -88,9 +88,9 @@ const CodeEditorPanel = ({ userId, course, exercise, nextPartUrl }: ComponentPro
         <div className="rounded-md w-full flex-grow mt-3 bg-[#1e1e1e] p-4 flex flex-col gap-4">
           {isLoading ? <LoadingResult /> :
             userSolution ? (
-              userSolution.failedTestIds !== null && typeof userSolution.failedTestIds === 'object' ?
-                <ErrorResult tests={userSolution.failedTestIds as ITest[]} /> :
-                <SuccessResult />
+              userSolution.failedTestIds !== null && userSolution.failedTestIds.length ?
+                <ErrorResult tests={userSolution.failedTestIds as ITest[]} stdout={userSolution.stdout} /> :
+                <SuccessResult stdout={userSolution.stdout} />
             ) : <EmptyResult />}
         </div>
       </ResizablePanel>

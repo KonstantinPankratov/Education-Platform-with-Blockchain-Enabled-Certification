@@ -1,17 +1,19 @@
 "use server"
 
-import fetchCourseIdByExerciseId from "@/actions/course/auth/fetch-course-by-exercise-id";
-import isCourseCompleted from "@/actions/course/auth/is-course-completed";
-import dbConnect from "@/db/dbConnect";
-import User from "@/db/models/auth/User";
-import { ITest } from "@/db/models/Test";
-import UserSolution, { IUserSolution } from "@/db/models/UserSolution";
-import { Types } from "mongoose";
-import { revalidateTag } from "next/cache";
+import fetchCourseIdByExerciseId from "@/actions/course/auth/fetch-course-by-exercise-id"
+import isCourseCompleted from "@/actions/course/auth/is-course-completed"
+import dbConnect from "@/db/dbConnect"
+import User from "@/db/models/auth/User"
+import { ITest } from "@/db/models/Test"
+import UserSolution from "@/db/models/UserSolution"
+import IExtUserSolution from "@/types/IExtUserSolution"
+import { Types } from "mongoose"
+import { revalidateTag } from "next/cache"
 
-const executeSolution = async (userId: string, exerciseId: string, solution: string, tests: ITest[]): Promise<IUserSolution | null> => {
-  const failedTestIds: Types.ObjectId[] = []
-  const passedTestIds: Types.ObjectId[] = []
+const executeSolution = async (userId: string, exerciseId: string, solution: string, tests: ITest[]): Promise<IExtUserSolution | null> => {
+  const failedTestIds: string[] = []
+  const passedTestIds: string[] = []
+  const stdout: string[] = []
 
   try {
     await dbConnect()
@@ -26,13 +28,15 @@ const executeSolution = async (userId: string, exerciseId: string, solution: str
     const ivm = eval("require")("isolated-vm") // import ivm from 'isolated-vm' doesn't work
 
     const isolate = new ivm.Isolate({
-      memoryLimit: 16 // MB
+      memoryLimit: 8 // MB
     })
 
     const context = isolate.createContextSync()
 
-    // TODO 1) Collect console.log/debug/error using listener
-    // TODO 2) Parse console.log 
+    // Capture console.log output
+    context.evalClosureSync(`globalThis.console = { log: $0 }`,
+      [(...args: string[]) => stdout.push(args.join(' '))]
+    )
 
     context.evalSync(solution)
 
@@ -50,6 +54,8 @@ const executeSolution = async (userId: string, exerciseId: string, solution: str
   } catch (error: any) {
     console.error(error)
   } finally {
+    await UserSolution.deleteMany()
+
     const userSolution = await UserSolution.create({
       userId: userId,
       exerciseId: exerciseId,
@@ -66,7 +72,11 @@ const executeSolution = async (userId: string, exerciseId: string, solution: str
         isCourseCompleted(userId, courseId)
     }
 
-    return JSON.parse(JSON.stringify(userSolution)) // TODO create helper func convertObjectIdsToStrings
+    const parsedSolution = JSON.parse(JSON.stringify(userSolution)) // TODO create helper func convertObjectIdsToStrings
+
+    parsedSolution.stdout = stdout
+
+    return parsedSolution
   }
 }
 
