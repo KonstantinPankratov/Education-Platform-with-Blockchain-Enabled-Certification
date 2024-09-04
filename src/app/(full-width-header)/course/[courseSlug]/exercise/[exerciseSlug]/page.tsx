@@ -5,7 +5,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import Post from "@/components/exercise/post"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { parseContent, sanitizeContent } from "@/lib/helpers"
+import { CodeHighlighterParser, sanitizeContent, unescapeLineBreaks } from "@/lib/helpers"
 import CodeEditorPanel from "@/components/exercise/code-editor-panel"
 import { auth } from "@/auth"
 import fetchCourseModuleLectureExerciseBySlugs from "@/actions/course/fetch-by-course-exercise-slugs"
@@ -30,7 +30,7 @@ export default async function Page({ params: { courseSlug, exerciseSlug } }: Pag
   if (!isUserEnrolled(userId, course._id))
     throw new Error('You are not enrolled in this course')
 
-  const parsedExerciseContent = parseContent(sanitizeContent(exercise?.content))
+  const parsedExerciseContent = await CodeHighlighterParser(sanitizeContent(unescapeLineBreaks(exercise?.content)))
 
   return (
     <ResizablePanelGroup
@@ -67,9 +67,7 @@ export default async function Page({ params: { courseSlug, exerciseSlug } }: Pag
               </BreadcrumbList>
             </Breadcrumb>
             <h1 className="text-3xl sm:text-4xl mb-5">{exercise?.name}</h1>
-            <div className="flex flex-col gap-y-5">
-              {parsedExerciseContent}
-            </div>
+            <div className="flex flex-col gap-y-5" dangerouslySetInnerHTML={{ __html: parsedExerciseContent }}></div>
             <p className="border py-2 px-3 mt-4 rounded-sm text-base">Is there anything unclear? Feel free to <Link href={`/course/${course.slug}/lecture/${lecture.slug}`} className="underline underline-offset-2 hover:text-primary">go back to the theory</Link>.</p>
           </TabsContent>
           <TabsContent value="Discussion" className="w-full overflow-auto pr-5">

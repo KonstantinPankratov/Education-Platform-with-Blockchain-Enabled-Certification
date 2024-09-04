@@ -1,5 +1,3 @@
-import CodeSnippet from "@/components/ui/code-snippet"
-import parse from "html-react-parser"
 import sanitizeHtml from "sanitize-html"
 
 export function getCoursePartLink({ courseSlug, lectureSlug, exerciseSlug }: { courseSlug: string, lectureSlug?: string, exerciseSlug?: string }): string {
@@ -35,13 +33,31 @@ export const sanitizeContent = (html: string) => {
   })
 }
 
-export const parseContent = (html: string) => {
-  return parse(html, {
-    replace: (domNode: any) => {
-      if (domNode.name === "code") {
-        const codeText = domNode.children.map((child: any) => unescapeLineBreaks(child.data)).join('')
-        return <CodeSnippet>{codeText}</CodeSnippet>
-      }
-    },
+export const CodeHighlighterParser = async (html: string, lang: string = 'javascript', theme: string = 'dark-plus') => {
+  const { createHighlighter } = await import('shiki')
+
+  const highlighter = await createHighlighter({
+    langs: [lang],
+    themes: [theme]
+  })
+
+  return html.replace(
+    /<code>([\s\S]*?)<\/code>/g,
+    (match, code) => {
+      const highlightedCode = highlighter.codeToHtml(code, {
+        lang: lang,
+        theme: theme
+      })
+      return highlightedCode
+    }
+  )
+}
+
+export const CodeHighlighter = async (html: string, lang: string = 'javascript', theme: string = 'dark-plus') => {
+  const { codeToHtml } = await import('shiki')
+
+  return codeToHtml(html, {
+    lang: lang,
+    theme: theme
   })
 }

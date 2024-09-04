@@ -1,12 +1,11 @@
 import React from "react"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import { Prism } from 'react-syntax-highlighter'
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { CodeHighlighter } from "@/lib/helpers"
 
-const Post: React.FC = () => {
+const Post: React.FC = async () => {
   const code = `const numbers = [45, 4, 9, 16, 25];\n\nlet txt = "";\n\nnumbers.forEach(myFunction);\n\nfunction myFunction(value) {\n  // Complete this function ...\n}`
-
+  const parsedCode = await CodeHighlighter(code)
   return (
     <article className="flex flex-col gap-y-3">
       <div className="flex gap-x-4 items-center">
@@ -20,9 +19,7 @@ const Post: React.FC = () => {
         </div>
       </div>
       <p>Lorem ipsum dolor sit amet consectetur. In vulputate sit aliquam donec imperdiet mauris. Quam proin libero aliquet nulla. Massa placerat pretium commodo laoreet. Duis curabitur turpis in gravida massa nunc iaculis sed. Viverra sem purus tellus commodo sit.</p>
-      <Prism language="javascript" style={vscDarkPlus} showLineNumbers className="rounded-md">
-        {code}
-      </Prism>
+      <div dangerouslySetInnerHTML={{ __html: parsedCode }}></div>
       <ToggleGroup type="single" className="justify-normal">
         <ToggleGroupItem value="a">⚡ 7</ToggleGroupItem>
         <ToggleGroupItem value="b">💡 3</ToggleGroupItem>

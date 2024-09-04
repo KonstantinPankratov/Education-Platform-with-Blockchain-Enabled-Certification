@@ -119,3 +119,18 @@
     background: hsl(var(--border));
   }
 }
+
+pre.shiki {
+  @apply p-3 rounded-md text-base;
+}
+
+pre.shiki code {
+  counter-reset: step;
+  counter-increment: step 0;
+}
+
+pre.shiki code .line::before {
+  content: counter(step);
+  counter-increment: step;
+  @apply inline-block text-right w-4 mr-6 text-neutral-400;
+}
