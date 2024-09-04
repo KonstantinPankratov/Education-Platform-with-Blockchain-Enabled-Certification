@@ -1,7 +1,7 @@
 "use client"
 
 import React, { Dispatch, SetStateAction } from "react"
-import Editor, { OnChange } from '@monaco-editor/react'
+import Editor, { OnChange, type Monaco } from '@monaco-editor/react'
 
 interface ComponentProps {
   solution: string,
@@ -14,6 +14,14 @@ const CodeEditor = ({ solution, setSolution, solutionCallback }: ComponentProps)
     setSolution(value || '')
   }
 
+  const handleEditorDidMount = (monaco: Monaco) => {
+    monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+      noLib: true,
+      allowNonTsExtensions: true,
+    })
+  }
+
+
   return (
     <div className='rounded-md overflow-hidden h-full mb-5'>
       <Editor
@@ -25,6 +33,7 @@ const CodeEditor = ({ solution, setSolution, solutionCallback }: ComponentProps)
         }}
         theme="vs-dark"
         value={solution}
+        beforeMount={handleEditorDidMount}
         onChange={handleEditorChange} />
     </div>
   )
