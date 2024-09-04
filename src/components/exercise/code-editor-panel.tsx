@@ -12,12 +12,10 @@ import LoadingResult from "./result/loading"
 import ErrorResult from "./result/error"
 import SuccessResult from "./result/success"
 import EmptyResult from "./result/empty"
-import { ITest } from "@/db/models/Test"
 import executeSolution from "@/actions/user/solution/do-execute"
 import fetchUserLastSolution from "@/actions/user/solution/fetch-last"
 import NavigationButton from "../shared/course/navigation-button"
 import { ICourse } from "@/db/models/Course"
-import IExtUserSolution from "@/types/IExtUserSolution"
 
 interface ComponentProps {
   userId: string,
@@ -26,34 +24,36 @@ interface ComponentProps {
   nextPartUrl: string | null
 }
 
+type TSolutionState = 'default' | 'loading' | 'success' | 'error'
+
 const CodeEditorPanel = ({ userId, course, exercise, nextPartUrl }: ComponentProps) => {
-  const [isLoading, setLoading] = useState<boolean>(false)
   const [isContinuable, setContinuable] = useState<boolean>(false)
 
   const [solution, setSolution] = useState<string>(unescapeLineBreaks(exercise.snippet))
-  const [userSolution, setUserSolution] = useState<IExtUserSolution | null>()
+  const [solutionState, setSolutionState] = useState<TSolutionState>('default')
+  const [solutionErrors, setSolutionErrors] = useState<string[]>([])
+  const [solutionStdout, setSolutionStdout] = useState<string[]>([])
 
   useEffect(() => {
     fetchUserLastSolution(userId, exercise._id).then((res) => {
       if (res) {
-        setUserSolution(res)
         setSolution(res.content)
-        setContinuable(!res.failedTestIds.length)
       }
     })
   }, [userId, exercise._id])
 
   const testSolution = async () => {
-    if (isLoading)
+    if (solutionState === 'loading')
       return
-    setLoading(true)
+    setSolutionState('loading')
     executeSolution(userId, exercise._id, solution, exercise.tests).then((res) => {
       if (res) {
-        setUserSolution(res)
-        setContinuable(!res.failedTestIds.length)
+        const success = !res.errorMessages.length
+        setContinuable(success)
+        setSolutionState(success ? 'success' : 'error')
+        setSolutionErrors(res.errorMessages)
+        setSolutionStdout(res.stdout)
       }
-    }).finally(() => {
-      setLoading(false)
     })
   }
 
@@ -86,12 +86,10 @@ const CodeEditorPanel = ({ userId, course, exercise, nextPartUrl }: ComponentPro
           <Badge variant="outline">Result</Badge>
         </div>
         <div className="rounded-md w-full flex-grow mt-3 bg-[#1e1e1e] p-4 flex flex-col gap-4">
-          {isLoading ? <LoadingResult /> :
-            userSolution ? (
-              userSolution.failedTestIds !== null && userSolution.failedTestIds.length ?
-                <ErrorResult tests={userSolution.failedTestIds as ITest[]} stdout={userSolution.stdout} /> :
-                <SuccessResult stdout={userSolution.stdout} />
-            ) : <EmptyResult />}
+          {solutionState === 'default' && <EmptyResult />}
+          {solutionState === 'loading' && <LoadingResult />}
+          {solutionState === 'success' && <SuccessResult stdout={solutionStdout} />}
+          {solutionState === 'error' && <ErrorResult errors={solutionErrors} stdout={solutionStdout} />}
         </div>
       </ResizablePanel>
     </ResizablePanelGroup >

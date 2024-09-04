@@ -6,13 +6,13 @@ import dbConnect from "@/db/dbConnect"
 import User from "@/db/models/auth/User"
 import { ITest } from "@/db/models/Test"
 import UserSolution from "@/db/models/UserSolution"
-import IExtUserSolution from "@/types/IExtUserSolution"
 import { Types } from "mongoose"
 import { revalidateTag } from "next/cache"
 
-const executeSolution = async (userId: string, exerciseId: string, solution: string, tests: ITest[]): Promise<IExtUserSolution | null> => {
+const executeSolution = async (userId: string, exerciseId: string, solution: string, tests: ITest[]) => {
   const failedTestIds: string[] = []
   const passedTestIds: string[] = []
+  const errorMessages: string[] = []
   const stdout: string[] = []
 
   try {
@@ -44,6 +44,7 @@ const executeSolution = async (userId: string, exerciseId: string, solution: str
       const result = context.evalSync(test.input)
 
       if (result !== test.output) {
+        errorMessages.push(test.errorMsg)
         failedTestIds.push(test._id)
       }
 
@@ -52,7 +53,7 @@ const executeSolution = async (userId: string, exerciseId: string, solution: str
 
     isolate.dispose()
   } catch (error: any) {
-    console.error(error)
+    errorMessages.push(error.message)
   } finally {
     await UserSolution.deleteMany()
 
@@ -65,18 +66,17 @@ const executeSolution = async (userId: string, exerciseId: string, solution: str
 
     await userSolution.populate('failedTestIds')
 
-    if (failedTestIds.length === 0) { // solution is correct, exercise is completed
+    if (errorMessages.length === 0 && failedTestIds.length === 0) { // solution is correct, exercise is completed
       revalidateTag('auth-course')
       const courseId = await fetchCourseIdByExerciseId(exerciseId)
       if (courseId)
         isCourseCompleted(userId, courseId)
     }
 
-    const parsedSolution = JSON.parse(JSON.stringify(userSolution)) // TODO create helper func convertObjectIdsToStrings
-
-    parsedSolution.stdout = stdout
-
-    return parsedSolution
+    return {
+      errorMessages: errorMessages,
+      stdout: stdout
+    }
   }
 }
 

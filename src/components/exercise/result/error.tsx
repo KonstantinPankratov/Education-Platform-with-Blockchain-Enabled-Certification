@@ -1,19 +1,18 @@
-import { ITest } from '@/db/models/Test'
 import { SquareX } from 'lucide-react'
 import ResultStdout from './stdout'
 
 interface ComponentProps {
-  tests: ITest[],
-  stdout: string[] | undefined
+  errors: string[],
+  stdout: string[]
 }
 
-const ErrorResult = ({ tests, stdout }: ComponentProps) => {
+const ErrorResult = ({ errors, stdout }: ComponentProps) => {
   return (
     <div className="flex flex-col gap-4 font-medium">
-      {tests.map(test => (
-        <div key={test._id.toString()} className="text-red-600 flex gap-2">
+      {errors.map((error, i) => (
+        <div key={`error-${i}`} className="text-red-600 flex gap-2">
           <SquareX width={20} />
-          <div>{test.errorMsg}</div>
+          <div>{error}</div>
         </div>
       ))}
 

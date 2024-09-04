@@ -2,7 +2,7 @@ import { SquareCheck } from "lucide-react"
 import ResultStdout from "./stdout"
 
 interface ComponentProps {
-  stdout: string[] | undefined
+  stdout: string[]
 }
 
 const SuccessResult = ({ stdout }: ComponentProps) => {
