@@ -55,8 +55,6 @@ const executeSolution = async (userId: string, exerciseId: string, solution: str
   } catch (error: any) {
     errorMessages.push(error.message)
   } finally {
-    await UserSolution.deleteMany()
-
     const userSolution = await UserSolution.create({
       userId: userId,
       exerciseId: exerciseId,
