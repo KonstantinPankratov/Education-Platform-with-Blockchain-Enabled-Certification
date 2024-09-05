@@ -30,7 +30,7 @@ export default async function Page({ params: { courseSlug, exerciseSlug } }: Pag
   if (!isUserEnrolled(userId, course._id))
     throw new Error('You are not enrolled in this course')
 
-  const parsedExerciseContent = await CodeHighlighterParser(sanitizeContent(unescapeLineBreaks(exercise?.content)))
+  const parsedExerciseContent = await CodeHighlighterParser(sanitizeContent(exercise?.content))
 
   return (
     <ResizablePanelGroup

@@ -7,7 +7,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/
 import CodeEditor from "./code-editor"
 import { IExercise } from "@/db/models/Exercise"
 import { useEffect, useState } from "react"
-import { unescapeLineBreaks } from "@/lib/helpers"
+import { unescapeSpecialCodeCharacters } from "@/lib/helpers"
 import LoadingResult from "./result/loading"
 import ErrorResult from "./result/error"
 import SuccessResult from "./result/success"
@@ -29,7 +29,7 @@ type TSolutionState = 'default' | 'loading' | 'success' | 'error'
 const CodeEditorPanel = ({ userId, course, exercise, nextPartUrl }: ComponentProps) => {
   const [isContinuable, setContinuable] = useState<boolean>(false)
 
-  const [solution, setSolution] = useState<string>(unescapeLineBreaks(exercise.snippet))
+  const [solution, setSolution] = useState<string>(unescapeSpecialCodeCharacters(exercise.snippet))
   const [solutionState, setSolutionState] = useState<TSolutionState>('default')
   const [solutionErrors, setSolutionErrors] = useState<string[]>([])
   const [solutionStdout, setSolutionStdout] = useState<string[]>([])

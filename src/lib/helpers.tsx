@@ -18,17 +18,19 @@ export const createInitials = (name: string) => {
   return initials.join('')
 }
 
-export const unescapeLineBreaks = (str: string) => {
-  return str.replace(/\\n/g, '\n').replace(/\\r\\n/g, '\r\n')
+export const unescapeSpecialCodeCharacters = (str: string) => {
+  return str.replace(/\\n/g, '\n').replace(/\\r\\n/g, '\r\n').replace(/&amp;/g, '&').replace(/&gt;/g, '>').replace(/&gte;/g, '>=').replace(/&lt;/g, '<').replace(/&lte;/g, '<=')
 }
 
 export const sanitizeContent = (html: string) => {
   return sanitizeHtml(html, {
-    allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img", "h2", "h3", "p", "code"]),
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
     allowedAttributes: {
-      "*": ["style", "class"],
-      "a": ["href", "name", "target"],
-      "img": ["src"],
+      "*": ['style', 'class'],
+      "img": ['src', 'srcset', 'alt', 'title', 'width', 'height', 'loading'],
+    },
+    allowedClasses: {
+      'code': ['language-*'],
     }
   })
 }
@@ -57,10 +59,10 @@ export const CodeHighlighterParser = async (html: string, lang: string = 'javasc
   return response
 }
 
-export const CodeHighlighter = async (html: string, lang: string = 'javascript', theme: string = 'dark-plus') => {
+export const CodeHighlighter = async (code: string, lang: string = 'javascript', theme: string = 'dark-plus') => {
   const { codeToHtml } = await import('shiki')
 
-  return codeToHtml(html, {
+  return codeToHtml(unescapeSpecialCodeCharacters(code), {
     lang: lang,
     theme: theme
   })
