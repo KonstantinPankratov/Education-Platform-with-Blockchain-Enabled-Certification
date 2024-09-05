@@ -41,16 +41,20 @@ export const CodeHighlighterParser = async (html: string, lang: string = 'javasc
     themes: [theme]
   })
 
-  return html.replace(
+  const response = html.replace(
     /<code>([\s\S]*?)<\/code>/g,
     (match, code) => {
-      const highlightedCode = highlighter.codeToHtml(code, {
+      const highlightedCode = highlighter.codeToHtml(unescapeSpecialCodeCharacters(code), {
         lang: lang,
         theme: theme
       })
       return highlightedCode
     }
   )
+
+  highlighter.dispose()
+
+  return response
 }
 
 export const CodeHighlighter = async (html: string, lang: string = 'javascript', theme: string = 'dark-plus') => {
