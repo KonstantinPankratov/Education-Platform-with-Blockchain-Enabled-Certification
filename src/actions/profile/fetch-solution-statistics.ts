@@ -42,32 +42,34 @@ const fetchUserSolutionStatistics = async (userId: string): Promise<SolutionStat
         }
       },
       {
+        $group: {
+          _id: "$exerciseId",
+          createdAt: { $first: "$createdAt" },
+        }
+      },
+      {
         $project: {
           date: {
             $dateToString: {
               format: '%b %d, %Y',
               date: '$createdAt',
             },
-          },
-          exerciseId: '$exerciseId'
+          }
         }
       },
       {
         $group: {
           _id: {
-            date: '$date',
-            exerciseId: '$exerciseId' // TODO unique exercise IDs
+            date: '$date'
           },
-          count: {
-            $sum: 1
-          }
+          count: { $sum: 1 }
         }
       },
       {
         $project: {
           _id: 0,
           date: '$_id.date',
-          count: 1,
+          count: 1
         }
       },
     ])
