@@ -8,16 +8,16 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
 interface ComponentProps {
-  url: string | null
+  targetUrl: string | null
   course: ICourse,
   userId: string
 }
 
-const NavigationButton = ({ url, course, userId }: ComponentProps) => { // TODO rename to target url
+const NavigationButton = ({ targetUrl, course, userId }: ComponentProps) => {
   const router = useRouter()
   const redirectHandler = async () => {
-    if (url) {
-      router.push(url)
+    if (targetUrl) {
+      router.push(targetUrl)
       return
     }
 
