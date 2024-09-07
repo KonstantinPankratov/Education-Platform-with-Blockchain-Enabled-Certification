@@ -1,6 +1,7 @@
-import fetchNextModulePartLink from "@/actions/course/fetch-next-module-part";
+import fetchNextExerciseByExerciseId from "@/actions/course/auth/fetch-next-exercise-by-exercise-id";
 import dbConnect from "@/db/dbConnect";
 import Course from "@/db/models/Course";
+import { getCoursePartLink } from "@/lib/helpers";
 import ICourseModuleLectureExercise from "@/types/ICourseModuleLectureExercise";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -75,11 +76,14 @@ export async function GET(req: NextRequest, { params }: { params: { courseSlug: 
     return NextResponse.json({ course: null, module: null, lecture: null, exercise: null, nextPartUrl: null })
   }
 
+  const nextExercise = await fetchNextExerciseByExerciseId(result[0].exercise._id)
+  const nextExerciseLink = nextExercise ? getCoursePartLink({ courseSlug: result[0].course.slug, exerciseSlug: nextExercise.slug }) : null
+
   return NextResponse.json({
     course: result[0].course,
     module: result[0].module,
     lecture: result[0].lecture,
     exercise: result[0].exercise,
-    nextPartUrl: await fetchNextModulePartLink({ courseSlug: result[0].course.slug, lectureId: result[0].lecture._id, exerciseId: result[0].exercise._id })
+    nextPartUrl: nextExerciseLink
   })
 }

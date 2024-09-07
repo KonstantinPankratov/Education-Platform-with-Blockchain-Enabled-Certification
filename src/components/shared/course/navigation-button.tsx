@@ -21,7 +21,7 @@ const NavigationButton = ({ url, course, userId }: ComponentProps) => { // TODO 
       return
     }
 
-    if (await isCourseCompleted(userId, course.slug)) {
+    if (await isCourseCompleted(userId, course._id)) {
       toast.success("Congratulations, you've successfully completed course! Do you want to generate certificate?", {
         duration: 30000,
         position: "bottom-center",
@@ -33,7 +33,7 @@ const NavigationButton = ({ url, course, userId }: ComponentProps) => { // TODO 
         }
       })
     } else {
-      toast.success("Excellent, you've successfully completed another module!", {
+      toast.success("Excellent, you've successfully completed another lecture!", { // TODO list of different congratulations
         position: "bottom-center",
         action: {
           label: "Yeah!",
