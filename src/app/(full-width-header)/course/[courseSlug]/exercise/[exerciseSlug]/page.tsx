@@ -5,7 +5,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import Post from "@/components/exercise/post"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { CodeHighlighterParser, sanitizeContent, unescapeLineBreaks } from "@/lib/helpers"
+import { CodeHighlighterParser, sanitizeContent } from "@/lib/helpers"
 import CodeEditorPanel from "@/components/exercise/code-editor-panel"
 import { auth } from "@/auth"
 import fetchCourseModuleLectureExerciseBySlugs from "@/actions/course/fetch-by-course-exercise-slugs"
