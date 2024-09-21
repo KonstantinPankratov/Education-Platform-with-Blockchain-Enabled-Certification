@@ -8,10 +8,11 @@ import CourseEnrollment from "@/components/forms/CourseEnrollment"
 import { auth } from "@/auth"
 import fetchAuthCourseBySlug from "@/actions/course/auth/fetch-course-by-slug"
 import fetchCourseBySlug from "@/actions/course/fetch-course-by-slug"
-import isUserEnrolled from "@/actions/user/enrollment/is-enrolled"
 import ModuleCollapsiblePanelRow from "@/components/course/module-collapsible-panel-row"
 import { Progress } from "@/components/ui/progress"
 import ModuleCollapsiblePanel from "@/components/course/module-collapsible-panel"
+import TonCertification from "@/components/course/ton-certification"
+import fetchUserEnrollment from "@/actions/user/enrollment/fetch-enrollment"
 
 interface PageProps {
   params: {
@@ -28,7 +29,8 @@ export default async function Page({ params: { courseSlug } }: PageProps) {
   if (!course)
     notFound()
 
-  const isEnrolled: boolean = session ? await isUserEnrolled(session?.user._id, course._id) : false
+  const enrollment = session ? await fetchUserEnrollment(session?.user._id, course._id) : null
+  const isEnrolled: boolean = !!enrollment
 
   let moduleNodes: React.ReactNode[] = []
   let activeAccordionValue: string | undefined = undefined
@@ -57,22 +59,33 @@ export default async function Page({ params: { courseSlug } }: PageProps) {
     )
   })
 
+  const isCertificationEnabled = 'isCompleted' in course && course.isCompleted && enrollment;
+
   return (
     <main>
       <div className="relative isolate pt-14">
         <div className="container">
-          <h1 className="text-4xl sm:text-6xl">{course.name}</h1>
-          <p className="mt-6 w-3/5">{course.content}</p>
-          <div className="flex items-center gap-4 mt-8">
-            <CourseEnrollment course={course} isUserEnrolled={isEnrolled} />
-
-            {
-              isEnrolled && 'progress' in course &&
-              <div className="flex flex-col gap-2 text-xs text-neutral-400">
-                {`${course.progress}% completed`}
-                <Progress value={course.progress} className="w-[200px] h-2 rounded-md" />
+          <div className="grid lg:grid-cols-3 gap-10">
+            <div className="lg:col-span-2">
+              <h1 className="text-4xl sm:text-6xl">{course.name}</h1>
+              <p className="mt-6">{course.content}</p>
+              <div className="flex items-center gap-4 mt-8">
+                <CourseEnrollment course={course} isUserEnrolled={isEnrolled} />
+                {
+                  isEnrolled && 'progress' in course &&
+                  <div className="flex flex-col gap-2 text-xs text-neutral-400">
+                    {`${course.progress}% completed`}
+                    <Progress value={course.progress} className="w-[200px] h-2 rounded-md" />
+                  </div>
+                }
               </div>
-            }
+            </div>
+            <div className="-order-1 lg:order-1">
+              {
+                isCertificationEnabled &&
+                <TonCertification enrollment={enrollment} />
+              }
+            </div>
           </div>
         </div>
       </div>

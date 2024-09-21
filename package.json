@@ -27,7 +27,12 @@
     "@radix-ui/react-toggle": "^1.0.3",
     "@radix-ui/react-toggle-group": "^1.0.4",
     "@radix-ui/react-tooltip": "^1.0.7",
+    "@ton/core": "^0.58.1",
+    "@ton/crypto": "^3.3.0",
+    "@ton/ton": "^15.0.0",
+    "@tonconnect/ui-react": "^2.0.9",
     "bcrypt": "^5.1.1",
+    "buffer": "^6.0.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "isolated-vm": "^5.0.1",
@@ -46,6 +51,7 @@
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
+    "tonweb": "^0.0.66",
     "zod": "^3.23.8"
   },
   "devDependencies": {

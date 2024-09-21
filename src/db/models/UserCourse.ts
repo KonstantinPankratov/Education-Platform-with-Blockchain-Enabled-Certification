@@ -1,9 +1,14 @@
 import mongoose from "mongoose"
+import { ICourse } from "./Course"
+import { IUser } from "./auth/User"
 
 export interface IUserCourse extends mongoose.Document {
-  userId: mongoose.Types.ObjectId
-  courseId: mongoose.Types.ObjectId
+  userId: mongoose.Types.ObjectId | IUser
+  courseId: mongoose.Types.ObjectId | ICourse
   completedAt: Date
+  certificateTonAddress: string
+  certificateRequestedAt: Date
+  certificateIssuedAt: Date
 }
 
 const UserCourseSchema: mongoose.Schema = new mongoose.Schema<IUserCourse>({
@@ -18,6 +23,15 @@ const UserCourseSchema: mongoose.Schema = new mongoose.Schema<IUserCourse>({
     required: true
   },
   completedAt: {
+    type: mongoose.Schema.Types.Date
+  },
+  certificateTonAddress: {
+    type: String
+  },
+  certificateRequestedAt: {
+    type: mongoose.Schema.Types.Date
+  },
+  certificateIssuedAt: {
     type: mongoose.Schema.Types.Date
   }
 }, {

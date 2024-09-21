@@ -1,5 +1,6 @@
 import Header from "@/components/header/header"
 import Footer from "@/components/ui/footer"
+import TonConnectProvider from "./tonconnect-provider"
 
 export default function RootLayout({
   children,
@@ -8,9 +9,11 @@ export default function RootLayout({
 }>) {
   return (
     <>
-      <Header/>
-      {children}
-      <Footer/>
+      <TonConnectProvider>
+        <Header />
+        {children}
+        <Footer />
+      </TonConnectProvider>
     </>
   )
 }
