@@ -11,7 +11,7 @@ const Courses = async function () {
         <div className="mx-auto max-w-2xl text-center">
           <span className="text-base md:text-lg font-semibold text-neutral-500">Let&apos;s start learning with our</span>
           <h2 className="mt-2 text-2xl md:text-3xl font-bold">Courses</h2>
-          <p className="mt-5 text-neutral-50">Lorem ipsum dolor sit amet consectetur. Arcu pharetra orci sit euismod ullamcorper tempor sed cras. Facilisi lacus netus est quis cursus eros.</p>
+          <p className="mt-5 text-neutral-50">Dive into our courses and build real programming skills through practical exercises and interactive lessons. Learn at your own pace while solving challenges that prepare you for the real world.</p>
         </div>
         <div className="mx-auto max-w-4xl mt-14">
           {!!courses.length && courses.map(course =>
