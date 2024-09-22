@@ -28,7 +28,7 @@ export default async function Page({ params: { tonAddress } }: PageProps) {
         <span className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-neutral-50 font-bold">{certificate.userId.name}</span>
         <span>has completed the <Link href={getCoursePartLink({ courseSlug: certificate.courseId.slug })} className="text-neutral-50 underline-offset-4 hover:underline">{certificate.courseId.name}</Link> course</span>
 
-        <span>Certificate has been issued <span className="text-neutral-50">{certificate.certificateIssuedAt.toISOString()}</span> on <Link className="text-neutral-50 underline-offset-4 hover:underline" href="https://ton.org/">TON blockchain</Link></span>
+        <span>Certificate has been issued <span className="text-neutral-50">{certificate.certificateIssuedAt.toISOString()}</span> on <a className="text-neutral-50 underline-offset-4 hover:underline" target="_blank" rel="noopener noreferrer nofollow" href="https://ton.org/">TON blockchain</a></span>
 
         <span className="flex items-center gap-1 border rounded-lg p-1 mx-auto max-w-full">
           <span className="mx-3 font-mono font-medium text-neutral-50 tracking-wider whitespace-nowrap overflow-x-auto">{certificate.certificateTonAddress}</span>
