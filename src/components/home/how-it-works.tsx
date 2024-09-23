@@ -1,31 +1,9 @@
-"use server";
-
-import CodeEditor from "../exercise/code-editor"
-import CardChart from "../profile/card-chart";
+import BuiltInEditor from "./how-it-works/built-in-editor";
 import IntegrationBeam from "./how-it-works/integration-beam"
 import MarqueeCertification from "./how-it-works/marquee-certification";
+import ProgressTracking from "./how-it-works/progress-tracking";
 
 const HowItWorks = function () {
-  const codeDummySnippet = "// prints \"Hello World!\" to console\nconst message = \"Hello World!\"\nconsole.log(message);";
-  const codeDummyFunc = async function () {
-    "use server";
-  }
-
-  const moment = require('moment')
-
-  const dailyData = [];
-
-  for (let i = 0; i < 7; i++) {
-    dailyData.push({
-      date: moment().startOf('week').add(i, 'days').format('MMM DD, YYYY'),
-      count: Math.floor(Math.random() * 10)
-    });
-  }
-
-  const exerciseDummyData = {
-    difference: Math.floor(Math.random() * 10),
-    daily: dailyData
-  };
   return (
     <section className="relative py-20" id="how-it-works">
       <div className="container">
@@ -38,7 +16,7 @@ const HowItWorks = function () {
 
           <div className="lg:col-span-3 group relative flex flex-col justify-between overflow-hidden rounded-xl transform-gpu [border:1px_solid_rgba(255,255,255,.1)] [box-shadow:0_-20px_80px_-20px_#ffffff1f_inset]">
             <div className="h-48 relative left-10 top-10 opacity-70 grayscale">
-              <CodeEditor solution={codeDummySnippet} setSolution={codeDummyFunc} solutionCallback={codeDummyFunc} />
+              <BuiltInEditor />
             </div>
             <div className="z-10 flex transform-gpu flex-col gap-1 p-6 transition-all duration-300 group-hover:-translate-y-1">
               <h3 className="text-xl font-semibold text-neutral-300">Interactive Learning Experience</h3>
@@ -48,7 +26,7 @@ const HowItWorks = function () {
 
           <div className="lg:col-span-2 group relative flex flex-col justify-between overflow-hidden rounded-xl transform-gpu [border:1px_solid_rgba(255,255,255,.1)] [box-shadow:0_-20px_80px_-20px_#ffffff1f_inset]">
             <div className="relative left-20 top-5 opacity-70">
-              <CardChart data={exerciseDummyData} />
+              <ProgressTracking />
             </div>
 
             <div className="z-10 flex transform-gpu flex-col gap-1 p-6 transition-all duration-300 group-hover:-translate-y-1">
