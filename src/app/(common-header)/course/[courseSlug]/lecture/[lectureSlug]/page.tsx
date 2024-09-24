@@ -1,7 +1,7 @@
 import fetchLectureData from "@/actions/course/fetch-by-course-lecture-slugs"
 import isUserEnrolled from "@/actions/user/enrollment/is-enrolled"
 import { auth } from "@/auth"
-import NavigationButton from "@/components/shared/course/navigation-button"
+import NavigationButton from "@/components/course/navigation-button"
 import {
   Breadcrumb,
   BreadcrumbItem,

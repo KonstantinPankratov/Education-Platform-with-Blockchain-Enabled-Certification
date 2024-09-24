@@ -14,7 +14,7 @@ import SuccessResult from "./result/success"
 import EmptyResult from "./result/empty"
 import executeSolution from "@/actions/user/solution/do-execute"
 import fetchUserLastSolution from "@/actions/user/solution/fetch-last"
-import NavigationButton from "../shared/course/navigation-button"
+import NavigationButton from "../course/navigation-button"
 import { ICourse } from "@/db/models/Course"
 
 interface ComponentProps {
