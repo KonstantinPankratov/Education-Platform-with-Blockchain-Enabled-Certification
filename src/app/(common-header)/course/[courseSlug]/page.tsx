@@ -67,7 +67,7 @@ export default async function Page({ params: { courseSlug } }: PageProps) {
         <div className="container">
           <div className="grid lg:grid-cols-3 gap-10">
             <div className="lg:col-span-2">
-              <h1 className="text-4xl sm:text-6xl">{course.name}</h1>
+              <h1 className="text-4xl sm:text-6xl font-bold">{course.name}</h1>
               <p className="mt-6">{course.content}</p>
               <div className="flex items-center gap-4 mt-8">
                 <CourseEnrollment course={course} isUserEnrolled={isEnrolled} />
@@ -75,7 +75,7 @@ export default async function Page({ params: { courseSlug } }: PageProps) {
                   isEnrolled && 'progress' in course &&
                   <div className="flex flex-col gap-2 text-xs text-neutral-400">
                     {`${course.progress}% completed`}
-                    <Progress value={course.progress} className="w-[200px] h-2 rounded-md" />
+                    <Progress value={course.progress} className="w-[120px] md:w-[200px] h-2 rounded-md" />
                   </div>
                 }
               </div>
@@ -91,7 +91,7 @@ export default async function Page({ params: { courseSlug } }: PageProps) {
       </div>
 
       <div className="container mt-20">
-        <h2 className="text-3xl sm:text-4xl">Modules</h2>
+        <h2 className="text-3xl sm:text-4xl font-bold">Modules</h2>
         <div className="flex gap-3 mt-4">
           <Badge variant="outline">{`${course.lectureCount} lectures`}</Badge>
           <Badge variant="outline">{`${course.exerciseCount} exercises`}</Badge>

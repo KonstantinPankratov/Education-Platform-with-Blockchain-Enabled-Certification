@@ -66,7 +66,7 @@ export default async function Page({ params: { courseSlug, exerciseSlug } }: Pag
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
-            <h1 className="text-3xl sm:text-4xl mb-5">{exercise?.name}</h1>
+            <h1 className="text-3xl xl:text-4xl font-bold mb-5">{exercise?.name}</h1>
             <div className="flex flex-col gap-y-5" dangerouslySetInnerHTML={{ __html: parsedExerciseContent }}></div>
             <p className="border py-2 px-3 mt-4 rounded-sm text-base">Is there anything unclear? Feel free to <Link href={`/course/${course.slug}/lecture/${lecture.slug}`} className="underline underline-offset-2 hover:text-primary">go back to the theory</Link>.</p>
           </TabsContent>

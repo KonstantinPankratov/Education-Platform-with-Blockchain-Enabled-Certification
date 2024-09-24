@@ -51,7 +51,7 @@ export default async function Page({ params: { courseSlug, lectureSlug } }: Page
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-        <h1 className="text-4xl sm:text-6xl mt-10 mb-5">{lecture?.name}</h1>
+        <h1 className="text-4xl sm:text-6xl font-bold mt-10 mb-5">{lecture?.name}</h1>
         <div className="flex flex-col gap-y-5" dangerouslySetInnerHTML={{ __html: lectureContent }}></div>
         <div className="flex justify-center mt-10">
           <NavigationButton targetUrl={nextPartUrl} course={course} userId={session?.user._id!} />
