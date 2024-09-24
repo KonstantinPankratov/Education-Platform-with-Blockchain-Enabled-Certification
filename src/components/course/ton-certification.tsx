@@ -38,18 +38,21 @@ const TonCertification = ({ enrollment }: ComponentProps) => {
     checkCertificate(enrollment);
   }
 
-  let description = 'Congratulations! You are now eligible for a certificate. The certificate will be issued on the TON blockchain, so you will need a custodial or non-custodial wallet that supports TON cryptocurrency.'
+  let description;
 
-  if (walletAddress) {
-    description = 'Great, your wallet is connected, it will be used to initialize the transaction to issue the certificate, you will see the details of the transaction - cost and gas fee - in your wallet upon confirmation.';
-  }
-
-  if (status === 'requested') {
-    description = 'The certificate has been successfully requested, now we have to wait for the transaction to be processed in the blockchain, it may take some time, but usually not longer than a couple of seconds.'
-  }
-
-  if (status === 'ready') {
-    description = 'Yay, your certificate has been issued, now you can share the link to your certificate!'
+  switch (status) {
+    case 'requested':
+      description = 'The certificate has been successfully requested, now we have to wait for the transaction to be processed in the blockchain, it may take some time, but usually not longer than a couple of seconds.';
+      break;
+    case 'ready':
+      description = 'Yay, your certificate has been issued, now you can view it & share it!';
+      break;
+    default:
+      if (walletAddress) {
+        description = 'Great, your wallet is connected, it will be used to initialize the transaction to issue the certificate, you will see the details of the transaction - cost and gas fee - in your wallet upon confirmation.';
+      } else {
+        description = 'Congratulations! You are now eligible for a certificate. The certificate will be issued on the TON blockchain, so you will need a custodial or non-custodial wallet that supports TON cryptocurrency.';
+      }
   }
 
   return (
