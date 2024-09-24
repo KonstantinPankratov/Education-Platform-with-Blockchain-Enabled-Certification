@@ -3,8 +3,8 @@ import Marquee from "@/components/magicui/marquee"
 import { Barcode, QrCode } from "lucide-react"
 import { ReactNode } from "react"
 
-function generateStringChain(length: number) {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+function generateStringChain(length: number, specialChars: string = '') {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789' + specialChars
   let stringChain = ''
   for (let i = 0; i < length; i++) {
     stringChain += characters.charAt(Math.floor(Math.random() * characters.length))
@@ -24,7 +24,7 @@ const transactions: {
 
 for (let i = 0; i < 5; i++) {
   certificates.push({
-    address: generateStringChain(100)
+    address: generateStringChain(48, '-')
   })
 
   transactions.push({
