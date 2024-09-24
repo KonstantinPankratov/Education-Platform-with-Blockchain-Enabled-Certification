@@ -17,11 +17,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn("dark font-sans antialiased", fontSans.variable)}>
+      <body className={cn("dark antialiased", fontSans.variable)}>
         <SessionProvider>
           {children}
-          <Toaster/>
-        </SessionProvider>  
+          <Toaster />
+        </SessionProvider>
       </body>
     </html>
   )
