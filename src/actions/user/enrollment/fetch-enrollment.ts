@@ -1,7 +1,12 @@
+"use server"
+
+import dbConnect from "@/db/dbConnect"
 import UserCourse, { IUserCourse } from "@/db/models/UserCourse"
 import { Types } from "mongoose"
 
 const fetchUserEnrollment = async (userId: string, courseId: string): Promise<IUserCourse | null> => {
+  await dbConnect()
+
   const userObjectId = new Types.ObjectId(userId)
   const courseObjectId = new Types.ObjectId(courseId)
 
