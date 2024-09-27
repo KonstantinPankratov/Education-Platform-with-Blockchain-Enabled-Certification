@@ -21,6 +21,15 @@ export const createIssueCertificatePayload = (userId: string, courseId: string) 
   return cell.toBoc().toString("base64");
 }
 
+export const createIssueCertificateMessage = () => {
+  const cell = beginCell()
+    .storeUint(0, 32)
+    .storeStringRefTail('Issuing new certificate!')
+    .endCell();
+
+  return cell.toBoc().toString("base64");
+}
+
 const fetchCertificateAddress = async (userId: string, courseId: string) => {
   const tonClient = new TonClient({ endpoint: process.env.NEXT_PUBLIC_TON_NET! });
 

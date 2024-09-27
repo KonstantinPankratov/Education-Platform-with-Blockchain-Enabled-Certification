@@ -12,7 +12,7 @@ import ModuleCollapsiblePanelRow from "@/components/course/module-collapsible-pa
 import { Progress } from "@/components/ui/progress"
 import ModuleCollapsiblePanel from "@/components/course/module-collapsible-panel"
 import TonCertification from "@/components/course/ton-certification"
-import fetchUserEnrollment from "@/actions/user/enrollment/fetch-enrollment"
+import isUserEnrolled from "@/actions/user/enrollment/is-enrolled"
 
 interface PageProps {
   params: {
@@ -29,8 +29,7 @@ export default async function Page({ params: { courseSlug } }: PageProps) {
   if (!course)
     notFound()
 
-  const enrollment = session ? await fetchUserEnrollment(session?.user._id, course._id) : null
-  const isEnrolled: boolean = !!enrollment
+  const isEnrolled = session ? await isUserEnrolled(session?.user._id, course._id) : false
 
   let moduleNodes: React.ReactNode[] = []
   let activeAccordionValue: string | undefined = undefined
@@ -59,7 +58,7 @@ export default async function Page({ params: { courseSlug } }: PageProps) {
     )
   })
 
-  const isCertificationEnabled = 'isCompleted' in course && course.isCompleted && enrollment;
+  const isCertificationEnabled = 'isCompleted' in course && course.isCompleted && session;
 
   return (
     <main>
@@ -83,7 +82,7 @@ export default async function Page({ params: { courseSlug } }: PageProps) {
             <div className="-order-1 lg:order-1">
               {
                 isCertificationEnabled &&
-                <TonCertification enrollment={enrollment} />
+                <TonCertification userId={session?.user._id} courseId={course._id} />
               }
             </div>
           </div>
