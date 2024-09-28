@@ -9,16 +9,21 @@ struct CourseCertificateDetails {
 }
 
 contract CourseCertificate with Ownable {
+    master: Address;
     owner: Address;
     courseId: String;
     userId: String;
 
-    init(issuer: Address, courseId: String, userId: String) {
-        self.owner = issuer;
+    init(master: Address, owner: Address, courseId: String, userId: String) {
+        require(sender() == master, "Not certificate issuer");
+
+        self.master = master;
+        self.owner = owner;
         self.courseId = courseId;
         self.userId = userId;
     }
 
+    // ====== Get Methods ====== //
     get fun courseId(): String {
         return self.courseId;
     }
@@ -27,9 +32,18 @@ contract CourseCertificate with Ownable {
         return self.userId;
     }
 
+    get fun balance(): String {
+        return myBalance().toCoinsString();
+    }
+
+    receive("identify") {
+        require(sender() == self.master, "Not certificate issuer");
+        self.reply(IssueCertificateResponse{certificateAddress: myAddress()}.toCell());
+    }
+
     get fun details(): CourseCertificateDetails {
         return CourseCertificateDetails {
-            owner: self.owner,
+            owner: self.owner,  
             courseId: self.courseId,
             userId: self.userId
         };

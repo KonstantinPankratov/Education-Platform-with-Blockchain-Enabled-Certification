@@ -1,40 +1,55 @@
 import "@stdlib/deploy";
 import "@stdlib/ownable";
+import "@stdlib/stoppable";
 
 import "./messages";
 import "./course_certificate";
 
-contract CourseCertificateIssuer with Deployable, Ownable {
+contract CourseCertificateIssuer with Deployable, Ownable, Stoppable {
     owner: Address;
-    expectedGasFee: Int as uint64 = ton("0.1"); // TODO DECREASE
+    stopped: Bool;
+    expectedGasFee: Int as uint64 = ton("0.01");
 
     init () {
         self.owner = sender(); // Owner is the deployer
+        self.stopped = false;
     }
 
+    // ====== Messages ====== //
     receive (msg: IssueCertificate) {
-        require(sender() == self.owner, "Unauthorized sender"); // TODO CHECK
+        self.requireNotStopped();
+        self.requireValidData(msg);
 
-        let amountWithoutGas = context().value - self.expectedGasFee;
+        let ctx: Context = context();
 
-        require(msg.courseId != "" && msg.userId != "", "Invalid certificate data");
+        let amountWithoutGas = ctx.value - self.expectedGasFee;
 
-        let init: StateInit = initOf CourseCertificate(myAddress(), msg.courseId, msg.userId);
-
-        let certificateAddress = contractAddress(init); // contract address is known before deploy via initial state
+        // owner is the user
+        let certInit: StateInit = self.getCertificateInit(ctx.sender, msg.courseId, msg.userId);
 
         send(SendParameters{
-            to: certificateAddress,
+            // contract address is known before deploy via initial state
+            to: contractAddress(certInit),
             value: amountWithoutGas,
-            mode: SendIgnoreErrors, 
-            code: init.code,
-            data: init.data
+            mode: SendIgnoreErrors,
+            code: certInit.code,
+            data: certInit.data,
+            body: "identify".asComment()
         });
-
-        self.reply(IssueCertificateResponse{certificateAddress: certificateAddress}.toCell());
     }
 
-    get fun certificateAddress(courseId: String, userId: String): Address {
-        return contractAddress(initOf CourseCertificate(myAddress(), courseId, userId));
+    // ====== Private Methods ====== //
+    fun getCertificateInit(owner: Address, courseId: String, userId: String): StateInit {
+        return initOf CourseCertificate(myAddress(), owner, courseId, userId);
+    }
+
+    fun requireValidData(msg: IssueCertificate) {
+        require(msg.courseId != "" && msg.userId != "", "Invalid certificate data");
+    }
+
+    // ====== Get Methods ====== //
+    get fun certificateAddress(owner: Address, courseId: String, userId: String): Address {
+        let init: StateInit = self.getCertificateInit(owner, courseId, userId);
+        return contractAddress(init);
     }
 }

@@ -1,8 +1,8 @@
 import { Blockchain, SandboxContract, TreasuryContract } from '@ton/sandbox';
 import { toNano } from '@ton/core';
-import { CourseCertificateIssuer } from '../wrappers/CourseCertificateIssuer';
+import { CourseCertificateIssuer, IssueCertificate } from '../wrappers/CourseCertificateIssuer';
 import '@ton/test-utils';
-import { CourseCertificate, IssueCertificate } from '../wrappers/CourseCertificate';
+import { CourseCertificate } from '../wrappers/CourseCertificate';
 
 describe('CourseCertificateIssuer', () => {
     let blockchain: Blockchain;
@@ -44,28 +44,36 @@ describe('CourseCertificateIssuer', () => {
         const courseId = 'c01';
         const userId = 'u091';
 
+        const user = await blockchain.treasury('user');
+
+        console.log("Deployer: ", deployer.address);
+        console.log("User: ", user.address);
+
         const message: IssueCertificate = {
             $$type: 'IssueCertificate',
+            // owner: user.address,
             courseId: courseId,
             userId: userId
         };
 
-        await courseCertificateIssuer.send(deployer.getSender(), {
-            value: toNano("0.5")
+        await courseCertificateIssuer.send(user.getSender(), {
+            value: toNano("2")
         }, message);
 
-        const certificateAddress = await courseCertificateIssuer.getCertificateAddress(courseId, userId);
+        const certificateAddress = await courseCertificateIssuer.getCertificateAddress(user.address, courseId, userId);
 
-        expect(certificateAddress).not.toBeNull();
+        console.log("Certificate address: ", certificateAddress.toString());
 
         const certificateFromAddress = CourseCertificate.fromAddress(certificateAddress);
 
         const certificate = blockchain.openContract(certificateFromAddress);
 
         const details = await certificate.getDetails();
+        const balance = await certificate.getBalance();
 
-        console.log("details - ", details);
+        console.log("Details: ", details);
 
+        expect(balance).toBeGreaterThan(0);
         expect(details.courseId).toBe(courseId);
         expect(details.userId).toBe(userId);
     });
