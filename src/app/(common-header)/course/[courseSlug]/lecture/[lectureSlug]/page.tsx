@@ -10,7 +10,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { sanitizeContent } from "@/lib/helpers"
+import { CodeHighlighterParser, sanitizeContent } from "@/lib/helpers"
 import { notFound } from "next/navigation"
 
 interface PageProps {
@@ -31,7 +31,7 @@ export default async function Page({ params: { courseSlug, lectureSlug } }: Page
   if (!isUserEnrolled(session?.user._id!, course._id))
     throw new Error('You are not enrolled in this course')
 
-  const lectureContent = sanitizeContent(lecture?.content)
+  const lectureContent = await CodeHighlighterParser(sanitizeContent(lecture?.content))
 
   return (
     <section className="relative isolate pt-14">
@@ -52,7 +52,7 @@ export default async function Page({ params: { courseSlug, lectureSlug } }: Page
           </BreadcrumbList>
         </Breadcrumb>
         <h1 className="text-4xl sm:text-6xl font-bold mt-10 mb-5">{lecture?.name}</h1>
-        <div className="flex flex-col gap-y-5" dangerouslySetInnerHTML={{ __html: lectureContent }}></div>
+        <div className="flex flex-col gap-y-5 content" dangerouslySetInnerHTML={{ __html: lectureContent }}></div>
         <div className="flex justify-center mt-10">
           <NavigationButton targetUrl={nextPartUrl} course={course} userId={session?.user._id!} />
         </div>

@@ -19,7 +19,7 @@ export const createInitials = (name: string) => {
 }
 
 export const unescapeSpecialCodeCharacters = (str: string) => {
-  return str.replace(/\\n/g, '\n').replace(/\\r\\n/g, '\r\n').replace(/&amp;/g, '&').replace(/&gt;/g, '>').replace(/&gte;/g, '>=').replace(/&lt;/g, '<').replace(/&lte;/g, '<=')
+  return str.replace(/\\n/g, '\n').replace(/\\r\\n/g, '\r\n').replace(/&amp;/g, '&').replace(/&gte;/g, '>=').replace(/&lte;/g, '<=').replace(/&gt;/g, '>').replace(/&lt;/g, '<')
 }
 
 export const sanitizeContent = (html: string) => {
@@ -30,7 +30,7 @@ export const sanitizeContent = (html: string) => {
       "img": ['src', 'srcset', 'alt', 'title', 'width', 'height', 'loading'],
     },
     allowedClasses: {
-      'code': ['language-*'],
+      'code': ['language-*', 'highlight'],
     }
   })
 }
@@ -44,9 +44,9 @@ export const CodeHighlighterParser = async (html: string, lang: string = 'javasc
   })
 
   const response = html.replace(
-    /<code>([\s\S]*?)<\/code>/g,
+    /<code class="highlight">([\s\S]*?)<\/code>/g,
     (match, code) => {
-      const highlightedCode = highlighter.codeToHtml(unescapeSpecialCodeCharacters(code), {
+      const highlightedCode = highlighter.codeToHtml(unescapeSpecialCodeCharacters(code.trim()), {
         lang: lang,
         theme: theme
       })

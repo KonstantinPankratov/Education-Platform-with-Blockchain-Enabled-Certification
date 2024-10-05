@@ -68,4 +68,52 @@
     @apply bg-background text-foreground;
     font-family: var(--font-sans);
   }
+
+  .content :not(pre)>code:not(.highlight) {
+    @apply py-1 px-2 mx-1 bg-neutral-900 rounded-sm font-mono text-neutral-400;
+  }
+
+  pre.shiki {
+    @apply p-3 rounded-sm overflow-x-auto;
+  }
+
+  pre.shiki code {
+    counter-reset: step;
+    counter-increment: step 0;
+  }
+
+  pre.shiki code .line::before {
+    content: counter(step);
+    counter-increment: step;
+
+    @apply w-4 mr-4 inline-block text-right text-neutral-700;
+  }
+
+  .content h2 {
+    @apply text-2xl xl:text-3xl font-bold mt-6;
+  }
+
+  .content h3 {
+    @apply text-xl xl:text-2xl font-bold mt-6;
+  }
+
+  .content h4 {
+    @apply text-lg xl:text-xl font-bold mt-6;
+  }
+
+  .content h5 {
+    @apply text-base xl:text-lg font-bold mt-6;
+  }
+
+  .content p {
+    @apply leading-loose;
+  }
+
+  .content ul {
+    @apply list-disc pl-5 leading-loose;
+  }
+
+  .content ol {
+    @apply list-decimal pl-5 leading-loose;
+  }
 }
