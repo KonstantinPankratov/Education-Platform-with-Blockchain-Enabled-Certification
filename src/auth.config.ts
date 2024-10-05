@@ -4,8 +4,7 @@ import { createInitials } from './lib/helpers'
 export const authConfig = {
   providers: [],
   pages: {
-    signIn: '/sign-in',
-    newUser: '/sign-up',
+    signIn: '/sign-in'
   },
   session: {
     strategy: "jwt",

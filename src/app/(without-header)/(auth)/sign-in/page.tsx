@@ -1,18 +1,16 @@
 import { SignInWithGithub } from "@/components/forms/SiginWithGithub"
-import { SignIn } from "@/components/forms/Signin"
-import { Button } from "@/components/ui/button"
-
-import Link from "next/link"
+import { SignInWithGoogle } from "@/components/forms/SiginWithGoogle"
+import { SignInWithResend } from "@/components/forms/SiginWithResend"
 
 export default function Page() {
   return (
     <div className="w-full max-w-lg">
       <div className="flex flex-col space-y-2 text-center mb-10">
-        <h1 className="text-2xl font-semibold tracking-tight">Sign in to your account</h1>
-        <p className="text-sm text-muted-foreground">Enter your email and password below to sign in to your account</p>
+        <h1 className="text-2xl font-semibold tracking-tight">Sign in to platform</h1>
+        <p className="text-sm text-muted-foreground">Enter your email below to sign in to your account</p>
       </div>
 
-      <SignIn/>
+      <SignInWithResend />
 
       <div className="relative flex py-5 items-center">
         <div className="flex-grow border-t border-neutral-700"></div>
@@ -20,13 +18,9 @@ export default function Page() {
         <div className="flex-grow border-t border-neutral-700"></div>
       </div>
 
-      <div className="flex flex-col items-center">
-        <SignInWithGithub/>
-      </div>
-      <div className="flex justify-center mt-10">
-        <Button variant="link" asChild>
-          <Link href="/sign-up">Don&apos;t have an account? Sign up!</Link>
-        </Button>
+      <div className="flex gap-4 flex-col items-center">
+        <SignInWithGithub />
+        <SignInWithGoogle />
       </div>
     </div>
   )
