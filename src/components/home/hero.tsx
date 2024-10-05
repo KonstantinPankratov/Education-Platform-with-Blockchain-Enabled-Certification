@@ -10,11 +10,11 @@ const Hero = function () {
           bg-gradient-to-br from-neutral-50 from-30% to-neutral-950 bg-clip-text text-transparent text-balance pb-4
           ">Start your &lt;coding/&gt; journey</h1>
           <p className="mt-6">We believe in learning by doing. Whether you are a beginner or advancing your skills, our platform offers a seamless learning experience for programming enthusiasts. Our courses are designed to guide you step-by-step through the essential concepts, with hands-on practice in every lecture.</p>
-          <div className="mt-10 flex items-center justify-center gap-4">
+          <div className="mt-10 flex flex-col md:flex-row md:items-center justify-center gap-4">
             <Button size="lg" className="text-base" asChild>
               <Link href="/#courses">View courses</Link>
             </Button>
-            <Button size="lg" className="text-base leading-none" variant="secondary" asChild>
+            <Button size="lg" className="text-base leading-none" variant="ghost" asChild>
               <Link href="/#how-it-works">Look under hood 👀</Link>
             </Button>
           </div>
