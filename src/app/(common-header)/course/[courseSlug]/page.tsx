@@ -97,7 +97,7 @@ export default async function Page({ params: { courseSlug } }: PageProps) {
         </div>
         {
           course.modules?.length ?
-            <Accordion type="single" className="w-full mt-10" defaultValue={activeAccordionValue}>
+            <Accordion type="single" collapsible className="w-full mt-10" defaultValue={activeAccordionValue}>
               {moduleNodes}
             </Accordion>
             :
