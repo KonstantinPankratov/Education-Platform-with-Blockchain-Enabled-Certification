@@ -1,5 +1,5 @@
 {
-    "name": "EDUPLA",
+    "name": "EDUPLA Blockchain integration",
     "version": "0.0.1",
     "scripts": {
         "start": "blueprint run",

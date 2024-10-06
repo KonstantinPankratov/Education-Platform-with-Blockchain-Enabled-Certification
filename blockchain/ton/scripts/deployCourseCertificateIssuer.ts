@@ -12,6 +12,7 @@ export async function run(provider: NetworkProvider) {
         },
         {
             $$type: 'Deploy',
+            // @ts-ignore
             queryId: 0n,
         }
     );

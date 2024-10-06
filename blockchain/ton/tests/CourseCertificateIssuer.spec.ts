@@ -73,7 +73,7 @@ describe('CourseCertificateIssuer', () => {
 
         console.log("Details: ", details);
 
-        expect(balance).toBeGreaterThan(0);
+        expect(toNano(balance)).toBeGreaterThan(0n);
         expect(details.courseId).toBe(courseId);
         expect(details.userId).toBe(userId);
     });
