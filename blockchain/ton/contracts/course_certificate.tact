@@ -37,8 +37,7 @@ contract CourseCertificate with Ownable {
     }
 
     receive("identify") {
-        require(sender() == self.master, "Not certificate issuer");
-        self.reply(IssueCertificateResponse{certificateAddress: myAddress()}.toCell());
+        dump(myAddress())
     }
 
     get fun details(): CourseCertificateDetails {
