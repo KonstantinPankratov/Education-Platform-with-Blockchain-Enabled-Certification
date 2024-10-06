@@ -5,14 +5,14 @@ import UserCourse from "@/db/models/UserCourse";
 import { Address, beginCell } from "@ton/core";
 import { TonClient, TupleBuilder } from "@ton/ton";
 
-export const createIssueCertificatePayload = (userId: string, courseId: string) => {
+export const createIssueCertificatePayload = (ownerWalletAddress: string, userId: string, courseId: string) => {
   const forwardPayload = beginCell()
     .storeUint(0, 32) // 0 opcode of 32bits fpr comments
     .storeStringTail('Issuing new certificate!')
     .endCell();
 
   const cell = beginCell()
-    .storeUint(253293831, 32) // check opcode for issue certificate in build contract
+    .storeAddress(Address.parse(ownerWalletAddress))
     .storeStringRefTail(courseId)
     .storeStringRefTail(userId)
     // .storeRef(forwardPayload)
@@ -30,10 +30,11 @@ export const createIssueCertificateMessage = () => {
   return cell.toBoc().toString("base64");
 }
 
-const fetchCertificateAddress = async (userId: string, courseId: string) => {
+export const fetchCertificateAddress = async (ownerWalletAddress: string, userId: string, courseId: string) => {
   const tonClient = new TonClient({ endpoint: process.env.NEXT_PUBLIC_TON_NET! });
 
   const args = new TupleBuilder();
+  args.writeAddress(Address.parse(ownerWalletAddress))
   args.writeString(courseId);
   args.writeString(userId);
 
@@ -43,10 +44,10 @@ const fetchCertificateAddress = async (userId: string, courseId: string) => {
     args.build()
   );
 
-  return address.stack.readAddress();
+  return address.stack.readAddress().toString();
 }
 
-export const setCourseCertificateAddress = async (userId: string, courseId: string) => {
+export const setCourseCertificateAddress = async (ownerWalletAddress: string, userId: string, courseId: string) => {
   await dbConnect()
 
   const enrollment = await UserCourse.findOne({ userId: userId, courseId: courseId })
@@ -55,7 +56,7 @@ export const setCourseCertificateAddress = async (userId: string, courseId: stri
     throw new Error('You are not enrolled in this course')
   }
 
-  enrollment.certificateTonAddress = (await fetchCertificateAddress(userId, courseId)).toString()
+  enrollment.certificateTonAddress = (await fetchCertificateAddress(ownerWalletAddress, userId, courseId)).toString()
   enrollment.certificateRequestedAt = new Date()
   enrollment.save()
 }

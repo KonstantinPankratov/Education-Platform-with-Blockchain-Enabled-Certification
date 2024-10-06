@@ -133,18 +133,13 @@ const TonCertification = ({ userId, courseId }: ComponentProps) => {
           {
             address: Address.parse(process.env.NEXT_PUBLIC_TON_CERTIFICATE_ISSUER_ADDRESS!).toString(),
             amount: toNano("0.2").toString(),
-            payload: await createIssueCertificatePayload(userId, courseId) // TODO inc security vuln
-          },
-          {
-            address: Address.parse(enrollment.certificateTonAddress).toString(),
-            amount: toNano("0").toString(),
-            payload: await createIssueCertificateMessage()
+            payload: await createIssueCertificatePayload(walletAddress, userId, courseId) // TODO inc security vuln
           }
         ]
       } as SendTransactionRequest
 
       tonConnectUI.sendTransaction(transaction).then(({ boc }) => {
-        setCourseCertificateAddress(userId, courseId).then(() => {
+        setCourseCertificateAddress(walletAddress, userId, courseId).then(() => {
           fetchUserEnrollment(userId, courseId).then((enrollment) => {
             setEnrollment(enrollment)
           })
