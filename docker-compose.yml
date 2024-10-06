@@ -1,0 +1,7 @@
+services:
+  edupla:
+    container_name: edupla
+    image: edupla
+    build: .
+    ports:
+      - "3333:3000"
