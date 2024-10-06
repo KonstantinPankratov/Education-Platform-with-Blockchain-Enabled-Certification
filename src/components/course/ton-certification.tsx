@@ -4,9 +4,9 @@ import { SendTransactionRequest, TonConnectButton, TonConnectUI, useTonAddress, 
 import { Button } from '../ui/button'
 import { IUserCourse } from '@/db/models/UserCourse'
 import { Address, toNano } from '@ton/core'
-import { createIssueCertificateMessage, createIssueCertificatePayload, setCourseCertificateAddress, setCourseCertificateIssuedAt } from '@/actions/course/auth/issue-course-certificate'
+import { createIssueCertificatePayload, setCourseCertificateAddress, setCourseCertificateIssuedAt } from '@/actions/course/auth/issue-course-certificate'
 import { TonClient, Cell } from '@ton/ton'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Award, Wallet } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../ui/card'
 import Link from 'next/link'
@@ -32,59 +32,10 @@ const TonCertification = ({ userId, courseId }: ComponentProps) => {
     })
   }, [userId, courseId])
 
-  useEffect(() => {
-    if (!enrollment)
+  const checkCertificate = useCallback(async () => {
+    if (!enrollment) {
       return
-
-    if (enrollment.certificateIssuedAt) {
-      setStatus("ready")
-    } else if (enrollment.certificateRequestedAt) {
-      setStatus("requested")
     }
-    if (enrollment.certificateRequestedAt && enrollment.certificateTonAddress && !enrollment.certificateIssuedAt) {
-      checkCertificate()
-    }
-  }, [enrollment, userId, courseId])
-
-  let description
-
-  switch (status) {
-    case 'requested':
-      description = 'The certificate has been successfully requested, now we have to wait for the transaction to be processed in the blockchain, it may take some time, but usually not longer than a couple of seconds.'
-      break
-    case 'ready':
-      description = 'Yay, your certificate has been issued, now you can view it & share it!'
-      break
-    default:
-      if (walletAddress) {
-        description = 'Great, your wallet is connected, it will be used to initialize the transaction to issue the certificate, you will see the details of the transaction - cost and gas fee - in your wallet upon confirmation.'
-      } else {
-        description = 'Congratulations! You are now eligible for a certificate. The certificate will be issued on the TON blockchain, so you will need a wallet that supports TON cryptocurrency.'
-      }
-  }
-
-  if (!enrollment || !tonConnectUI) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle className='flex items-center gap-1'><Award className='size-6' />Certification</CardTitle>
-          <CardDescription></CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className='flex gap-2 items-center'>
-            <Wallet className='size-5 shrink-0' />
-            <span className='font-semibold text-base grow'>Your wallet</span>
-            <Skeleton className='h-10 min-w-36' />
-          </div>
-        </CardContent>
-        <CardFooter>
-          <Skeleton className='h-10 w-full' />
-        </CardFooter>
-      </Card>
-    )
-  }
-
-  const checkCertificate = async () => {
     const tonClient = new TonClient({ endpoint: process.env.NEXT_PUBLIC_TON_NET! })
 
     const userId = enrollment.userId.toString()
@@ -120,10 +71,14 @@ const TonCertification = ({ userId, courseId }: ComponentProps) => {
     }
 
     checkDeployment()
-  }
+  }, [enrollment])
 
-  const issueCertificate = async () => {
+  const issueCertificate = useCallback(async () => {
     try {
+      if (!enrollment || !tonConnectUI || !walletAddress) {
+        return
+      }
+
       const userId = enrollment.userId.toString()
       const courseId = enrollment.courseId.toString()
 
@@ -148,6 +103,56 @@ const TonCertification = ({ userId, courseId }: ComponentProps) => {
     } catch (error: any) {
       console.log(error)
     }
+  }, [enrollment, tonConnectUI, walletAddress])
+
+  const description = useMemo(() => {
+    switch (status) {
+      case 'requested':
+        return 'The certificate has been successfully requested, now we have to wait for the transaction to be processed in the blockchain, it may take some time, but usually not longer than a couple of seconds.'
+      case 'ready':
+        return 'Yay, your certificate has been issued, now you can view it & share it!'
+      default:
+        if (walletAddress) {
+          return 'Great, your wallet is connected, it will be used to initialize the transaction to issue the certificate, you will see the details of the transaction - cost and gas fee - in your wallet upon confirmation.'
+        } else {
+          return 'Congratulations! You are now eligible for a certificate. The certificate will be issued on the TON blockchain, so you will need a wallet that supports TON cryptocurrency.'
+        }
+    }
+  }, [status, walletAddress])
+
+  useEffect(() => {
+    if (!enrollment)
+      return
+
+    if (enrollment.certificateIssuedAt) {
+      setStatus("ready")
+    } else if (enrollment.certificateRequestedAt) {
+      setStatus("requested")
+    }
+    if (enrollment.certificateRequestedAt && enrollment.certificateTonAddress && !enrollment.certificateIssuedAt) {
+      checkCertificate()
+    }
+  }, [enrollment, userId, courseId, checkCertificate])
+
+  if (!enrollment || !tonConnectUI) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className='flex items-center gap-1'><Award className='size-6' />Certification</CardTitle>
+          <CardDescription></CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className='flex gap-2 items-center'>
+            <Wallet className='size-5 shrink-0' />
+            <span className='font-semibold text-base grow'>Your wallet</span>
+            <Skeleton className='h-10 min-w-36' />
+          </div>
+        </CardContent>
+        <CardFooter>
+          <Skeleton className='h-10 w-full' />
+        </CardFooter>
+      </Card>
+    )
   }
 
   return (
