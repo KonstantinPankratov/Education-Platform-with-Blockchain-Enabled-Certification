@@ -12,6 +12,7 @@ export const createIssueCertificatePayload = (ownerWalletAddress: string, userId
     .endCell();
 
   const cell = beginCell()
+    .storeUint(255555555, 32) // issue certificate opcode - set in messages.tact - could be checked in build contract
     .storeAddress(Address.parse(ownerWalletAddress))
     .storeStringRefTail(courseId)
     .storeStringRefTail(userId)
