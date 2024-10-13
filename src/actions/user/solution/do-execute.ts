@@ -16,6 +16,7 @@ const executeSolution = async (userId: string, exerciseId: string, solution: str
   const stdout: string[] = []
 
   try {
+    await import('isolated-vm')
     await dbConnect()
 
     const userObjectId = new Types.ObjectId(userId)
