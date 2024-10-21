@@ -1,9 +1,10 @@
 "use server"
 
 import { signIn } from "@/auth"
+import { ResendFormSchema } from "@/lib/zod"
 
-export async function resendSignIn(formData: FormData) {
-  await signIn('resend', formData)
+export async function resendSignIn(data: ResendFormSchema) {
+  await signIn('resend', data)
 }
 
 export async function googleSignIn() {
