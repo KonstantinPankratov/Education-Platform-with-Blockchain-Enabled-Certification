@@ -2,13 +2,11 @@
 export const PUBLIC_ROUTES = [
   /^\/$/,
   /^\/sign-in$/,
-  /^\/sign-up$/,
   /^\/course\/[^\/]+$/
 ]
 
 export const PUBLIC_ONLY_ROUTES = [
-  /^\/sign-in$/,
-  /^\/sign-up$/
+  /^\/sign-in$/
 ]
 
 export const NOT_AUTH_ROUTE = '/sign-in'
