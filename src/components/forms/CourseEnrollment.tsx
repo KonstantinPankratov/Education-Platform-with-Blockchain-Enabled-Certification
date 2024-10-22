@@ -3,13 +3,13 @@
 import { useSession } from "next-auth/react"
 import { Button } from "../ui/button"
 import { toast } from "sonner"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { NOT_AUTH_ROUTE } from "@/lib/routes"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { ICourse } from "@/db/models/Course"
 import doEnrollment from "@/actions/user/enrollment/do-enrollment"
-import { fetchFirstCourseLectureLink } from "@/actions/course/fetch-last-course-part"
+import { getCoursePartLink } from "@/lib/helpers"
 
 const CourseEnrollment = ({
   course,
@@ -21,6 +21,7 @@ const CourseEnrollment = ({
   className?: string
 }) => {
   const router = useRouter()
+  const pathname = usePathname()
   const { data: session, status } = useSession()
   const [enrolled, setEnrolled] = useState<boolean>(isUserEnrolled)
   const [loading, setLoading] = useState<boolean>(false)
@@ -51,8 +52,13 @@ const CourseEnrollment = ({
       .then(async data => {
         setEnrolled(true)
         setTimeout(() => {
-          router.push(fetchFirstCourseLectureLink(course))
-        }, 10000)
+          const coursePage = getCoursePartLink({ courseSlug: course.slug })
+          if (pathname === coursePage) {
+            router.refresh()
+          } else {
+            router.push(coursePage)
+          }
+        }, 100)
         return data
       }).finally(() => {
         setLoading(false)
