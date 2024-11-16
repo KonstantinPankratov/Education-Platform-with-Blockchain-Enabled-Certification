@@ -3,16 +3,17 @@ import { authConfig } from "./auth.config"
 import type { Provider } from "next-auth/providers"
 import GitHub from "next-auth/providers/github"
 import Google from "next-auth/providers/google"
-import Resend from "next-auth/providers/resend"
+import Nodemailer from "next-auth/providers/nodemailer"
 import dbConnect from "./db/dbConnect"
 import MongooseAdapter from "./lib/mongooseAdapter"
 
 const Providers: Provider[] = [
   GitHub,
   Google,
-  Resend({
-    from: process.env.AUTH_RESEND_FROM,
-  })
+  Nodemailer({
+    server: process.env.EMAIL_SERVER,
+    from: process.env.EMAIL_FROM,
+  }),
 ]
 
 export const { handlers, auth, signIn } = NextAuth({

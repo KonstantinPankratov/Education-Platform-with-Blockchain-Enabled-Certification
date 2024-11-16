@@ -4,7 +4,7 @@ import { signIn } from "@/auth"
 import { ResendFormSchema } from "@/lib/zod"
 
 export async function resendSignIn(data: ResendFormSchema) {
-  await signIn('resend', data)
+  await signIn('nodemailer', data)
 }
 
 export async function googleSignIn() {
