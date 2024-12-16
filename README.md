@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# EDUPLA: An online platform for learning with blockchain-based certification
 
-## Getting Started
+[![Website](https://img.shields.io/badge/Visit-Website-blue)](https://edupla.kopa.pw/)
 
-First, run the development server:
+Edupla is an online learning platform for programming that leverages blockchain technology to issue and verify certificates. This project aims to increase transparency, security, and decentralization in the certification process for educational platforms.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Roadmap
+1. **Current Phase**: Educational platform for programming with blockchain-based certification and verification.  
+   - The current implementation showcases how blockchain can enhance transparency and security in certificate issuance and verification.  
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Next Phase**: Transition from a standalone platform to a **blockchain protocol**.  
+   - **Goal**: Develop a protocol in the TON blockchain for decentralized certification that can be adopted by multiple educational platforms.  
+   - **Features**:  
+     - Represent courses, modules, lessons, and user solutions as on-chain smart contracts.  
+     - Enable a fully decentralized certification process.  
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. **Future Vision**: Expand the protocol to support a wide range of educational platforms, creating a unified and transparent certification system across the industry.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## How It Works
 
-## Learn More
+1. **Course Completion**: Users complete courses offered on the platform.
+2. **Certificate Issuance**: After successful completion, certificates are issued using the TON blockchain, ensuring decentralization and transparency.
+3. **Certificate Verification**: Certificates can be verified directly on the TON blockchain without relying on the platform.
 
-To learn more about Next.js, take a look at the following resources:
+## Technologies Used
+- **Frontend & Backend**: Next.js
+- **Blockchain**: TON (The Open Network) for issuing and verifying certificates
+- **Smart Contracts**: Developed and deployed using the TON ecosystem
+- **Database**: MongoDB (for course and user data)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Installation and Setup
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+1. Clone the repository:
+   ```bash
+    git clone https://github.com/KonstantinPankratov/Education-Platform-with-Blockchain-Enabled-Certification.git
+2. Navigate to the project directory:
+    ```bash
+    cd Education-Platform-with-Blockchain-Enabled-Certification
+3. Install dependencies:
+    ```bash
+    npm install
+4. Start the development server:
+    ```bash
+    npm run dev
+5. Set the appropriate variables in .env
+## Smart Contract Deployment
 
-## Deploy on Vercel
+1. Navigate to the smart contracts directory:
+   ```bash
+    cd blockchain/ton
+2. Install dependencies:
+   ```bash
+    npm install
+3. Build the existing contract CourseCertificateIssuer:
+    ```bash
+    npm run build
+4. Deploy it:
+    ```bash
+    npm run start
+5. Set the appropriate variables in .env
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## License
+This project is licensed under the MIT License.
