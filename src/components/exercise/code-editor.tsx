@@ -41,6 +41,7 @@ const CodeEditor = ({ solution, setSolution, solutionCallback }: ComponentProps)
     monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
       noLib: true,
       allowNonTsExtensions: true,
+      noImplicitAny: true
     })
   }
 
