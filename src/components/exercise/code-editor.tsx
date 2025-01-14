@@ -1,7 +1,7 @@
 "use client"
 
-import React, { Dispatch, SetStateAction } from "react"
-import Editor, { OnChange, type Monaco } from '@monaco-editor/react'
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useRef } from "react"
+import Editor, { BeforeMount, OnChange, OnMount } from '@monaco-editor/react'
 
 interface ComponentProps {
   solution: string,
@@ -10,17 +10,44 @@ interface ComponentProps {
 }
 
 const CodeEditor = ({ solution, setSolution, solutionCallback }: ComponentProps) => {
+  const editorRef = useRef<any>(null)
+  const monacoRef = useRef<any>(null)
+  const actionRef = useRef<any>(null)
+
+  useEffect(() => {
+    if (editorRef.current && monacoRef.current) {
+      actionRef.current = editorRef.current.addAction({
+        id: 'run-solution',
+        label: 'Run solution',
+        keybindings: [monacoRef.current.KeyMod.CtrlCmd | monacoRef.current.KeyCode.Enter],
+        run: () => {
+          solutionCallback()
+        },
+      })
+    }
+
+    return () => {
+      if (actionRef.current) {
+        actionRef.current.dispose()
+      }
+    }
+  }, [solution, solutionCallback, editorRef, monacoRef, actionRef])
+
   const handleEditorChange: OnChange = (value) => {
     setSolution(value || '')
   }
 
-  const handleEditorDidMount = (monaco: Monaco) => {
+  const handleEditorBeforeMount: BeforeMount = (monaco) => {
     monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
       noLib: true,
       allowNonTsExtensions: true,
     })
   }
 
+  const handleEditorDidMount: OnMount = (editor, monaco) => {
+    editorRef.current = editor;
+    monacoRef.current = monaco;
+  }
 
   return (
     <div className='rounded-md overflow-hidden h-full mb-5'>
@@ -33,7 +60,8 @@ const CodeEditor = ({ solution, setSolution, solutionCallback }: ComponentProps)
         }}
         theme="vs-dark"
         value={solution}
-        beforeMount={handleEditorDidMount}
+        onMount={handleEditorDidMount}
+        beforeMount={handleEditorBeforeMount}
         onChange={handleEditorChange} />
     </div>
   )
