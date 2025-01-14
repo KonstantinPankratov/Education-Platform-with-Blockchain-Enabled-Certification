@@ -1,3 +1,4 @@
+import { transformerCopyButton } from "@/components/code/copy-code-button-transformer"
 import sanitizeHtml from "sanitize-html"
 
 export function getCoursePartLink({ courseSlug, lectureSlug, exerciseSlug }: { courseSlug: string, lectureSlug?: string, exerciseSlug?: string }): string {
@@ -48,7 +49,13 @@ export const CodeHighlighterParser = async (html: string, lang: string = 'javasc
     (match, code) => {
       const highlightedCode = highlighter.codeToHtml(unescapeSpecialCodeCharacters(code.trim()), {
         lang: lang,
-        theme: theme
+        theme: theme,
+        transformers: [
+          transformerCopyButton({
+            visibility: 'always',
+            feedbackDuration: 1_000,
+          })
+        ]
       })
       return highlightedCode
     }
